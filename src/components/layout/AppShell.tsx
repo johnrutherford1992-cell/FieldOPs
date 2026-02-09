@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import BottomNav from "./BottomNav";
-import { db } from "@/lib/db";
-import { useAppStore } from "@/lib/store";
+import { db, seedDefaultUsers, getUserById } from "@/lib/db";
+import { useAppStore, loadSession } from "@/lib/store";
 import { DEMO_PROJECT } from "@/data/demo-project";
 import { DEMO_DAILY_LOGS } from "@/data/demo-logs";
 import { DEMO_COST_CODES } from "@/data/demo-cost-codes";
@@ -14,21 +14,19 @@ interface AppShellProps {
 }
 
 export default function AppShell({ children }: AppShellProps) {
-  const { setActiveProject } = useAppStore();
+  const { currentUser, setSessionLoaded } = useAppStore();
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     async function init() {
-      // Check if we already have a project
+      // Seed demo project if needed
       const existing = await db.projects.toArray();
-
-      if (existing.length > 0) {
-        setActiveProject(existing[0]);
-      } else {
-        // Seed the demo project
+      if (existing.length === 0) {
         await db.projects.put(DEMO_PROJECT);
-        setActiveProject(DEMO_PROJECT);
       }
+
+      // Seed default users
+      await seedDefaultUsers(DEMO_PROJECT.id);
 
       // Seed demo daily logs if none exist
       const existingLogs = await db.dailyLogs.count();
@@ -42,7 +40,7 @@ export default function AppShell({ children }: AppShellProps) {
         await db.costCodes.bulkPut(DEMO_COST_CODES);
       }
 
-      // Seed analytics demo data (productivity entries, baselines, notices, delays)
+      // Seed analytics demo data
       const existingEntries = await db.productivityEntries.count();
       if (existingEntries === 0) {
         try {
@@ -52,11 +50,32 @@ export default function AppShell({ children }: AppShellProps) {
         }
       }
 
+      // Rehydrate session from localStorage
+      if (!currentUser) {
+        const session = loadSession();
+        if (session) {
+          const user = await getUserById(session.userId);
+          if (user && user.isActive) {
+            // Set user without triggering a new saveSession
+            useAppStore.setState({ currentUser: user });
+
+            // Restore active project
+            if (session.activeProjectId) {
+              const project = await db.projects.get(session.activeProjectId);
+              if (project) {
+                useAppStore.setState({ activeProject: project });
+              }
+            }
+          }
+        }
+      }
+
+      setSessionLoaded(true);
       setInitialized(true);
     }
 
     init();
-  }, [setActiveProject]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!initialized) {
     return (

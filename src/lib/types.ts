@@ -7,7 +7,27 @@
 
 // ---- User & Roles ----
 
-export type UserRole = "superintendent" | "foreman" | "pm" | "safety_officer";
+export type UserRole =
+  | "president"
+  | "pm"
+  | "assistant_pm"
+  | "superintendent"
+  | "assistant_superintendent"
+  | "foreman"
+  | "safety_officer";
+
+export const USER_ROLE_LABELS: Record<UserRole, string> = {
+  president: "President",
+  pm: "Project Manager",
+  assistant_pm: "Assistant PM",
+  superintendent: "Superintendent",
+  assistant_superintendent: "Assistant Superintendent",
+  foreman: "Foreman",
+  safety_officer: "Safety Officer",
+};
+
+// Roles that can see the executive dashboard
+export const EXECUTIVE_ROLES: UserRole[] = ["president", "pm"];
 
 export interface TeamMember {
   id: string;
@@ -15,6 +35,29 @@ export interface TeamMember {
   role: UserRole;
   email: string;
   phone: string;
+}
+
+// ---- App User (auth-enabled) ----
+
+export interface AppUser {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: UserRole;
+  pinHash?: string;       // SHA-256 hash of the 4-digit PIN
+  pinSet: boolean;        // whether the user has set their PIN
+  assignedProjectIds: string[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserSession {
+  userId: string;
+  userName: string;
+  userRole: UserRole;
+  activeProjectId: string | null;
 }
 
 // ---- Project Setup ----

@@ -17,6 +17,7 @@ import type {
   UnitPriceLibrary,
   BidFeedbackReport,
   ScheduleBaseline,
+  AppUser,
 } from "./types";
 
 // ============================================================
@@ -71,6 +72,9 @@ class FieldOpsDB extends Dexie {
   // ── Autosave drafts ──
   dailyLogDrafts!: Table<DailyLogDraft, string>;
 
+  // ── Auth ──
+  users!: Table<AppUser, string>;
+
   constructor() {
     super("FieldOpsDB");
 
@@ -86,20 +90,15 @@ class FieldOpsDB extends Dexie {
 
     // Version 2: Structured Data Architecture
     this.version(2).stores({
-      // Original tables (unchanged indexes)
       projects: "id, name, client, updatedAt",
       dailyJHAs: "id, projectId, date, status, createdAt",
       dailyLogs: "id, projectId, date, superintendentId, createdAt",
       weeklyReports: "id, projectId, weekStart, formatType, createdAt",
       changeOrders: "id, projectId, status, createdAt",
       legalCorrespondence: "id, projectId, type, status, createdAt",
-
-      // Legal & Compliance tables
       delayEvents: "id, projectId, date, delayType, criticalPathImpacted, createdAt",
       safetyIncidents: "id, projectId, date, incidentType, oshaReportable, createdAt",
       noticeLogs: "id, projectId, noticeType, dateSent, responseDeadline, createdAt",
-
-      // Productivity & Analytics tables
       costCodes: "id, projectId, code, csiDivision, activity, [projectId+code]",
       productivityEntries: "id, projectId, date, costCodeId, activity, taktZone, [projectId+costCodeId+date]",
       productivityBaselines: "id, projectId, costCodeId, source, isActive, [projectId+costCodeId]",
@@ -128,6 +127,28 @@ class FieldOpsDB extends Dexie {
       bidFeedbackReports: "id, projectId, generatedDate",
       scheduleBaselines: "id, projectId, baselineDate, isActive",
       dailyLogDrafts: "id, projectId, date, savedAt",
+    });
+
+    // Version 4: Users & auth
+    this.version(4).stores({
+      projects: "id, name, client, updatedAt",
+      dailyJHAs: "id, projectId, date, status, createdAt",
+      dailyLogs: "id, projectId, date, superintendentId, createdAt",
+      weeklyReports: "id, projectId, weekStart, formatType, createdAt",
+      changeOrders: "id, projectId, status, createdAt",
+      legalCorrespondence: "id, projectId, type, status, createdAt",
+      delayEvents: "id, projectId, date, delayType, criticalPathImpacted, createdAt",
+      safetyIncidents: "id, projectId, date, incidentType, oshaReportable, createdAt",
+      noticeLogs: "id, projectId, noticeType, dateSent, responseDeadline, createdAt",
+      costCodes: "id, projectId, code, csiDivision, activity, [projectId+code]",
+      productivityEntries: "id, projectId, date, costCodeId, activity, taktZone, [projectId+costCodeId+date]",
+      productivityBaselines: "id, projectId, costCodeId, source, isActive, [projectId+costCodeId]",
+      productivityAnalytics: "id, projectId, costCodeId, periodType, periodStart, [projectId+costCodeId+periodType]",
+      unitPriceLibrary: "id, organizationId, csiDivision, activity, [organizationId+csiDivision]",
+      bidFeedbackReports: "id, projectId, generatedDate",
+      scheduleBaselines: "id, projectId, baselineDate, isActive",
+      dailyLogDrafts: "id, projectId, date, savedAt",
+      users: "id, email, role, isActive",
     });
   }
 }
@@ -297,4 +318,126 @@ export async function deleteDraft(
   date: string
 ): Promise<void> {
   await db.dailyLogDrafts.delete(getDraftId(projectId, date));
+}
+
+// ── Auth helpers ──
+
+export async function hashPin(pin: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pin + "fieldops-salt");
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+export async function getAllUsers(): Promise<AppUser[]> {
+  return db.users.filter((u) => u.isActive).toArray();
+}
+
+export async function getUserById(id: string): Promise<AppUser | undefined> {
+  return db.users.get(id);
+}
+
+export async function createUser(user: AppUser): Promise<void> {
+  await db.users.put(user);
+}
+
+export async function updateUser(
+  id: string,
+  updates: Partial<AppUser>
+): Promise<void> {
+  await db.users.update(id, { ...updates, updatedAt: new Date().toISOString() });
+}
+
+export async function verifyPin(
+  userId: string,
+  pin: string
+): Promise<boolean> {
+  const user = await db.users.get(userId);
+  if (!user || !user.pinHash) return false;
+  const hash = await hashPin(pin);
+  return hash === user.pinHash;
+}
+
+export async function setUserPin(
+  userId: string,
+  pin: string
+): Promise<void> {
+  const hash = await hashPin(pin);
+  await db.users.update(userId, {
+    pinHash: hash,
+    pinSet: true,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function getProjectsForUser(
+  userId: string
+): Promise<Project[]> {
+  const user = await db.users.get(userId);
+  if (!user) return [];
+  if (user.assignedProjectIds.length === 0) {
+    // If no specific assignments, return all projects (admin/president)
+    return db.projects.toArray();
+  }
+  return db.projects.filter((p) => user.assignedProjectIds.includes(p.id)).toArray();
+}
+
+export async function seedDefaultUsers(projectId: string): Promise<void> {
+  const existingUsers = await db.users.count();
+  if (existingUsers > 0) return;
+
+  const now = new Date().toISOString();
+  const defaultUsers: AppUser[] = [
+    {
+      id: "user-john",
+      name: "John Rutherford",
+      email: "john@blackstone.build",
+      phone: "205-994-8999",
+      role: "president",
+      pinSet: false,
+      assignedProjectIds: [],
+      isActive: true,
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: "user-mark",
+      name: "Mark Sullivan",
+      email: "mark@blackstone.build",
+      phone: "205-555-0201",
+      role: "superintendent",
+      pinSet: false,
+      assignedProjectIds: [projectId],
+      isActive: true,
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: "user-jake",
+      name: "Jake Mitchell",
+      email: "jake@blackstone.build",
+      phone: "205-555-0202",
+      role: "foreman",
+      pinSet: false,
+      assignedProjectIds: [projectId],
+      isActive: true,
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: "user-rachel",
+      name: "Rachel Kim",
+      email: "rachel@blackstone.build",
+      phone: "205-555-0203",
+      role: "safety_officer",
+      pinSet: false,
+      assignedProjectIds: [projectId],
+      isActive: true,
+      createdAt: now,
+      updatedAt: now,
+    },
+  ];
+
+  await db.users.bulkPut(defaultUsers);
 }

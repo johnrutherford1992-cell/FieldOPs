@@ -20,14 +20,19 @@ import {
   BookOpen,
   Link as LinkIcon,
   FileText,
+  LayoutDashboard,
+  ArrowLeftRight,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { db } from "@/lib/db";
-// Types used by db queries below
+import { EXECUTIVE_ROLES, USER_ROLE_LABELS } from "@/lib/types";
 
 export default function HomePage() {
-  const { activeProject, currentDate } = useAppStore();
+  const router = useRouter();
+  const { activeProject, currentDate, currentUser, logout } = useAppStore();
   const [jhaExists, setJhaExists] = useState(false);
   const [logExists, setLogExists] = useState(false);
   const [weeklyStats, setWeeklyStats] = useState<{
@@ -36,6 +41,17 @@ export default function HomePage() {
     issuesTracked: number;
   } | null>(null);
 
+  // Redirect if not logged in or no project
+  useEffect(() => {
+    if (!currentUser) {
+      router.replace("/login");
+      return;
+    }
+    if (!activeProject) {
+      router.replace("/select-project");
+    }
+  }, [currentUser, activeProject, router]);
+
   const today = new Date(currentDate + "T12:00:00");
   const formatted = today.toLocaleDateString("en-US", {
     weekday: "long",
@@ -43,6 +59,8 @@ export default function HomePage() {
     day: "numeric",
     year: "numeric",
   });
+
+  const isExecutive = currentUser && EXECUTIVE_ROLES.includes(currentUser.role);
 
   // Load today's JHA and Daily Log status
   useEffect(() => {
@@ -73,7 +91,6 @@ export default function HomePage() {
 
     const loadWeeklyStats = async () => {
       try {
-        // Calculate week start (Monday) and week end (Sunday)
         const currentDateObj = new Date(currentDate + "T12:00:00");
         const dayOfWeek = currentDateObj.getDay();
         const diff = currentDateObj.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
@@ -100,13 +117,10 @@ export default function HomePage() {
         let issuesTracked = 0;
 
         logs.forEach((log) => {
-          // Sum manpower
           log.manpower.forEach((entry) => {
             totalWorkers += entry.journeymanCount + entry.apprenticeCount + entry.foremanCount;
           });
-          // Count work performed entries
           workItems += log.workPerformed.length;
-          // Count conflicts
           issuesTracked += log.conflicts.length;
         });
 
@@ -119,13 +133,61 @@ export default function HomePage() {
     loadWeeklyStats();
   }, [activeProject, currentDate]);
 
+  const handleSwitchProject = () => {
+    router.push("/select-project");
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.replace("/login");
+  };
+
+  if (!currentUser || !activeProject) return null;
+
   return (
     <AppShell>
       <div className="screen">
         <Header showLogo />
 
+        {/* User bar */}
+        <div className="px-5 pt-3 pb-1 flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="flex-shrink-0 w-8 h-8 bg-onyx rounded-full flex items-center justify-center">
+              <span className="text-white font-heading font-bold text-xs">
+                {currentUser.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-onyx truncate">
+                {currentUser.name}
+              </p>
+              <p className="text-xs text-warm-gray">
+                {USER_ROLE_LABELS[currentUser.role]}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={handleSwitchProject}
+              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-warm-gray hover:text-onyx rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <ArrowLeftRight size={14} />
+              Switch
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-warm-gray hover:text-onyx rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <LogOut size={14} />
+            </button>
+          </div>
+        </div>
+
         {/* Welcome section */}
-        <div className="px-5 pt-5 pb-3">
+        <div className="px-5 pt-3 pb-3">
           <p className="text-warm-gray text-sm">{formatted}</p>
           <h1 className="font-heading text-[28px] font-medium mt-1 leading-tight">
             Good morning
@@ -133,85 +195,83 @@ export default function HomePage() {
         </div>
 
         {/* Active project card */}
-        {activeProject && (
-          <div className="px-5 pb-4">
-            <div className="bg-alabaster border border-gray-100 rounded-xl p-5">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-10 h-10 bg-onyx rounded-lg flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-white" />
+        <div className="px-5 pb-4">
+          <button
+            onClick={handleSwitchProject}
+            className="w-full bg-alabaster border border-gray-100 rounded-xl p-5 text-left active:scale-[0.98] transition-transform"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 bg-onyx rounded-lg flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h2 className="font-heading text-lg font-medium truncate">
+                  {activeProject.name}
+                </h2>
+                <div className="flex items-center gap-1.5 text-warm-gray text-sm mt-0.5">
+                  <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span className="truncate">{activeProject.address}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h2 className="font-heading text-lg font-medium truncate">
-                    {activeProject.name}
-                  </h2>
-                  <div className="flex items-center gap-1.5 text-warm-gray text-sm mt-0.5">
-                    <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="truncate">{activeProject.address}</span>
-                  </div>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-warm-gray">
-                    <span className="flex items-center gap-1">
-                      <Users className="w-3.5 h-3.5" />
-                      {activeProject.subcontractors.length} subs
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {activeProject.taktZones.length} zones
-                    </span>
-                  </div>
+                <div className="flex items-center gap-4 mt-2 text-sm text-warm-gray">
+                  <span className="flex items-center gap-1">
+                    <Users className="w-3.5 h-3.5" />
+                    {activeProject.subcontractors.length} subs
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5" />
+                    {activeProject.taktZones.length} zones
+                  </span>
                 </div>
+              </div>
+              <ArrowLeftRight size={16} className="text-warm-gray flex-shrink-0 mt-2" />
+            </div>
+          </button>
+        </div>
+
+        {/* Today's Status Row */}
+        <div className="px-5 pb-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-alabaster border border-gray-100 rounded-xl p-4 flex items-center gap-3">
+              <div className="flex-shrink-0">
+                {jhaExists ? (
+                  <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-white" />
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 bg-warm-gray rounded-full flex items-center justify-center opacity-30">
+                    <Clock className="w-5 h-5 text-onyx" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-warm-gray">Morning JHA</p>
+                <p className="text-sm font-heading font-medium text-onyx">
+                  {jhaExists ? "Complete" : "Not Started"}
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-alabaster border border-gray-100 rounded-xl p-4 flex items-center gap-3">
+              <div className="flex-shrink-0">
+                {logExists ? (
+                  <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-white" />
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 bg-warm-gray rounded-full flex items-center justify-center opacity-30">
+                    <Clock className="w-5 h-5 text-onyx" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-warm-gray">Daily Log</p>
+                <p className="text-sm font-heading font-medium text-onyx">
+                  {logExists ? "Complete" : "Not Started"}
+                </p>
               </div>
             </div>
           </div>
-        )}
-
-        {/* Today&apos;s Status Row */}
-        {activeProject && (
-          <div className="px-5 pb-4">
-            <div className="grid grid-cols-2 gap-3">
-              {/* Morning JHA Card */}
-              <div className="bg-alabaster border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  {jhaExists ? (
-                    <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center">
-                      <CheckCircle2 className="w-5 h-5 text-white" />
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 bg-warm-gray rounded-full flex items-center justify-center opacity-30">
-                      <Clock className="w-5 h-5 text-onyx" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-warm-gray">Morning JHA</p>
-                  <p className="text-sm font-heading font-medium text-onyx">
-                    {jhaExists ? "Complete" : "Not Started"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Daily Log Card */}
-              <div className="bg-alabaster border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  {logExists ? (
-                    <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center">
-                      <CheckCircle2 className="w-5 h-5 text-white" />
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 bg-warm-gray rounded-full flex items-center justify-center opacity-30">
-                      <Clock className="w-5 h-5 text-onyx" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-warm-gray">Daily Log</p>
-                  <p className="text-sm font-heading font-medium text-onyx">
-                    {logExists ? "Complete" : "Not Started"}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
 
         {/* This Week Quick Stats */}
         {weeklyStats && (
@@ -241,12 +301,24 @@ export default function HomePage() {
         </div>
 
         <div className="px-5 space-y-3">
+          {/* Executive Dashboard — only for PM/President */}
+          {isExecutive && (
+            <Link href="/dashboard" className="block no-underline">
+              <BigButton
+                label="Executive Dashboard"
+                sublabel="Portfolio overview, risk & completion"
+                icon={<LayoutDashboard className="w-6 h-6" />}
+                variant="dark"
+              />
+            </Link>
+          )}
+
           <Link href="/jha" className="block no-underline">
             <BigButton
               label="Morning JHA"
               sublabel="Select tasks & generate safety analysis"
               icon={<ShieldCheck className="w-6 h-6" />}
-              variant="dark"
+              variant={isExecutive ? undefined : "dark"}
             />
           </Link>
 
