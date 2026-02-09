@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import AppShell from "@/components/layout/AppShell";
 import Header from "@/components/layout/Header";
 import EmptyState from "@/components/ui/EmptyState";
@@ -17,7 +17,8 @@ import SafetyIncidentsScreen from "@/components/daily-log/SafetyIncidentsScreen"
 import PhotosScreen from "@/components/daily-log/PhotosScreen";
 import NotesScreen from "@/components/daily-log/NotesScreen";
 import { useAppStore } from "@/lib/store";
-import { db, generateId } from "@/lib/db";
+import { db, generateId, getDraftId, saveDraft, loadDraft, deleteDraft } from "@/lib/db";
+import type { DailyLogDraft } from "@/lib/db";
 import { deriveProductivityEntries } from "@/lib/productivity-engine";
 import { recomputeAnalytics } from "@/lib/analytics-engine";
 import { CSI_DIVISIONS } from "@/data/csi-divisions";
@@ -56,6 +57,7 @@ import {
   HeartPulse,
   Camera,
   Pencil,
+  Save,
 } from "lucide-react";
 
 // Map screen IDs to their icons
@@ -74,6 +76,14 @@ const SCREEN_ICONS: Record<DailyLogScreenId, React.ReactNode> = {
   notes: <Pencil size={18} />,
 };
 
+const DEFAULT_WEATHER: DailyLogWeather = {
+  conditions: "Clear",
+  temperature: 72,
+  impact: "full_day",
+};
+
+const AUTOSAVE_DEBOUNCE_MS = 2000;
+
 export default function DailyLogPage() {
   const { activeProject, currentDate } = useAppStore();
 
@@ -83,13 +93,18 @@ export default function DailyLogPage() {
   const [isComplete, setIsComplete] = useState(false);
   const [currentScreen, setCurrentScreen] = useState<DailyLogScreenId>("weather");
 
-  // ---- All 10 screen data states ----
+  // Autosave state
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
+  const [isAutosaving, setIsAutosaving] = useState(false);
+  const [hasDraft, setHasDraft] = useState(false);
+  const [draftChecked, setDraftChecked] = useState(false);
+  const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Track whether we've loaded state at least once (to prevent autosave before initial load)
+  const initializedRef = useRef(false);
+
+  // ---- All 12 screen data states ----
   // Screen 1: Weather
-  const [weather, setWeather] = useState<DailyLogWeather>({
-    conditions: "Clear",
-    temperature: 72,
-    impact: "full_day",
-  });
+  const [weather, setWeather] = useState<DailyLogWeather>(DEFAULT_WEATHER);
 
   // Screen 2: Manpower
   const [manpower, setManpower] = useState<ManpowerEntry[]>([]);
@@ -122,9 +137,114 @@ export default function DailyLogPage() {
   // Screen 11: Photos
   const [photos, setPhotos] = useState<PhotoEntry[]>([]);
 
-  // Screen 10: Notes
+  // Screen 12: Notes
   const [notes, setNotes] = useState("");
   const [tomorrowPlan, setTomorrowPlan] = useState<string[]>([]);
+
+  // ---- Check for existing draft on mount ----
+  useEffect(() => {
+    if (!activeProject || draftChecked) return;
+
+    loadDraft(activeProject.id, currentDate).then((draft) => {
+      if (draft) {
+        setHasDraft(true);
+      }
+      setDraftChecked(true);
+    }).catch(() => {
+      setDraftChecked(true);
+    });
+  }, [activeProject, currentDate, draftChecked]);
+
+  // ---- Restore draft ----
+  const restoreFromDraft = useCallback(async () => {
+    if (!activeProject) return;
+    const draft = await loadDraft(activeProject.id, currentDate);
+    if (!draft) return;
+
+    setWeather(draft.weather);
+    setManpower(draft.manpower);
+    setEquipment(draft.equipment);
+    setWorkPerformed(draft.workPerformed);
+    setRFIs(draft.rfis);
+    setSubmittals(draft.submittals);
+    setInspections(draft.inspections);
+    setChanges(draft.changes);
+    setConflicts(draft.conflicts);
+    setDelayEvents(draft.delayEvents ?? []);
+    setSafetyIncidents(draft.safetyIncidents ?? []);
+    setPhotos(draft.photos);
+    setNotes(draft.notes);
+    setTomorrowPlan(draft.tomorrowPlan);
+    setCurrentScreen(draft.currentScreen as DailyLogScreenId);
+    setLastSavedAt(draft.savedAt);
+    setIsCreating(true);
+    setHasDraft(false);
+    // Mark as initialized so autosave can start
+    initializedRef.current = true;
+  }, [activeProject, currentDate]);
+
+  // ---- Autosave logic ----
+  const performAutosave = useCallback(async () => {
+    if (!activeProject || !isCreating || isComplete) return;
+
+    setIsAutosaving(true);
+    try {
+      const now = new Date().toISOString();
+      const draft: DailyLogDraft = {
+        id: getDraftId(activeProject.id, currentDate),
+        projectId: activeProject.id,
+        date: currentDate,
+        currentScreen,
+        weather,
+        manpower,
+        equipment,
+        workPerformed,
+        rfis,
+        submittals,
+        inspections,
+        changes,
+        conflicts,
+        delayEvents: delayEvents.length > 0 ? delayEvents : undefined,
+        safetyIncidents: safetyIncidents.length > 0 ? safetyIncidents : undefined,
+        photos,
+        notes,
+        tomorrowPlan,
+        savedAt: now,
+      };
+      await saveDraft(draft);
+      setLastSavedAt(now);
+    } catch (err) {
+      console.error("Autosave failed:", err);
+    } finally {
+      setIsAutosaving(false);
+    }
+  }, [
+    activeProject, currentDate, isCreating, isComplete, currentScreen,
+    weather, manpower, equipment, workPerformed, rfis, submittals,
+    inspections, changes, conflicts, delayEvents, safetyIncidents,
+    photos, notes, tomorrowPlan,
+  ]);
+
+  // Debounced autosave — fires when any data changes
+  useEffect(() => {
+    if (!isCreating || isComplete || !initializedRef.current) return;
+
+    if (autosaveTimerRef.current) {
+      clearTimeout(autosaveTimerRef.current);
+    }
+
+    autosaveTimerRef.current = setTimeout(() => {
+      performAutosave();
+    }, AUTOSAVE_DEBOUNCE_MS);
+
+    return () => {
+      if (autosaveTimerRef.current) {
+        clearTimeout(autosaveTimerRef.current);
+      }
+    };
+  }, [
+    isCreating, isComplete, performAutosave,
+  ]);
 
   // ---- Navigation helpers ----
   const screenIndex = DAILY_LOG_SCREENS.findIndex((s) => s.id === currentScreen);
@@ -187,7 +307,7 @@ export default function DailyLogPage() {
         case "photos":
           return photos.length > 0 ? `${photos.length}` : undefined;
         case "notes":
-          return notes.length > 0 || tomorrowPlan.length > 0 ? "✓" : undefined;
+          return notes.length > 0 || tomorrowPlan.length > 0 ? "\u2713" : undefined;
         default:
           return undefined;
       }
@@ -226,6 +346,9 @@ export default function DailyLogPage() {
 
       await db.dailyLogs.put(dailyLog);
 
+      // Clean up draft after successful save
+      await deleteDraft(activeProject.id, currentDate).catch(() => {});
+
       // Auto-derive productivity entries and recompute analytics
       try {
         await deriveProductivityEntries(dailyLog, activeProject.id);
@@ -244,12 +367,19 @@ export default function DailyLogPage() {
     }
   };
 
+  // ---- Start new log (mark initialized for autosave) ----
+  const handleStartLog = useCallback((screen?: DailyLogScreenId) => {
+    setIsCreating(true);
+    if (screen) setCurrentScreen(screen);
+    initializedRef.current = true;
+  }, []);
+
   // ---- Reset all state ----
   const handleReset = () => {
     setIsCreating(false);
     setIsComplete(false);
     setCurrentScreen("weather");
-    setWeather({ conditions: "Clear", temperature: 72, impact: "full_day" });
+    setWeather(DEFAULT_WEATHER);
     setManpower([]);
     setEquipment([]);
     setWorkPerformed([]);
@@ -263,6 +393,18 @@ export default function DailyLogPage() {
     setPhotos([]);
     setNotes("");
     setTomorrowPlan([]);
+    setLastSavedAt(null);
+    initializedRef.current = false;
+  };
+
+  // ---- Format autosave time ----
+  const formatSavedTime = (isoString: string) => {
+    try {
+      const date = new Date(isoString);
+      return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    } catch {
+      return "";
+    }
   };
 
   // ============================================================
@@ -279,8 +421,29 @@ export default function DailyLogPage() {
           />
 
           <div className="px-5 pt-6">
+            {/* Resume draft banner */}
+            {hasDraft && (
+              <button
+                onClick={restoreFromDraft}
+                className="w-full mb-4 flex items-center gap-3 px-4 py-4 bg-accent-amber/10 border border-accent-amber/30 rounded-xl text-left active:scale-[0.98] transition-transform"
+              >
+                <div className="flex-shrink-0 w-10 h-10 bg-accent-amber/20 rounded-full flex items-center justify-center">
+                  <Save size={20} className="text-amber-700" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-heading font-semibold text-field-base text-onyx">
+                    Resume Saved Draft
+                  </p>
+                  <p className="text-field-sm text-warm-gray mt-0.5">
+                    You have an unsaved log for today. Tap to continue where you left off.
+                  </p>
+                </div>
+                <ChevronRight size={20} className="flex-shrink-0 text-warm-gray" />
+              </button>
+            )}
+
             <button
-              onClick={() => setIsCreating(true)}
+              onClick={() => handleStartLog()}
               className="btn-primary"
             >
               <ClipboardList className="w-5 h-5" />
@@ -295,10 +458,7 @@ export default function DailyLogPage() {
               {DAILY_LOG_SCREENS.map((screen) => (
                 <button
                   key={screen.id}
-                  onClick={() => {
-                    setIsCreating(true);
-                    setCurrentScreen(screen.id);
-                  }}
+                  onClick={() => handleStartLog(screen.id)}
                   className="flex items-center gap-2 px-4 py-3 bg-alabaster rounded-lg text-left text-sm font-medium text-onyx active:scale-[0.98] transition-transform"
                 >
                   {SCREEN_ICONS[screen.id]}
@@ -466,6 +626,25 @@ export default function DailyLogPage() {
               );
             })}
           </div>
+
+          {/* Autosave indicator */}
+          {(lastSavedAt || isAutosaving) && (
+            <div className="flex items-center justify-end gap-1.5 mt-1">
+              {isAutosaving ? (
+                <>
+                  <Loader2 size={12} className="text-warm-gray animate-spin" />
+                  <span className="text-xs text-warm-gray">Saving...</span>
+                </>
+              ) : lastSavedAt ? (
+                <>
+                  <Save size={12} className="text-accent-green" />
+                  <span className="text-xs text-warm-gray">
+                    Autosaved at {formatSavedTime(lastSavedAt)}
+                  </span>
+                </>
+              ) : null}
+            </div>
+          )}
         </div>
 
         {/* Screen content */}
@@ -574,7 +753,7 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 10: Notes */}
+          {/* Screen 12: Notes */}
           {currentScreen === "notes" && (
             <NotesScreen
               notes={notes}

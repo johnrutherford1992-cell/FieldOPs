@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   Plus,
   X,
@@ -41,6 +41,21 @@ interface ModalState {
   notes: string;
 }
 
+const INITIAL_MODAL: ModalState = {
+  isOpen: false,
+  step: "division",
+  selectedDivision: null,
+  selectedActivity: null,
+  selectedZone: null,
+  selectedStatus: null,
+  quantity: undefined,
+  unitOfMeasure: undefined,
+  crewSize: undefined,
+  crewHoursWorked: undefined,
+  percentComplete: undefined,
+  notes: "",
+};
+
 const statusConfig: Record<
   WorkStatus,
   { label: string; color: string; bgColor: string }
@@ -62,131 +77,164 @@ const statusConfig: Record<
   },
 };
 
+const UNIT_OPTIONS = ["SF", "LF", "CY", "EA", "TON", "LS"] as const;
+
 export default function WorkPerformedScreen({
   entries,
   onEntriesChange,
   taktZones,
 }: WorkPerformedScreenProps) {
-  const [modal, setModal] = useState<ModalState>({
-    isOpen: false,
-    step: "division",
-    selectedDivision: null,
-    selectedActivity: null,
-    selectedZone: null,
-    selectedStatus: null,
-    notes: "",
-  });
+  const [modal, setModal] = useState<ModalState>(INITIAL_MODAL);
 
-  // Group takt zones by floor for display
-  const zonesByFloor = taktZones.reduce(
-    (acc, zone) => {
-      if (!acc[zone.floor]) {
-        acc[zone.floor] = [];
-      }
-      acc[zone.floor].push(zone);
-      return acc;
-    },
-    {} as Record<string, TaktZone[]>
+  // Memoize zone grouping — only recompute when taktZones changes
+  const zonesByFloor = useMemo(
+    () =>
+      taktZones.reduce(
+        (acc, zone) => {
+          if (!acc[zone.floor]) {
+            acc[zone.floor] = [];
+          }
+          acc[zone.floor].push(zone);
+          return acc;
+        },
+        {} as Record<string, TaktZone[]>
+      ),
+    [taktZones]
   );
 
-  const openModal = () => {
-    setModal({
-      isOpen: true,
-      step: "division",
-      selectedDivision: null,
-      selectedActivity: null,
-      selectedZone: null,
-      selectedStatus: null,
-      quantity: undefined,
-      unitOfMeasure: undefined,
-      crewSize: undefined,
-      crewHoursWorked: undefined,
-      percentComplete: undefined,
-      notes: "",
-    });
-  };
+  // Use functional updater pattern throughout to avoid stale closures
+  const openModal = useCallback(() => {
+    setModal({ ...INITIAL_MODAL, isOpen: true });
+  }, []);
 
-  const closeModal = () => {
-    setModal({
-      isOpen: false,
-      step: "division",
-      selectedDivision: null,
-      selectedActivity: null,
-      selectedZone: null,
-      selectedStatus: null,
-      quantity: undefined,
-      unitOfMeasure: undefined,
-      crewSize: undefined,
-      crewHoursWorked: undefined,
-      percentComplete: undefined,
-      notes: "",
-    });
-  };
+  const closeModal = useCallback(() => {
+    setModal(INITIAL_MODAL);
+  }, []);
 
-  const handleDivisionSelect = (division: CSIDivision) => {
-    setModal({
-      ...modal,
+  const handleDivisionSelect = useCallback((division: CSIDivision) => {
+    setModal((prev) => ({
+      ...prev,
       step: "activity",
       selectedDivision: division,
-    });
-  };
+    }));
+  }, []);
 
-  const handleActivitySelect = (activity: CSIActivity) => {
-    setModal({
-      ...modal,
+  const handleActivitySelect = useCallback((activity: CSIActivity) => {
+    setModal((prev) => ({
+      ...prev,
       step: "zone",
       selectedActivity: activity,
-    });
-  };
+    }));
+  }, []);
 
-  const handleZoneSelect = (zone: TaktZone) => {
-    setModal({
-      ...modal,
+  const handleZoneSelect = useCallback((zone: TaktZone) => {
+    setModal((prev) => ({
+      ...prev,
       step: "status",
       selectedZone: zone,
-    });
-  };
+    }));
+  }, []);
 
-  const handleStatusSelect = (status: WorkStatus) => {
-    setModal({
-      ...modal,
+  const handleStatusSelect = useCallback((status: WorkStatus) => {
+    setModal((prev) => ({
+      ...prev,
       step: "productivity",
       selectedStatus: status,
+    }));
+  }, []);
+
+  const handleAddEntry = useCallback(() => {
+    setModal((prev) => {
+      if (
+        !prev.selectedDivision ||
+        !prev.selectedActivity ||
+        !prev.selectedZone ||
+        !prev.selectedStatus
+      ) {
+        return prev;
+      }
+
+      const newEntry: WorkPerformedEntry = {
+        csiDivision: prev.selectedDivision.code,
+        activity: prev.selectedActivity.name,
+        taktZone: prev.selectedZone.zoneCode,
+        status: prev.selectedStatus,
+        ...(prev.quantity != null && { quantity: prev.quantity }),
+        ...(prev.unitOfMeasure && { unitOfMeasure: prev.unitOfMeasure }),
+        ...(prev.crewSize != null && { crewSize: prev.crewSize }),
+        ...(prev.crewHoursWorked != null && { crewHoursWorked: prev.crewHoursWorked }),
+        ...(prev.percentComplete != null && { percentComplete: prev.percentComplete }),
+        ...(prev.notes && { notes: prev.notes }),
+      };
+
+      // Schedule the entries update outside of the state setter
+      // Use setTimeout(0) to batch outside React's state update
+      setTimeout(() => onEntriesChange([...entries, newEntry]), 0);
+
+      return INITIAL_MODAL;
     });
-  };
+  }, [entries, onEntriesChange]);
 
-  const handleAddEntry = () => {
-    if (
-      !modal.selectedDivision ||
-      !modal.selectedActivity ||
-      !modal.selectedZone ||
-      !modal.selectedStatus
-    ) {
-      return;
-    }
+  const handleRemoveEntry = useCallback(
+    (index: number) => {
+      onEntriesChange(entries.filter((_, i) => i !== index));
+    },
+    [entries, onEntriesChange]
+  );
 
-    const newEntry: WorkPerformedEntry = {
-      csiDivision: modal.selectedDivision.code,
-      activity: modal.selectedActivity.name,
-      taktZone: modal.selectedZone.zoneCode,
-      status: modal.selectedStatus,
-      ...(modal.notes && { notes: modal.notes }),
-    };
+  const handleNotesChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value;
+      setModal((prev) => ({ ...prev, notes: value }));
+    },
+    []
+  );
 
-    onEntriesChange([...entries, newEntry]);
-    closeModal();
-  };
+  const goToStep = useCallback((step: ModalStep) => {
+    setModal((prev) => ({ ...prev, step }));
+  }, []);
 
-  const handleRemoveEntry = (index: number) => {
-    onEntriesChange(entries.filter((_, i) => i !== index));
-  };
+  const handleQuantityChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value === "" ? undefined : parseFloat(e.target.value);
+      setModal((prev) => ({ ...prev, quantity: val }));
+    },
+    []
+  );
 
-  const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setModal({
-      ...modal,
-      notes: e.target.value,
-    });
-  };
+  const handleUnitSelect = useCallback((unit: string) => {
+    setModal((prev) => ({
+      ...prev,
+      unitOfMeasure: prev.unitOfMeasure === unit ? undefined : unit,
+    }));
+  }, []);
+
+  const handleCrewSizeChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
+      setModal((prev) => ({ ...prev, crewSize: val }));
+    },
+    []
+  );
+
+  const handleCrewHoursChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value === "" ? undefined : parseFloat(e.target.value);
+      setModal((prev) => ({ ...prev, crewHoursWorked: val }));
+    },
+    []
+  );
+
+  const handlePercentChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
+      setModal((prev) => ({
+        ...prev,
+        percentComplete: val != null ? Math.max(0, Math.min(100, val)) : undefined,
+      }));
+    },
+    []
+  );
 
   return (
     <div className="min-h-screen bg-alabaster pb-safe-bottom">
@@ -228,65 +276,12 @@ export default function WorkPerformedScreen({
             </div>
           ) : (
             entries.map((entry, index) => (
-              <div
+              <WorkEntryCard
                 key={index}
-                className="rounded-card bg-white border border-gray-100 p-4 animate-fade-in"
-              >
-                {/* Header row: Division badge, Activity, Zone code */}
-                <div className="flex items-start gap-3 mb-2">
-                  {/* CSI Division Badge */}
-                  <div className="flex-shrink-0 w-10 h-10 bg-onyx rounded flex items-center justify-center">
-                    <span className="text-white font-heading font-semibold text-field-sm">
-                      {entry.csiDivision}
-                    </span>
-                  </div>
-
-                  {/* Activity and Zone info */}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-heading font-semibold text-field-base text-onyx truncate">
-                      {entry.activity}
-                    </p>
-                    <div className="flex items-center gap-1 mt-1 text-field-sm text-warm-gray">
-                      <MapPin size={14} className="flex-shrink-0" />
-                      <span className="truncate">{entry.taktZone}</span>
-                    </div>
-                  </div>
-
-                  {/* Remove button */}
-                  <button
-                    onClick={() => handleRemoveEntry(index)}
-                    className="flex-shrink-0 w-touch-min h-touch-min rounded-full flex items-center justify-center text-warm-gray hover:bg-alabaster transition-colors"
-                    aria-label="Remove entry"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-
-                {/* Status badge */}
-                <div className="flex items-center gap-2 mb-3">
-                  <div
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${
-                      statusConfig[entry.status].bgColor
-                    } ${statusConfig[entry.status].color}`}
-                  >
-                    {entry.status === "completed" && (
-                      <Check size={14} className="flex-shrink-0" />
-                    )}
-                    <span className="text-field-sm font-semibold font-body">
-                      {statusConfig[entry.status].label}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Notes if present */}
-                {entry.notes && (
-                  <div className="bg-alabaster rounded px-3 py-2 mt-3">
-                    <p className="text-field-sm text-onyx font-body break-words">
-                      {entry.notes}
-                    </p>
-                  </div>
-                )}
-              </div>
+                entry={entry}
+                index={index}
+                onRemove={handleRemoveEntry}
+              />
             ))
           )}
         </div>
@@ -338,7 +333,7 @@ export default function WorkPerformedScreen({
             {modal.step === "activity" && modal.selectedDivision && (
               <>
                 <button
-                  onClick={() => setModal({ ...modal, step: "division" })}
+                  onClick={() => goToStep("division")}
                   className="flex items-center gap-2 text-onyx font-body font-semibold text-field-sm mb-4 p-2 -mx-2 hover:bg-gray-100 rounded"
                 >
                   <ChevronRight size={18} className="rotate-180" />
@@ -386,7 +381,7 @@ export default function WorkPerformedScreen({
             {modal.step === "zone" && modal.selectedActivity && (
               <>
                 <button
-                  onClick={() => setModal({ ...modal, step: "activity" })}
+                  onClick={() => goToStep("activity")}
                   className="flex items-center gap-2 text-onyx font-body font-semibold text-field-sm mb-4 p-2 -mx-2 hover:bg-gray-100 rounded"
                 >
                   <ChevronRight size={18} className="rotate-180" />
@@ -442,7 +437,7 @@ export default function WorkPerformedScreen({
             {modal.step === "status" && modal.selectedZone && (
               <>
                 <button
-                  onClick={() => setModal({ ...modal, step: "zone" })}
+                  onClick={() => goToStep("zone")}
                   className="flex items-center gap-2 text-onyx font-body font-semibold text-field-sm mb-4 p-2 -mx-2 hover:bg-gray-100 rounded"
                 >
                   <ChevronRight size={18} className="rotate-180" />
@@ -475,7 +470,7 @@ export default function WorkPerformedScreen({
                   ))}
                 </div>
                 <button
-                  onClick={() => setModal({ ...modal, step: "productivity" })}
+                  onClick={() => goToStep("productivity")}
                   className="w-full min-h-touch-target rounded-card bg-onyx text-white transition-all duration-200 px-4 py-3 hover:bg-slate active:scale-[0.98] font-body font-semibold text-field-base mb-3"
                 >
                   Continue
@@ -493,7 +488,7 @@ export default function WorkPerformedScreen({
             {modal.step === "productivity" && modal.selectedStatus && (
               <>
                 <button
-                  onClick={() => setModal({ ...modal, step: "status" })}
+                  onClick={() => goToStep("status")}
                   className="flex items-center gap-2 text-onyx font-body font-semibold text-field-sm mb-4 p-2 -mx-2 hover:bg-gray-100 rounded"
                 >
                   <ChevronRight size={18} className="rotate-180" />
@@ -515,11 +510,7 @@ export default function WorkPerformedScreen({
                     <input
                       type="number"
                       value={modal.quantity ?? ""}
-                      onChange={(e) => {
-                        const val =
-                          e.target.value === "" ? undefined : parseFloat(e.target.value);
-                        setModal({ ...modal, quantity: val });
-                      }}
+                      onChange={handleQuantityChange}
                       placeholder="Enter quantity"
                       className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
                       min="0"
@@ -533,16 +524,10 @@ export default function WorkPerformedScreen({
                       Unit of Measure
                     </label>
                     <div className="grid grid-cols-3 gap-2">
-                      {["SF", "LF", "CY", "EA", "TON", "LS"].map((unit) => (
+                      {UNIT_OPTIONS.map((unit) => (
                         <button
                           key={unit}
-                          onClick={() => {
-                            setModal({
-                              ...modal,
-                              unitOfMeasure:
-                                modal.unitOfMeasure === unit ? undefined : unit,
-                            });
-                          }}
+                          onClick={() => handleUnitSelect(unit)}
                           className={`py-2 px-3 rounded-card text-field-sm font-medium transition-all ${
                             modal.unitOfMeasure === unit
                               ? "bg-onyx text-white"
@@ -563,11 +548,7 @@ export default function WorkPerformedScreen({
                     <input
                       type="number"
                       value={modal.crewSize ?? ""}
-                      onChange={(e) => {
-                        const val =
-                          e.target.value === "" ? undefined : parseInt(e.target.value, 10);
-                        setModal({ ...modal, crewSize: val });
-                      }}
+                      onChange={handleCrewSizeChange}
                       placeholder="Number of workers"
                       className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
                       min="0"
@@ -582,11 +563,7 @@ export default function WorkPerformedScreen({
                     <input
                       type="number"
                       value={modal.crewHoursWorked ?? ""}
-                      onChange={(e) => {
-                        const val =
-                          e.target.value === "" ? undefined : parseFloat(e.target.value);
-                        setModal({ ...modal, crewHoursWorked: val });
-                      }}
+                      onChange={handleCrewHoursChange}
                       placeholder="Total crew hours"
                       className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
                       min="0"
@@ -602,11 +579,7 @@ export default function WorkPerformedScreen({
                     <input
                       type="number"
                       value={modal.percentComplete ?? ""}
-                      onChange={(e) => {
-                        const val =
-                          e.target.value === "" ? undefined : parseInt(e.target.value, 10);
-                        setModal({ ...modal, percentComplete: Math.max(0, Math.min(100, val ?? 0)) });
-                      }}
+                      onChange={handlePercentChange}
                       placeholder="0-100"
                       className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
                       min="0"
@@ -616,7 +589,7 @@ export default function WorkPerformedScreen({
                 </div>
 
                 <button
-                  onClick={() => setModal({ ...modal, step: "notes" })}
+                  onClick={() => goToStep("notes")}
                   className="w-full min-h-touch-target rounded-card bg-onyx text-white transition-all duration-200 px-4 py-3 hover:bg-slate active:scale-[0.98] font-body font-semibold text-field-base mb-3"
                 >
                   Continue
@@ -634,7 +607,7 @@ export default function WorkPerformedScreen({
             {modal.step === "notes" && modal.selectedStatus && (
               <>
                 <button
-                  onClick={() => setModal({ ...modal, step: "productivity" })}
+                  onClick={() => goToStep("productivity")}
                   className="flex items-center gap-2 text-onyx font-body font-semibold text-field-sm mb-4 p-2 -mx-2 hover:bg-gray-100 rounded"
                 >
                   <ChevronRight size={18} className="rotate-180" />
@@ -719,3 +692,73 @@ export default function WorkPerformedScreen({
     </div>
   );
 }
+
+// Extracted entry card to prevent re-rendering all cards on modal state changes
+const WorkEntryCard = React.memo(function WorkEntryCard({
+  entry,
+  index,
+  onRemove,
+}: {
+  entry: WorkPerformedEntry;
+  index: number;
+  onRemove: (index: number) => void;
+}) {
+  return (
+    <div className="rounded-card bg-white border border-gray-100 p-4">
+      {/* Header row: Division badge, Activity, Zone code */}
+      <div className="flex items-start gap-3 mb-2">
+        {/* CSI Division Badge */}
+        <div className="flex-shrink-0 w-10 h-10 bg-onyx rounded flex items-center justify-center">
+          <span className="text-white font-heading font-semibold text-field-sm">
+            {entry.csiDivision}
+          </span>
+        </div>
+
+        {/* Activity and Zone info */}
+        <div className="flex-1 min-w-0">
+          <p className="font-heading font-semibold text-field-base text-onyx truncate">
+            {entry.activity}
+          </p>
+          <div className="flex items-center gap-1 mt-1 text-field-sm text-warm-gray">
+            <MapPin size={14} className="flex-shrink-0" />
+            <span className="truncate">{entry.taktZone}</span>
+          </div>
+        </div>
+
+        {/* Remove button */}
+        <button
+          onClick={() => onRemove(index)}
+          className="flex-shrink-0 w-touch-min h-touch-min rounded-full flex items-center justify-center text-warm-gray hover:bg-alabaster transition-colors"
+          aria-label="Remove entry"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* Status badge */}
+      <div className="flex items-center gap-2 mb-3">
+        <div
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${
+            statusConfig[entry.status].bgColor
+          } ${statusConfig[entry.status].color}`}
+        >
+          {entry.status === "completed" && (
+            <Check size={14} className="flex-shrink-0" />
+          )}
+          <span className="text-field-sm font-semibold font-body">
+            {statusConfig[entry.status].label}
+          </span>
+        </div>
+      </div>
+
+      {/* Notes if present */}
+      {entry.notes && (
+        <div className="bg-alabaster rounded px-3 py-2 mt-3">
+          <p className="text-field-sm text-onyx font-body break-words">
+            {entry.notes}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+});

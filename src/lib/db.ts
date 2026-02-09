@@ -24,6 +24,29 @@ import type {
 // Version 2: Structured Data Architecture
 // ============================================================
 
+// Draft shape stored in dailyLogDrafts table
+export interface DailyLogDraft {
+  id: string; // "{projectId}:{date}"
+  projectId: string;
+  date: string;
+  currentScreen: string;
+  weather: DailyLog["weather"];
+  manpower: DailyLog["manpower"];
+  equipment: DailyLog["equipment"];
+  workPerformed: DailyLog["workPerformed"];
+  rfis: DailyLog["rfis"];
+  submittals: DailyLog["submittals"];
+  inspections: DailyLog["inspections"];
+  changes: DailyLog["changes"];
+  conflicts: DailyLog["conflicts"];
+  delayEvents?: DailyLog["delayEvents"];
+  safetyIncidents?: DailyLog["safetyIncidents"];
+  photos: DailyLog["photos"];
+  notes: string;
+  tomorrowPlan: string[];
+  savedAt: string; // ISO timestamp
+}
+
 class FieldOpsDB extends Dexie {
   // ── Original tables ──
   projects!: Table<Project, string>;
@@ -44,6 +67,9 @@ class FieldOpsDB extends Dexie {
   unitPriceLibrary!: Table<UnitPriceLibrary, string>;
   bidFeedbackReports!: Table<BidFeedbackReport, string>;
   scheduleBaselines!: Table<ScheduleBaseline, string>;
+
+  // ── Autosave drafts ──
+  dailyLogDrafts!: Table<DailyLogDraft, string>;
 
   constructor() {
     super("FieldOpsDB");
@@ -81,6 +107,27 @@ class FieldOpsDB extends Dexie {
       unitPriceLibrary: "id, organizationId, csiDivision, activity, [organizationId+csiDivision]",
       bidFeedbackReports: "id, projectId, generatedDate",
       scheduleBaselines: "id, projectId, baselineDate, isActive",
+    });
+
+    // Version 3: Autosave drafts
+    this.version(3).stores({
+      projects: "id, name, client, updatedAt",
+      dailyJHAs: "id, projectId, date, status, createdAt",
+      dailyLogs: "id, projectId, date, superintendentId, createdAt",
+      weeklyReports: "id, projectId, weekStart, formatType, createdAt",
+      changeOrders: "id, projectId, status, createdAt",
+      legalCorrespondence: "id, projectId, type, status, createdAt",
+      delayEvents: "id, projectId, date, delayType, criticalPathImpacted, createdAt",
+      safetyIncidents: "id, projectId, date, incidentType, oshaReportable, createdAt",
+      noticeLogs: "id, projectId, noticeType, dateSent, responseDeadline, createdAt",
+      costCodes: "id, projectId, code, csiDivision, activity, [projectId+code]",
+      productivityEntries: "id, projectId, date, costCodeId, activity, taktZone, [projectId+costCodeId+date]",
+      productivityBaselines: "id, projectId, costCodeId, source, isActive, [projectId+costCodeId]",
+      productivityAnalytics: "id, projectId, costCodeId, periodType, periodStart, [projectId+costCodeId+periodType]",
+      unitPriceLibrary: "id, organizationId, csiDivision, activity, [organizationId+csiDivision]",
+      bidFeedbackReports: "id, projectId, generatedDate",
+      scheduleBaselines: "id, projectId, baselineDate, isActive",
+      dailyLogDrafts: "id, projectId, date, savedAt",
     });
   }
 }
@@ -226,4 +273,28 @@ export async function getLatestAnalytics(
     .reverse()
     .sortBy("periodEnd")
     .then((results) => results[0]);
+}
+
+// ── Autosave draft helpers ──
+
+export function getDraftId(projectId: string, date: string): string {
+  return `${projectId}:${date}`;
+}
+
+export async function saveDraft(draft: DailyLogDraft): Promise<void> {
+  await db.dailyLogDrafts.put(draft);
+}
+
+export async function loadDraft(
+  projectId: string,
+  date: string
+): Promise<DailyLogDraft | undefined> {
+  return db.dailyLogDrafts.get(getDraftId(projectId, date));
+}
+
+export async function deleteDraft(
+  projectId: string,
+  date: string
+): Promise<void> {
+  await db.dailyLogDrafts.delete(getDraftId(projectId, date));
 }
