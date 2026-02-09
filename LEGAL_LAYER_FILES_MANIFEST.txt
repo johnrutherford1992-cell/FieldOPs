@@ -1,0 +1,327 @@
+================================================================================
+FIELDOPS LEGAL DISPUTE PROTECTION LAYER — FILES MANIFEST
+================================================================================
+
+CREATED FILES:
+==============
+
+1. /src/lib/types-legal-enhanced.ts (30KB)
+   - EnhancedDailyLogWeather: humidity, windSpeed, precipitationAmount, visibility
+   - EnhancedManpowerEntry: hoursWorked, overtimeHours, crewComposition
+   - EnhancedWorkPerformedEntry: quantity, unitOfMeasure, crewHoursWorked (MEASURED MILE)
+   - EnhancedChangeEntry: changeType, estimatedCostImpact, contractClause, noticeDate
+   - EnhancedConflictEntry: estimatedCostImpact, witnessNames, resolutionStatus
+   - EnhancedPhotoEntry: gpsLatitude, gpsLongitude, weatherAtCapture, witnessPresent
+   - DelayEvent (NEW): delayType, causeCategory, criticalPathImpacted, costImpact
+   - NoticeLog (NEW): noticeType, responseDeadline, responseReceived, deliveryMethod
+   - SafetyIncident (NEW): incidentType, oshaReportable, oshaFormCompleted
+   - DailyLogTimestamp (NEW): createdAt, editHistory (with timestamp, editor, reason)
+   - EnhancedDailyLog: Master entity integrating all fields
+
+   LEGAL COMMENTS: Each field includes detailed explanation of why it matters for litigation
+
+2. /src/lib/db-legal-enhanced.ts (16KB)
+   - Dexie v2 schema with 4 new tables:
+     * delayEvents: indexed by projectId, date, delayType, criticalPathImpacted
+     * noticeLogs: indexed by projectId, noticeType, dateSent, responseDeadline
+     * safetyIncidents: indexed by projectId, date, oshaReportable
+     * enhancedDailyLogs: indexed by projectId, timestamps.createdAt
+
+   QUERIES INCLUDED:
+   - getDelayEventsByDateRange()
+   - getExcusableCompensableDelays()
+   - getInexcusableDelays()
+   - getCriticalPathDelays()
+   - getTotalCriticalPathDelayDays()
+   - getUnresponseNotices()
+   - getOSHAReportableIncidents()
+   - getDailyLogsCreatedSameDay() [LITIGATION EVIDENCE QUALITY]
+   - getDailyLogsWithEdits()
+   - getCausationChain() [CHANGE → CONFLICT → DELAY → DAMAGES]
+   - getProjectLitigationSummary()
+
+3. /LEGAL_DISPUTE_PROTECTION_GUIDE.md (20KB)
+   - Legal use cases by attorney type (contractor vs. owner counsel)
+   - Measured mile analysis implementation with formulas
+   - Eichleay formula for home office overhead
+   - OSHA compliance tracking
+   - Contractual notice requirements
+   - Evidence quality assessment via timestamps
+   - Integration checklist (8 phases, 2-3 weeks)
+   - Example: Contractor damages claim report
+   - Litigation preparation workflow (detection → development → litigation)
+   - FAQ for construction attorneys
+
+4. /LEGAL_MODELS_QUICK_REFERENCE.md (31KB)
+   - 10 real-world examples (one per interface)
+   - Complete scenario workflows with data population
+   - Measured Mile concrete example: baseline 2.5 CY/hr vs. impaired 1.67 CY/hr
+   - Eichleay overhead example: $49,315 claim calculation
+   - Delay event classification and critical path analysis
+   - Notice compliance examples (sent, responded, unresponded)
+   - Safety incident OSHA reporting
+   - Photo GPS authentication
+   - Database indexes specification
+   - Litigation workflow scenarios
+   - Red flags for attorneys (7 indicators of weakness)
+   - Document retention policy (7 years)
+
+5. /IMPLEMENTATION_SUMMARY.md (20KB)
+   - Overview of all 10+ new interfaces
+   - Key features for litigation (measured mile, Eichleay, contemporaneous docs)
+   - Measurement standards (ASTM, AACE, AIA, OSHA)
+   - Integration steps (5 phases)
+   - Data quality requirements
+   - Security & privacy considerations
+   - Expected outcomes by role (contractor attorney, owner attorney, PM)
+   - Success metrics and FAQ
+
+6. /INTEGRATION_CHECKLIST.md (25KB)
+   - Step-by-step integration code snippets (copy-paste ready)
+   - Phase 1: Type system integration
+   - Phase 2: Database migration to Dexie v2
+   - Phase 3: Daily log form fields (weather, manpower, work, change, conflict, photo)
+   - Phase 4: New screens for DelayEvent, NoticeLog, SafetyIncident (complete React code)
+   - Phase 5: API endpoints (litigation query routes)
+   - Phase 6: Litigation dashboard page
+   - Phase 7: Testing (unit tests)
+   - Phase 8: Training materials and attorney consultation checklist
+   - Timeline summary (~2-3 weeks for full integration)
+   - Verification checklist
+
+================================================================================
+LEGAL DISPUTE TYPES COVERED:
+================================================================================
+
+1. DELAY CLAIMS (Contractor → Owner)
+   - Excusable compensable delays (owner-caused) = contractor gets paid
+   - Proof: DelayEvent, NoticeLog, Daily logs with timestamps, causation chain
+   - Quantification: Measured Mile (productivity loss) + Eichleay (overhead)
+
+2. DELAY DEFENSES (Owner → Contractor)
+   - Inexcusable delays (contractor-caused)
+   - Concurrent delays (both parties caused)
+   - Off-path delays (don't delay project)
+   - Inadequate daily logs (post-hoc bias)
+   - Failure to mitigate
+   - Proof: DelayEvent, SafetyIncident (contractor negligence), Edit history
+
+3. BACK-CHARGE DISPUTES
+   - GC back-charge to subcontractor
+   - Proof: ConflictEntry (cost impact), NoticeLog (notice sent), Photos (GPS location)
+
+4. DIFFERING SITE CONDITIONS
+   - Abnormal weather vs. normal for location/season
+   - Proof: EnhancedDailyLogWeather (humidity, precipitation, ground), NOAA comparison
+   - SafetyIncident (weather-related incidents prove adverse conditions)
+
+5. CHANGE ORDER DISPUTES
+   - Directed vs. constructive vs. cardinal changes
+   - Proof: EnhancedChangeEntry (changeType, directedBy, noticeDate)
+   - Cumulative impact (multiple changes exceed contract threshold)
+
+6. SAFETY DISPUTES
+   - OSHA violations (unreported incidents)
+   - Contractor's good safety culture (timely reporting, corrective actions)
+   - Safety culture as offset to quality claims
+   - Proof: SafetyIncident (oshaReportable, oshaFormCompleted, correctiveActions)
+
+7. NOTICE COMPLIANCE
+   - Proper notice given within contract deadlines
+   - Owner failure to respond (supports "constructive change")
+   - Proof: NoticeLog (dateSent, responseDeadline, responseReceived)
+
+================================================================================
+LITIGATION ANALYSIS METHODS SUPPORTED:
+================================================================================
+
+1. MEASURED MILE ANALYSIS
+   Formula: (Baseline Productivity - Impeded Productivity) × Impeded Qty × Labor Rate
+   Data needed: quantity, crewHoursWorked, dates, crew composition
+   Result: Quantified labor cost damages
+
+2. EICHLEAY FORMULA (Unabsorbed Overhead)
+   Formula: (Home Office Overhead ÷ Contract Days) × Extended Days
+   Data needed: contract value (for overhead %), extended critical path days
+   Result: Overhead cost damages for schedule extension
+
+3. CRITICAL PATH ANALYSIS
+   Identify delays on critical path (affect project completion)
+   Filter from: DelayEvent.criticalPathImpacted
+   Result: Only critical path delays = compensable
+
+4. CONCURRENT DELAY ANALYSIS
+   Both parties causing delays simultaneously
+   Identify: inexcusable delays + excusable delays in overlapping periods
+   Result: Complex damages (may be reduced/split)
+
+5. CAUSATION CHAIN ANALYSIS
+   Change → Conflict → Delay → Damages
+   Query: getCausationChain(projectId, delayEventId)
+   Result: Proof of proximate causation
+
+6. EVIDENCE QUALITY ASSESSMENT
+   Contemporaneous documentation (same-day creation) vs. post-hoc (weeks later)
+   Query: getDailyLogsCreatedSameDay() vs. getDailyLogsCreatedLater()
+   Result: Court credibility assessment (highest weight = same-day)
+
+7. NOTICE COMPLIANCE ANALYSIS
+   Proper notice given? Within contract deadline? Owner responded?
+   Query: getUnresponseNotices()
+   Result: Procedural rights preserved/forfeited
+
+8. SAFETY CULTURE ASSESSMENT
+   OSHA incidents, timely reporting, corrective actions
+   Query: getOSHAReportableIncidents(), getUncompletedFollowUps()
+   Result: Good faith evidence (contractor) or negligence evidence (owner)
+
+================================================================================
+KEY INDEXES FOR LITIGATION QUERIES:
+================================================================================
+
+delayEvents:
+  - id (primary key)
+  - projectId (all delays for project)
+  - date (timeline analysis)
+  - delayType (separate excusable from inexcusable)
+  - causeCategory (group by weather/change/differing_conditions/etc)
+  - criticalPathImpacted (critical path vs off-path)
+  - createdAt (chronological order)
+
+noticeLogs:
+  - id (primary key)
+  - projectId (all notices for project)
+  - noticeType (delay/claim/backcharge/cure/etc)
+  - dateSent (timeline of notices)
+  - responseDeadline (deadline tracking)
+  - resolutionStatus (open/escalated/resolved/litigated)
+  - createdAt (chronological order)
+
+safetyIncidents:
+  - id (primary key)
+  - projectId (all incidents for project)
+  - date (timeline analysis)
+  - incidentType (separate OSHA-reportable from near-miss)
+  - oshaReportable (regulatory compliance)
+  - createdAt (chronological order)
+
+enhancedDailyLogs:
+  - id (primary key)
+  - projectId (all logs for project)
+  - date (daily log lookup by date)
+  - superintendentId (who created)
+  - timestamps.createdAt (CRITICAL FOR LITIGATION: when was log created?)
+  - createdAt (insertion order)
+
+================================================================================
+INTEGRATION TIMELINE:
+================================================================================
+
+Phase 1: Type System (Day 1)
+  ✓ Copy types-legal-enhanced.ts
+  ✓ Export from types.ts
+  ✓ npm run type-check
+
+Phase 2: Database (Day 1-2)
+  ✓ Implement Dexie v2 in db.ts
+  ✓ Add delayEvents, noticeLogs, safetyIncidents tables
+  ✓ Add helper queries
+  ✓ Test migration
+
+Phase 3: Forms (Day 2-5)
+  ✓ Weather: add humidity, wind, precipitation fields
+  ✓ Manpower: add hoursWorked, overtime, startTime/endTime
+  ✓ Work: add quantity, unitOfMeasure, crewSize, crewHours (CRITICAL)
+  ✓ Change: add cost/schedule impact, contractClause, notice date
+  ✓ Conflict: add cost impact, witnesses, root cause
+  ✓ Photo: add GPS, weather, witness fields
+
+Phase 4: New Screens (Day 5-7)
+  ✓ DelayEvent form
+  ✓ NoticeLog form
+  ✓ SafetyIncident form
+
+Phase 5: API (Day 5-7)
+  ✓ /api/litigation?projectId=X&type=delays
+  ✓ /api/litigation?projectId=X&type=summary
+
+Phase 6: Dashboard (Day 7-10)
+  ✓ Litigation reports page
+  ✓ Delay timeline chart
+  ✓ Notice compliance table
+  ✓ Safety incident list
+  ✓ Evidence quality assessment
+
+Phase 7: Testing (Day 10-11)
+  ✓ Database tests
+  ✓ Form tests
+  ✓ Query tests
+
+Phase 8: Training (Day 10+)
+  ✓ Field team training
+  ✓ Attorney consultation
+
+TOTAL: 2-3 weeks for complete integration and deployment
+
+================================================================================
+LEGAL STANDARDS REFERENCED:
+================================================================================
+
+Concrete & Testing:
+  - ASTM C143: Slump of Portland Cement Concrete
+  - ASTM C192: Making and Curing Concrete Test Specimens
+    * Humidity < 85%, Temperature 68-77°F
+    * Violations invalidate test results
+
+Delay Analysis:
+  - AACE RP 29R-03: Forensic Schedule Analysis
+  - Measured mile method (court-accepted)
+  - Eichleay formula (court-accepted in most jurisdictions)
+
+Contracts:
+  - AIA A101: Standard Form of Agreement
+  - EJCDC C-510: Standard Construction Contracts
+  - Notice requirements: 7-14 days typical
+  - Cardinal change threshold: 20-30% of contract value
+
+Safety:
+  - OSHA Form 301: Injury and Illness Record
+  - 29 CFR 1904: OSHA Recordkeeping (24-hour reporting)
+  - Crane Operations: Wind limits 30-40 mph
+
+================================================================================
+DOCUMENT RETENTION POLICY:
+================================================================================
+
+Daily logs:       7 years post-project (statute of limitations varies)
+Photos:           7 years (with GPS, timestamps)
+Notices:          7 years (prove procedural compliance)
+Safety incidents: 7 years (OSHA requirement)
+Delay events:     7 years
+Edit history:     7 years (prove log authenticity)
+Change orders:    10 years (longer statute for contracts)
+Contracts:        Permanently (legal reference)
+
+================================================================================
+SUCCESS METRICS:
+================================================================================
+
+Data Capture Quality:
+  - % of work items with quantity: >95%
+  - % of daily logs created same day: >90%
+  - % of photos with GPS: >80%
+  - % of notices with response tracking: 100%
+
+Litigation Preparedness:
+  - Can measured mile be performed? (baseline + impeded data)
+  - Can Eichleay be calculated? (contract value + extended days)
+  - Can delays be classified? (excusable vs inexcusable)
+  - Can causation chain be established? (change → delay link)
+
+Evidence Quality:
+  - Contemporaneous documentation ratio: >85%
+  - Edit history completeness: 100%
+  - Photo authentication rate: >75%
+  - Notice compliance rate: >95%
+
+================================================================================

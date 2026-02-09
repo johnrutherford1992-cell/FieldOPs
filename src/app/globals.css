@@ -1,0 +1,360 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   BLACKSTONE CONSTRUCTION — FieldOps Design System
+   Brand: Onyx #000000 / Alabaster #f2f0e6 / Slate #2d2d2f
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* Brand tokens */
+    --color-onyx: #000000;
+    --color-alabaster: #f2f0e6;
+    --color-slate: #2d2d2f;
+    --color-warm-gray: #8c8c8c;
+    --color-accent-green: #2d8a4e;
+    --color-accent-amber: #d4a017;
+    --color-accent-red: #c0392b;
+
+    /* Layout */
+    --nav-height: 72px;
+    --header-height: 56px;
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  html {
+    /* Prevent iOS zoom on input focus (minimum 16px font) */
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-body text-onyx bg-white antialiased;
+    padding-bottom: var(--safe-area-bottom);
+    overscroll-behavior: none;
+  }
+
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-onyx;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  /* ---- Big Button Card ---- */
+  .big-button {
+    @apply relative flex items-center w-full min-h-[72px] px-5 py-4
+           bg-white border border-gray-100 rounded-xl shadow-card
+           transition-all duration-150 ease-out
+           active:scale-[0.98] active:shadow-none;
+  }
+
+  .big-button:hover {
+    @apply shadow-card-hover;
+  }
+
+  .big-button-dark {
+    @apply relative flex items-center w-full min-h-[72px] px-5 py-4
+           bg-onyx text-white border border-slate rounded-xl shadow-card
+           transition-all duration-150 ease-out
+           active:scale-[0.98];
+  }
+
+  /* ---- Section Header ---- */
+  .section-header {
+    @apply font-heading text-field-lg font-medium text-onyx tracking-wide uppercase;
+  }
+
+  /* ---- Status Badges ---- */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+  .badge-green {
+    @apply badge bg-green-50 text-accent-green;
+  }
+  .badge-amber {
+    @apply badge bg-amber-50 text-accent-amber;
+  }
+  .badge-red {
+    @apply badge bg-red-50 text-accent-red;
+  }
+  .badge-gray {
+    @apply badge bg-gray-100 text-warm-gray;
+  }
+
+  /* ---- Form inputs (field-optimized) ---- */
+  .field-input {
+    @apply w-full min-h-[56px] px-4 py-3 text-field-base
+           bg-white border border-gray-200 rounded-lg
+           focus:border-onyx focus:ring-1 focus:ring-onyx
+           placeholder:text-warm-gray;
+  }
+
+  .field-select {
+    @apply field-input appearance-none bg-no-repeat;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238c8c8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 40px;
+  }
+
+  .field-textarea {
+    @apply field-input min-h-[120px] resize-none;
+  }
+
+  .field-label {
+    @apply block text-base font-medium text-slate mb-1.5;
+  }
+
+  /* ---- Buttons ---- */
+  .btn-primary {
+    @apply flex items-center justify-center gap-2 w-full min-h-[56px]
+           px-6 py-3 bg-onyx text-white text-field-base font-medium
+           rounded-lg transition-all duration-150
+           active:scale-[0.98] active:bg-slate
+           disabled:opacity-40 disabled:pointer-events-none;
+  }
+
+  .btn-secondary {
+    @apply flex items-center justify-center gap-2 w-full min-h-[56px]
+           px-6 py-3 bg-alabaster text-onyx text-field-base font-medium
+           border border-gray-200 rounded-lg transition-all duration-150
+           active:scale-[0.98] active:bg-gray-100
+           disabled:opacity-40 disabled:pointer-events-none;
+  }
+
+  .btn-outline {
+    @apply flex items-center justify-center gap-2 w-full min-h-[56px]
+           px-6 py-3 bg-transparent text-onyx text-field-base font-medium
+           border-2 border-onyx rounded-lg transition-all duration-150
+           active:scale-[0.98] active:bg-onyx active:text-white
+           disabled:opacity-40 disabled:pointer-events-none;
+  }
+
+  /* ---- Cards ---- */
+  .card {
+    @apply bg-white border border-gray-100 rounded-xl shadow-card p-5;
+  }
+
+  .card-alabaster {
+    @apply bg-alabaster border border-gray-100 rounded-xl p-5;
+  }
+
+  /* ---- Bottom navigation ---- */
+  .bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 z-50
+           flex items-stretch justify-around
+           bg-white border-t border-gray-200 shadow-nav;
+    height: var(--nav-height);
+    padding-bottom: var(--safe-area-bottom);
+  }
+
+  .bottom-nav-item {
+    @apply flex flex-col items-center justify-center gap-0.5
+           flex-1 py-2 text-warm-gray transition-colors duration-150
+           no-underline;
+  }
+
+  .bottom-nav-item-active {
+    @apply flex flex-col items-center justify-center gap-0.5
+           flex-1 py-2 text-onyx transition-colors duration-150
+           no-underline;
+  }
+
+  /* ---- Progress bar ---- */
+  .progress-track {
+    @apply w-full h-1.5 bg-gray-100 rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full bg-onyx rounded-full transition-all duration-500 ease-out;
+  }
+
+  /* ---- Screen container ---- */
+  .screen {
+    @apply min-h-screen;
+    padding-bottom: calc(var(--nav-height) + var(--safe-area-bottom) + 16px);
+  }
+
+  .screen-header {
+    @apply sticky top-0 z-40 bg-white/95 backdrop-blur-sm
+           border-b border-gray-100 px-5 py-3;
+  }
+}
+
+/* ============================================================
+   JHA & Toolbox Talk Rendered Content Styles
+   Applied to AI-generated HTML output
+   ============================================================ */
+
+.jha-rendered-content h2,
+.toolbox-rendered-content h2 {
+  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-gray-100;
+}
+
+.jha-rendered-content h2:first-child,
+.toolbox-rendered-content h2:first-child {
+  @apply mt-0;
+}
+
+.jha-rendered-content p,
+.toolbox-rendered-content p {
+  @apply text-base text-slate leading-relaxed mb-3;
+}
+
+.jha-rendered-content ul,
+.toolbox-rendered-content ul {
+  @apply space-y-2 mb-4 pl-0 list-none;
+}
+
+.jha-rendered-content ul li,
+.toolbox-rendered-content ul li {
+  @apply text-base text-slate leading-relaxed pl-5 relative;
+}
+
+.jha-rendered-content ul li::before,
+.toolbox-rendered-content ul li::before {
+  content: "";
+  @apply absolute left-0 top-[10px] w-2 h-2 bg-onyx rounded-full;
+}
+
+.jha-rendered-content table.jha-table,
+.jha-rendered-content table {
+  @apply w-full border-collapse mb-4;
+}
+
+.jha-rendered-content table thead th {
+  @apply text-left text-sm font-medium text-white bg-onyx px-4 py-3;
+}
+
+.jha-rendered-content table thead th:first-child {
+  @apply rounded-tl-lg;
+}
+
+.jha-rendered-content table thead th:last-child {
+  @apply rounded-tr-lg;
+}
+
+.jha-rendered-content table tbody td {
+  @apply text-sm text-slate px-4 py-3 border-b border-gray-100 align-top;
+}
+
+.jha-rendered-content table tbody tr:nth-child(even) td {
+  @apply bg-alabaster;
+}
+
+.jha-rendered-content table tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+.jha-rendered-content strong,
+.toolbox-rendered-content strong {
+  @apply font-semibold text-onyx;
+}
+
+.jha-rendered-content em,
+.toolbox-rendered-content em {
+  @apply text-warm-gray italic;
+}
+
+.jha-rendered-content .jha-note,
+.toolbox-rendered-content .toolbox-note {
+  @apply text-sm text-warm-gray italic mt-6 pt-4 border-t border-gray-100;
+}
+
+.toolbox-rendered-content .toolbox-subtitle {
+  @apply text-warm-gray text-sm -mt-1 mb-4;
+}
+
+.toolbox-rendered-content .toolbox-focus {
+  @apply text-lg text-center py-4 px-6 bg-alabaster rounded-xl;
+}
+
+/* ============================================================
+   Report Rendered Content Styles
+   Applied to AI-generated weekly report / CO / legal HTML
+   ============================================================ */
+
+.report-rendered-content h1 {
+  @apply font-heading text-xl font-bold text-onyx mt-0 mb-4;
+}
+
+.report-rendered-content h2 {
+  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-gray-100;
+}
+
+.report-rendered-content p {
+  @apply text-base text-slate leading-relaxed mb-3;
+}
+
+.report-rendered-content table {
+  @apply w-full border-collapse mb-4 text-sm;
+}
+
+.report-rendered-content table th {
+  @apply text-left font-medium text-white bg-onyx px-3 py-2;
+}
+
+.report-rendered-content table td {
+  @apply px-3 py-2 border-b border-gray-100 align-top;
+}
+
+.report-rendered-content table tr:nth-child(even) td {
+  @apply bg-alabaster;
+}
+
+.report-rendered-content ul {
+  @apply space-y-1 mb-4 pl-5 list-disc;
+}
+
+.report-rendered-content li {
+  @apply text-base text-slate leading-relaxed;
+}
+
+.report-rendered-content strong {
+  @apply font-semibold text-onyx;
+}
+
+@layer utilities {
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Page transitions */
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.25s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
