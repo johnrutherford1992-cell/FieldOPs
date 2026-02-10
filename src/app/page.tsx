@@ -9,6 +9,7 @@ import {
   ClipboardList,
   FileBarChart,
   Settings,
+  Sparkles,
   Building2,
   Calendar,
   Users,
@@ -335,6 +336,14 @@ export default function HomePage() {
               label="Reports"
               sublabel="Weekly reports, change orders & legal"
               icon={<FileBarChart className="w-6 h-6" />}
+            />
+          </Link>
+
+          <Link href="/ai" className="block no-underline">
+            <BigButton
+              label="AI Assistant"
+              sublabel="Insights, analysis & custom reports"
+              icon={<Sparkles className="w-6 h-6" />}
             />
           </Link>
 

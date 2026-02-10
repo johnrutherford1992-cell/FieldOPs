@@ -19,8 +19,6 @@ import NotesScreen from "@/components/daily-log/NotesScreen";
 import { useAppStore } from "@/lib/store";
 import { db, generateId, getDraftId, saveDraft, loadDraft, deleteDraft } from "@/lib/db";
 import type { DailyLogDraft } from "@/lib/db";
-import { deriveProductivityEntries } from "@/lib/productivity-engine";
-import { recomputeAnalytics } from "@/lib/analytics-engine";
 import { CSI_DIVISIONS } from "@/data/csi-divisions";
 import { DAILY_LOG_SCREENS } from "@/lib/types";
 import type {
@@ -348,16 +346,6 @@ export default function DailyLogPage() {
 
       // Clean up draft after successful save
       await deleteDraft(activeProject.id, currentDate).catch(() => {});
-
-      // Auto-derive productivity entries and recompute analytics
-      try {
-        await deriveProductivityEntries(dailyLog, activeProject.id);
-        // Recompute project-to-date analytics after new entries
-        await recomputeAnalytics(activeProject.id);
-      } catch (productivityErr) {
-        console.error("Failed to derive productivity entries:", productivityErr);
-        // Non-blocking — daily log still saved successfully
-      }
 
       setIsComplete(true);
     } catch (err) {

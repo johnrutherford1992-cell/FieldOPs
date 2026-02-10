@@ -8,7 +8,7 @@ import {
   ShieldCheck,
   ClipboardList,
   FileBarChart,
-  Settings,
+  Sparkles,
 } from "lucide-react";
 
 interface NavTab {
@@ -47,10 +47,10 @@ export default function BottomNav() {
       path: "/reports",
     },
     {
-      id: "settings",
-      label: "Settings",
-      icon: <Settings size={24} />,
-      path: "/settings",
+      id: "ai",
+      label: "AI",
+      icon: <Sparkles size={24} />,
+      path: "/ai",
     },
   ];
 

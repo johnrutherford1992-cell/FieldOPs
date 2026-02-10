@@ -24,7 +24,7 @@ interface WorkPerformedScreenProps {
   taktZones: TaktZone[];
 }
 
-type ModalStep = "division" | "activity" | "zone" | "status" | "productivity" | "notes";
+type ModalStep = "division" | "activity" | "zone" | "status" | "notes";
 
 interface ModalState {
   isOpen: boolean;
@@ -33,11 +33,6 @@ interface ModalState {
   selectedActivity: CSIActivity | null;
   selectedZone: TaktZone | null;
   selectedStatus: WorkStatus | null;
-  quantity?: number;
-  unitOfMeasure?: string;
-  crewSize?: number;
-  crewHoursWorked?: number;
-  percentComplete?: number;
   notes: string;
 }
 
@@ -48,11 +43,6 @@ const INITIAL_MODAL: ModalState = {
   selectedActivity: null,
   selectedZone: null,
   selectedStatus: null,
-  quantity: undefined,
-  unitOfMeasure: undefined,
-  crewSize: undefined,
-  crewHoursWorked: undefined,
-  percentComplete: undefined,
   notes: "",
 };
 
@@ -76,8 +66,6 @@ const statusConfig: Record<
     bgColor: "bg-blue-600",
   },
 };
-
-const UNIT_OPTIONS = ["SF", "LF", "CY", "EA", "TON", "LS"] as const;
 
 export default function WorkPerformedScreen({
   entries,
@@ -138,7 +126,7 @@ export default function WorkPerformedScreen({
   const handleStatusSelect = useCallback((status: WorkStatus) => {
     setModal((prev) => ({
       ...prev,
-      step: "productivity",
+      step: "notes",
       selectedStatus: status,
     }));
   }, []);
@@ -159,11 +147,6 @@ export default function WorkPerformedScreen({
         activity: prev.selectedActivity.name,
         taktZone: prev.selectedZone.zoneCode,
         status: prev.selectedStatus,
-        ...(prev.quantity != null && { quantity: prev.quantity }),
-        ...(prev.unitOfMeasure && { unitOfMeasure: prev.unitOfMeasure }),
-        ...(prev.crewSize != null && { crewSize: prev.crewSize }),
-        ...(prev.crewHoursWorked != null && { crewHoursWorked: prev.crewHoursWorked }),
-        ...(prev.percentComplete != null && { percentComplete: prev.percentComplete }),
         ...(prev.notes && { notes: prev.notes }),
       };
 
@@ -193,48 +176,6 @@ export default function WorkPerformedScreen({
   const goToStep = useCallback((step: ModalStep) => {
     setModal((prev) => ({ ...prev, step }));
   }, []);
-
-  const handleQuantityChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value === "" ? undefined : parseFloat(e.target.value);
-      setModal((prev) => ({ ...prev, quantity: val }));
-    },
-    []
-  );
-
-  const handleUnitSelect = useCallback((unit: string) => {
-    setModal((prev) => ({
-      ...prev,
-      unitOfMeasure: prev.unitOfMeasure === unit ? undefined : unit,
-    }));
-  }, []);
-
-  const handleCrewSizeChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
-      setModal((prev) => ({ ...prev, crewSize: val }));
-    },
-    []
-  );
-
-  const handleCrewHoursChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value === "" ? undefined : parseFloat(e.target.value);
-      setModal((prev) => ({ ...prev, crewHoursWorked: val }));
-    },
-    []
-  );
-
-  const handlePercentChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
-      setModal((prev) => ({
-        ...prev,
-        percentComplete: val != null ? Math.max(0, Math.min(100, val)) : undefined,
-      }));
-    },
-    []
-  );
 
   return (
     <div className="min-h-screen bg-alabaster pb-safe-bottom">
@@ -470,125 +411,6 @@ export default function WorkPerformedScreen({
                   ))}
                 </div>
                 <button
-                  onClick={() => goToStep("productivity")}
-                  className="w-full min-h-touch-target rounded-card bg-onyx text-white transition-all duration-200 px-4 py-3 hover:bg-slate active:scale-[0.98] font-body font-semibold text-field-base mb-3"
-                >
-                  Continue
-                </button>
-                <button
-                  onClick={closeModal}
-                  className="w-full min-h-touch-target rounded-card bg-gray-100 text-onyx transition-all duration-200 px-4 py-3 hover:bg-gray-200 active:scale-[0.98] font-body font-semibold text-field-base"
-                >
-                  Cancel
-                </button>
-              </>
-            )}
-
-            {/* Step 5: Productivity Tracking */}
-            {modal.step === "productivity" && modal.selectedStatus && (
-              <>
-                <button
-                  onClick={() => goToStep("status")}
-                  className="flex items-center gap-2 text-onyx font-body font-semibold text-field-sm mb-4 p-2 -mx-2 hover:bg-gray-100 rounded"
-                >
-                  <ChevronRight size={18} className="rotate-180" />
-                  Back
-                </button>
-                <h3 className="font-heading font-semibold text-field-xl text-onyx mb-1">
-                  Productivity Tracking
-                </h3>
-                <p className="text-field-sm text-warm-gray mb-6 font-body">
-                  Add productivity details (optional)
-                </p>
-
-                <div className="space-y-4 mb-6">
-                  {/* Quantity */}
-                  <div>
-                    <label className="block text-field-sm font-semibold text-onyx mb-2">
-                      Quantity
-                    </label>
-                    <input
-                      type="number"
-                      value={modal.quantity ?? ""}
-                      onChange={handleQuantityChange}
-                      placeholder="Enter quantity"
-                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-
-                  {/* Unit of Measure */}
-                  <div>
-                    <label className="block text-field-sm font-semibold text-onyx mb-2">
-                      Unit of Measure
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {UNIT_OPTIONS.map((unit) => (
-                        <button
-                          key={unit}
-                          onClick={() => handleUnitSelect(unit)}
-                          className={`py-2 px-3 rounded-card text-field-sm font-medium transition-all ${
-                            modal.unitOfMeasure === unit
-                              ? "bg-onyx text-white"
-                              : "bg-alabaster text-onyx hover:bg-gray-200"
-                          }`}
-                        >
-                          {unit}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Crew Size */}
-                  <div>
-                    <label className="block text-field-sm font-semibold text-onyx mb-2">
-                      Crew Size
-                    </label>
-                    <input
-                      type="number"
-                      value={modal.crewSize ?? ""}
-                      onChange={handleCrewSizeChange}
-                      placeholder="Number of workers"
-                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
-                      min="0"
-                    />
-                  </div>
-
-                  {/* Crew Hours Worked */}
-                  <div>
-                    <label className="block text-field-sm font-semibold text-onyx mb-2">
-                      Crew Hours Worked
-                    </label>
-                    <input
-                      type="number"
-                      value={modal.crewHoursWorked ?? ""}
-                      onChange={handleCrewHoursChange}
-                      placeholder="Total crew hours"
-                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
-                      min="0"
-                      step="0.5"
-                    />
-                  </div>
-
-                  {/* Percent Complete */}
-                  <div>
-                    <label className="block text-field-sm font-semibold text-onyx mb-2">
-                      Percent Complete (0-100)
-                    </label>
-                    <input
-                      type="number"
-                      value={modal.percentComplete ?? ""}
-                      onChange={handlePercentChange}
-                      placeholder="0-100"
-                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
-                      min="0"
-                      max="100"
-                    />
-                  </div>
-                </div>
-
-                <button
                   onClick={() => goToStep("notes")}
                   className="w-full min-h-touch-target rounded-card bg-onyx text-white transition-all duration-200 px-4 py-3 hover:bg-slate active:scale-[0.98] font-body font-semibold text-field-base mb-3"
                 >
@@ -603,11 +425,11 @@ export default function WorkPerformedScreen({
               </>
             )}
 
-            {/* Step 6: Add Notes */}
+            {/* Step 5: Add Notes */}
             {modal.step === "notes" && modal.selectedStatus && (
               <>
                 <button
-                  onClick={() => goToStep("productivity")}
+                  onClick={() => goToStep("status")}
                   className="flex items-center gap-2 text-onyx font-body font-semibold text-field-sm mb-4 p-2 -mx-2 hover:bg-gray-100 rounded"
                 >
                   <ChevronRight size={18} className="rotate-180" />
