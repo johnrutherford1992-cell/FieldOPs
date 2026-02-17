@@ -192,7 +192,7 @@ function createTableProxy<T>(tableName: string) {
                         const { data, error } = await supabase.from(pgTable).select("*").eq(snakeCol, value);
                         if (error) return [];
                         const camelData = rowsToCamel<T>(data || []).filter(fn);
-                        camelData.sort((a: any, b: any) => {
+                        camelData.sort((a: Record<string, unknown>, b: Record<string, unknown>) => {
                           if (a[field] < b[field]) return 1;
                           if (a[field] > b[field]) return -1;
                           return 0;
@@ -207,7 +207,7 @@ function createTableProxy<T>(tableName: string) {
                     const camelData = rowsToCamel<T>(data || []);
                     const toDelete = camelData.filter(fn);
                     for (const item of toDelete) {
-                      await supabase.from(pgTable).delete().eq("id", (item as any).id);
+                      await supabase.from(pgTable).delete().eq("id", (item as Record<string, unknown>).id);
                     }
                   },
                 };

@@ -48,7 +48,7 @@ export default function TimeTrackingScreen({
 }: TimeTrackingScreenProps) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [expandedEntryId, setExpandedEntryId] = useState<string | null>(null);
-  const [bulkMode, setBulkMode] = useState(false);
+  const [, setBulkMode] = useState(false);
 
   // ── Computed summaries ──
   const summary = useMemo(() => {

@@ -3,15 +3,12 @@
 import React, { useState, useMemo, useCallback } from "react";
 import {
   ClipboardCheck,
-  Plus,
   X,
   Check,
   AlertTriangle,
   ChevronDown,
   ChevronUp,
-  Camera,
   Shield,
-  Star,
 } from "lucide-react";
 import { generateId } from "@/lib/db";
 import type {
@@ -19,7 +16,6 @@ import type {
   ChecklistResponse,
   Deficiency,
   DeficiencySeverity,
-  DeficiencyStatus,
   ChecklistTemplate,
   TaktZone,
 } from "@/lib/types";
