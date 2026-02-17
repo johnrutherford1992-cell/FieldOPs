@@ -1,4 +1,4 @@
-import { supabase, rowsToCamel, recordToSnake, recordsToSnake, toCamelCase } from "./supabase";
+import { getSupabase, rowsToCamel, recordToSnake, recordsToSnake, toCamelCase } from "./supabase";
 import type {
   Project,
   DailyJHA,
@@ -75,7 +75,7 @@ function createTableProxy<T>(tableName: string) {
   return {
     /** Fetch all records from table */
     async toArray(): Promise<T[]> {
-      const { data, error } = await supabase.from(pgTable).select("*");
+      const { data, error } = await getSupabase().from(pgTable).select("*");
       if (error) { console.error(`toArray(${pgTable}):`, error); return []; }
       return rowsToCamel<T>(data || []);
     },
@@ -83,14 +83,14 @@ function createTableProxy<T>(tableName: string) {
     /** Upsert a single record */
     async put(record: T): Promise<void> {
       const snake = recordToSnake(record as Record<string, unknown>);
-      const { error } = await supabase.from(pgTable).upsert([snake]);
+      const { error } = await getSupabase().from(pgTable).upsert([snake]);
       if (error) console.error(`put(${pgTable}):`, error);
     },
 
     /** Insert a single record (fails on conflict) */
     async add(record: T): Promise<void> {
       const snake = recordToSnake(record as Record<string, unknown>);
-      const { error } = await supabase.from(pgTable).insert([snake]);
+      const { error } = await getSupabase().from(pgTable).insert([snake]);
       if (error) console.error(`add(${pgTable}):`, error);
     },
 
@@ -98,7 +98,7 @@ function createTableProxy<T>(tableName: string) {
     async bulkPut(records: T[]): Promise<void> {
       if (records.length === 0) return;
       const snakeRecords = recordsToSnake(records as Record<string, unknown>[]);
-      const { error } = await supabase.from(pgTable).upsert(snakeRecords);
+      const { error } = await getSupabase().from(pgTable).upsert(snakeRecords);
       if (error) console.error(`bulkPut(${pgTable}):`, error);
     },
 
@@ -106,13 +106,13 @@ function createTableProxy<T>(tableName: string) {
     async bulkAdd(records: T[]): Promise<void> {
       if (records.length === 0) return;
       const snakeRecords = recordsToSnake(records as Record<string, unknown>[]);
-      const { error } = await supabase.from(pgTable).insert(snakeRecords);
+      const { error } = await getSupabase().from(pgTable).insert(snakeRecords);
       if (error) console.error(`bulkAdd(${pgTable}):`, error);
     },
 
     /** Get a single record by primary key */
     async get(id: string): Promise<T | undefined> {
-      const { data, error } = await supabase.from(pgTable).select("*").eq("id", id).maybeSingle();
+      const { data, error } = await getSupabase().from(pgTable).select("*").eq("id", id).maybeSingle();
       if (error) { console.error(`get(${pgTable}):`, error); return undefined; }
       return data ? (toCamelCase(data as Record<string, unknown>) as T) : undefined;
     },
@@ -120,19 +120,19 @@ function createTableProxy<T>(tableName: string) {
     /** Update specific fields on a record by id */
     async update(id: string, changes: Partial<T>): Promise<void> {
       const snake = recordToSnake(changes as Record<string, unknown>);
-      const { error } = await supabase.from(pgTable).update(snake).eq("id", id);
+      const { error } = await getSupabase().from(pgTable).update(snake).eq("id", id);
       if (error) console.error(`update(${pgTable}):`, error);
     },
 
     /** Delete a record by id */
     async delete(id: string): Promise<void> {
-      const { error } = await supabase.from(pgTable).delete().eq("id", id);
+      const { error } = await getSupabase().from(pgTable).delete().eq("id", id);
       if (error) console.error(`delete(${pgTable}):`, error);
     },
 
     /** Count records, optionally filtered */
     async count(filters?: Record<string, unknown>): Promise<number> {
-      let query = supabase.from(pgTable).select("*", { count: "exact", head: true });
+      let query = getSupabase().from(pgTable).select("*", { count: "exact", head: true });
       if (filters) {
         for (const [key, val] of Object.entries(filters)) {
           const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
@@ -146,7 +146,7 @@ function createTableProxy<T>(tableName: string) {
 
     /** Select with filters — returns { data, error } for chaining */
     select(columns = "*") {
-      return supabase.from(pgTable).select(columns);
+      return getSupabase().from(pgTable).select(columns);
     },
 
     /** Query builder: where(column).equals(value).toArray() */
@@ -158,30 +158,30 @@ function createTableProxy<T>(tableName: string) {
           equals(value: unknown) {
             return {
               async toArray(): Promise<T[]> {
-                const { data, error } = await supabase.from(pgTable).select("*").eq(snakeCol, value);
+                const { data, error } = await getSupabase().from(pgTable).select("*").eq(snakeCol, value);
                 if (error) { console.error(`where.eq(${pgTable}):`, error); return []; }
                 return rowsToCamel<T>(data || []);
               },
               async first(): Promise<T | undefined> {
-                const { data, error } = await supabase.from(pgTable).select("*").eq(snakeCol, value).limit(1).maybeSingle();
+                const { data, error } = await getSupabase().from(pgTable).select("*").eq(snakeCol, value).limit(1).maybeSingle();
                 if (error) { console.error(`where.first(${pgTable}):`, error); return undefined; }
                 return data ? (toCamelCase(data as Record<string, unknown>) as T) : undefined;
               },
               async count(): Promise<number> {
-                const { count, error } = await supabase.from(pgTable).select("*", { count: "exact", head: true }).eq(snakeCol, value);
+                const { count, error } = await getSupabase().from(pgTable).select("*", { count: "exact", head: true }).eq(snakeCol, value);
                 if (error) { console.error(`where.count(${pgTable}):`, error); return 0; }
                 return count || 0;
               },
               filter(fn: (item: T) => boolean) {
                 return {
                   async toArray(): Promise<T[]> {
-                    const { data, error } = await supabase.from(pgTable).select("*").eq(snakeCol, value);
+                    const { data, error } = await getSupabase().from(pgTable).select("*").eq(snakeCol, value);
                     if (error) { console.error(`where.filter(${pgTable}):`, error); return []; }
                     const camelData = rowsToCamel<T>(data || []);
                     return camelData.filter(fn);
                   },
                   async first(): Promise<T | undefined> {
-                    const { data, error } = await supabase.from(pgTable).select("*").eq(snakeCol, value);
+                    const { data, error } = await getSupabase().from(pgTable).select("*").eq(snakeCol, value);
                     if (error) { console.error(`where.filter.first(${pgTable}):`, error); return undefined; }
                     const camelData = rowsToCamel<T>(data || []);
                     return camelData.filter(fn)[0];
@@ -189,7 +189,7 @@ function createTableProxy<T>(tableName: string) {
                   reverse() {
                     return {
                       async sortBy(field: string): Promise<T[]> {
-                        const { data, error } = await supabase.from(pgTable).select("*").eq(snakeCol, value);
+                        const { data, error } = await getSupabase().from(pgTable).select("*").eq(snakeCol, value);
                         if (error) return [];
                         const camelData = rowsToCamel<T>(data || []).filter(fn);
                         camelData.sort((a: Record<string, unknown>, b: Record<string, unknown>) => {
@@ -203,11 +203,11 @@ function createTableProxy<T>(tableName: string) {
                   },
                   async delete(): Promise<void> {
                     // Get IDs to delete via client-side filter
-                    const { data } = await supabase.from(pgTable).select("*").eq(snakeCol, value);
+                    const { data } = await getSupabase().from(pgTable).select("*").eq(snakeCol, value);
                     const camelData = rowsToCamel<T>(data || []);
                     const toDelete = camelData.filter(fn);
                     for (const item of toDelete) {
-                      await supabase.from(pgTable).delete().eq("id", (item as Record<string, unknown>).id);
+                      await getSupabase().from(pgTable).delete().eq("id", (item as Record<string, unknown>).id);
                     }
                   },
                 };
@@ -216,14 +216,14 @@ function createTableProxy<T>(tableName: string) {
                 return {
                   async sortBy(field: string): Promise<T[]> {
                     const snakeField = field.replace(/([A-Z])/g, "_$1").toLowerCase();
-                    const { data, error } = await supabase.from(pgTable).select("*").eq(snakeCol, value).order(snakeField, { ascending: false });
+                    const { data, error } = await getSupabase().from(pgTable).select("*").eq(snakeCol, value).order(snakeField, { ascending: false });
                     if (error) { console.error(`reverse.sortBy(${pgTable}):`, error); return []; }
                     return rowsToCamel<T>(data || []);
                   },
                 };
               },
               async delete(): Promise<void> {
-                const { error } = await supabase.from(pgTable).delete().eq(snakeCol, value);
+                const { error } = await getSupabase().from(pgTable).delete().eq(snakeCol, value);
                 if (error) console.error(`where.delete(${pgTable}):`, error);
               },
             };
@@ -231,7 +231,7 @@ function createTableProxy<T>(tableName: string) {
         };
       } else {
         // Multi-column filter: db.table.where({ projectId, date })
-        let query = supabase.from(pgTable).select("*");
+        let query = getSupabase().from(pgTable).select("*");
         for (const [key, val] of Object.entries(filterOrColumn)) {
           const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
           query = query.eq(snakeKey, val);
@@ -270,7 +270,7 @@ function createTableProxy<T>(tableName: string) {
       const snakeCol = column.replace(/([A-Z])/g, "_$1").toLowerCase();
       return {
         async last(): Promise<T | undefined> {
-          const { data, error } = await supabase.from(pgTable).select("*").order(snakeCol, { ascending: false }).limit(1).maybeSingle();
+          const { data, error } = await getSupabase().from(pgTable).select("*").order(snakeCol, { ascending: false }).limit(1).maybeSingle();
           if (error) { console.error(`orderBy.last(${pgTable}):`, error); return undefined; }
           return data ? (toCamelCase(data as Record<string, unknown>) as T) : undefined;
         },
@@ -281,7 +281,7 @@ function createTableProxy<T>(tableName: string) {
     filter(fn: (item: T) => boolean) {
       return {
         async toArray(): Promise<T[]> {
-          const { data, error } = await supabase.from(pgTable).select("*");
+          const { data, error } = await getSupabase().from(pgTable).select("*");
           if (error) return [];
           return rowsToCamel<T>(data || []).filter(fn);
         },
@@ -356,7 +356,7 @@ export async function getDailyLogsForWeek(
   weekStart: string,
   weekEnd: string
 ): Promise<DailyLog[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("daily_logs")
     .select("*")
     .eq("project_id", projectId)
@@ -385,7 +385,7 @@ export async function getDelayEventsForProject(
   startDate?: string,
   endDate?: string
 ): Promise<DelayEvent[]> {
-  let query = supabase
+  let query = getSupabase()
     .from("delay_events")
     .select("*")
     .eq("project_id", projectId);
@@ -422,7 +422,7 @@ export async function getProductivityEntries(
   startDate?: string,
   endDate?: string
 ): Promise<ProductivityEntry[]> {
-  let query = supabase
+  let query = getSupabase()
     .from("productivity_entries")
     .select("*")
     .eq("project_id", projectId);
@@ -440,7 +440,7 @@ export async function getActiveBaseline(
   projectId: string,
   costCodeId: string
 ): Promise<ProductivityBaseline | undefined> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("productivity_baselines")
     .select("*")
     .eq("project_id", projectId)
@@ -466,7 +466,7 @@ export async function getTimeEntriesForRange(
   startDate: string,
   endDate: string
 ): Promise<TimeEntry[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("time_entries")
     .select("*")
     .eq("project_id", projectId)
@@ -485,7 +485,7 @@ export async function getPendingTimeEntries(
 export async function getApprovedUnexportedEntries(
   projectId: string
 ): Promise<TimeEntry[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("time_entries")
     .select("*")
     .eq("project_id", projectId)
@@ -498,7 +498,7 @@ export async function getApprovedUnexportedEntries(
 export async function getActiveTimePolicy(
   projectId: string
 ): Promise<TimePolicy | undefined> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("time_policies")
     .select("*")
     .eq("project_id", projectId)
@@ -512,7 +512,7 @@ export async function getActiveTimePolicy(
 export async function getActiveADPConfig(
   projectId: string
 ): Promise<ADPSyncConfig | undefined> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("adp_sync_configs")
     .select("*")
     .eq("project_id", projectId)
@@ -554,7 +554,7 @@ export async function getLatestAnalytics(
   costCodeId: string,
   periodType: string
 ): Promise<ProductivityAnalytics | undefined> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("productivity_analytics")
     .select("*")
     .eq("project_id", projectId)
