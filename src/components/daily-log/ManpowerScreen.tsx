@@ -90,9 +90,9 @@ export default function ManpowerScreen({
   );
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-alabaster">
       {/* Total Headcount Summary Bar */}
-      <div className="bg-onyx text-white px-4 py-4 rounded-card shadow-card">
+      <div className="bg-accent-violet text-white px-4 py-4 rounded-card shadow-card">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Users size={28} className="text-alabaster" />
@@ -128,7 +128,7 @@ export default function ManpowerScreen({
           entries.map((entry, index) => (
             <div
               key={`${entry.subId}-${index}`}
-              className="bg-alabaster rounded-xl p-5 shadow-card"
+              className="bg-glass rounded-xl p-5 shadow-card"
             >
               {/* Card Header with Company and Trade */}
               <div className="flex items-start justify-between mb-5">
@@ -144,7 +144,7 @@ export default function ManpowerScreen({
                   onClick={() => handleRemoveEntry(index)}
                   className="
                     flex items-center justify-center w-10 h-10 rounded-button
-                    bg-white text-onyx hover:bg-gray-100 active:scale-[0.95]
+                    bg-glass-light text-onyx hover:bg-glass-medium active:scale-[0.95]
                     transition-all ml-3 flex-shrink-0
                   "
                   aria-label="Remove trade entry"
@@ -166,8 +166,8 @@ export default function ManpowerScreen({
                       disabled={entry.journeymanCount === 0}
                       className="
                         flex items-center justify-center w-14 h-14 rounded-button
-                        bg-gray-200 text-onyx font-semibold text-field-lg
-                        hover:bg-gray-300 active:scale-[0.95] transition-all
+                        bg-glass-medium text-onyx font-semibold text-field-lg
+                        hover:bg-glass-heavy active:scale-[0.95] transition-all
                         disabled:opacity-50 disabled:cursor-not-allowed
                       "
                       aria-label="Decrease journeyman count"
@@ -181,8 +181,8 @@ export default function ManpowerScreen({
                       onClick={() => handleIncrement(index, "journeymanCount")}
                       className="
                         flex items-center justify-center w-14 h-14 rounded-button
-                        bg-onyx text-white font-semibold text-field-lg
-                        hover:bg-slate active:scale-[0.95] transition-all
+                        bg-accent-violet text-white font-semibold text-field-lg
+                        hover:bg-accent-violet/80 active:scale-[0.95] transition-all
                       "
                       aria-label="Increase journeyman count"
                     >
@@ -202,8 +202,8 @@ export default function ManpowerScreen({
                       disabled={entry.apprenticeCount === 0}
                       className="
                         flex items-center justify-center w-14 h-14 rounded-button
-                        bg-gray-200 text-onyx font-semibold text-field-lg
-                        hover:bg-gray-300 active:scale-[0.95] transition-all
+                        bg-glass-medium text-onyx font-semibold text-field-lg
+                        hover:bg-glass-heavy active:scale-[0.95] transition-all
                         disabled:opacity-50 disabled:cursor-not-allowed
                       "
                       aria-label="Decrease apprentice count"
@@ -217,8 +217,8 @@ export default function ManpowerScreen({
                       onClick={() => handleIncrement(index, "apprenticeCount")}
                       className="
                         flex items-center justify-center w-14 h-14 rounded-button
-                        bg-onyx text-white font-semibold text-field-lg
-                        hover:bg-slate active:scale-[0.95] transition-all
+                        bg-accent-violet text-white font-semibold text-field-lg
+                        hover:bg-accent-violet/80 active:scale-[0.95] transition-all
                       "
                       aria-label="Increase apprentice count"
                     >
@@ -238,8 +238,8 @@ export default function ManpowerScreen({
                       disabled={entry.foremanCount === 0}
                       className="
                         flex items-center justify-center w-14 h-14 rounded-button
-                        bg-gray-200 text-onyx font-semibold text-field-lg
-                        hover:bg-gray-300 active:scale-[0.95] transition-all
+                        bg-glass-medium text-onyx font-semibold text-field-lg
+                        hover:bg-glass-heavy active:scale-[0.95] transition-all
                         disabled:opacity-50 disabled:cursor-not-allowed
                       "
                       aria-label="Decrease foreman count"
@@ -253,8 +253,8 @@ export default function ManpowerScreen({
                       onClick={() => handleIncrement(index, "foremanCount")}
                       className="
                         flex items-center justify-center w-14 h-14 rounded-button
-                        bg-onyx text-white font-semibold text-field-lg
-                        hover:bg-slate active:scale-[0.95] transition-all
+                        bg-accent-violet text-white font-semibold text-field-lg
+                        hover:bg-accent-violet/80 active:scale-[0.95] transition-all
                       "
                       aria-label="Increase foreman count"
                     >
@@ -279,7 +279,7 @@ export default function ManpowerScreen({
                       };
                       onEntriesChange(updated);
                     }}
-                    className="w-20 px-2 py-2 rounded-button border border-gray-200 text-field-base text-center font-semibold"
+                    className="w-20 px-2 py-2 rounded-button border border-white/[0.06] text-field-base text-center font-semibold bg-glass"
                     min="0"
                     step="0.5"
                   />
@@ -301,7 +301,7 @@ export default function ManpowerScreen({
                       };
                       onEntriesChange(updated);
                     }}
-                    className="w-20 px-2 py-2 rounded-button border border-gray-200 text-field-base text-center font-semibold"
+                    className="w-20 px-2 py-2 rounded-button border border-white/[0.06] text-field-base text-center font-semibold bg-glass"
                     min="0"
                     step="0.5"
                   />
@@ -353,13 +353,13 @@ export default function ManpowerScreen({
       </div>
 
       {/* Add Trade Button */}
-      <div className="px-4 py-4 border-t border-gray-200 bg-white">
+      <div className="px-4 py-4 border-t border-white/[0.06] bg-alabaster">
         <button
           onClick={() => setShowAddModal(true)}
           className="
             w-full flex items-center justify-center gap-2 px-6 py-4
-            rounded-button bg-onyx text-white text-field-base font-semibold
-            font-body transition-all active:scale-[0.98] hover:bg-slate
+            rounded-button bg-accent-violet text-white text-field-base font-semibold
+            font-body transition-all active:scale-[0.98] hover:bg-accent-violet/80
           "
         >
           <UserPlus size={24} />
@@ -371,11 +371,11 @@ export default function ManpowerScreen({
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-end">
           <div
-            className="w-full bg-white rounded-t-2xl shadow-lg max-h-[75vh] overflow-y-auto"
+            className="w-full bg-alabaster rounded-t-2xl shadow-lg max-h-[75vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-white px-4 py-4 border-b border-gray-200 flex items-center justify-between rounded-t-2xl">
+            <div className="sticky top-0 bg-alabaster px-4 py-4 border-b border-white/[0.06] flex items-center justify-between rounded-t-2xl">
               <h2 className="text-field-lg font-heading font-semibold text-onyx">
                 Select a Trade
               </h2>
@@ -383,7 +383,7 @@ export default function ManpowerScreen({
                 onClick={() => setShowAddModal(false)}
                 className="
                   flex items-center justify-center w-10 h-10 rounded-button
-                  bg-alabaster text-onyx hover:bg-gray-200 active:scale-[0.95]
+                  bg-glass text-onyx hover:bg-glass-light active:scale-[0.95]
                   transition-all
                 "
                 aria-label="Close modal"
@@ -407,9 +407,9 @@ export default function ManpowerScreen({
                     onClick={() => handleAddTrade(sub)}
                     className="
                       w-full text-left px-4 py-4 rounded-card
-                      bg-alabaster hover:bg-gray-200 active:bg-gray-300
+                      bg-glass hover:bg-glass-light active:bg-glass-medium
                       transition-all active:scale-[0.98]
-                      border border-gray-200
+                      border border-white/[0.06]
                     "
                   >
                     <h3 className="text-field-base font-heading font-semibold text-onyx mb-1">
@@ -429,13 +429,13 @@ export default function ManpowerScreen({
             </div>
 
             {/* Modal Footer with Close Button */}
-            <div className="sticky bottom-0 px-4 py-4 bg-white border-t border-gray-200">
+            <div className="sticky bottom-0 px-4 py-4 bg-alabaster border-t border-white/[0.06]">
               <button
                 onClick={() => setShowAddModal(false)}
                 className="
-                  w-full px-6 py-4 rounded-button bg-gray-200 text-onyx
+                  w-full px-6 py-4 rounded-button bg-glass-medium text-onyx
                   text-field-base font-semibold font-body transition-all
-                  active:scale-[0.98] hover:bg-gray-300
+                  active:scale-[0.98] hover:bg-glass-heavy
                 "
               >
                 Cancel

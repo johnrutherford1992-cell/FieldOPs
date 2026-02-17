@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Project, DailyJHA, DailyLog, DailyLogScreenId } from "./types";
+import type { Project, DailyJHA, DailyLog, DailyLogScreenId, TimeEntry } from "./types";
 
 // ============================================================
 // FieldOps Global State (Zustand)
@@ -31,6 +31,12 @@ interface AppState {
   // Settings
   claudeApiKey: string;
   setClaudeApiKey: (key: string) => void;
+
+  // Time tracking state
+  activeTimeEntries: TimeEntry[];
+  setActiveTimeEntries: (entries: TimeEntry[]) => void;
+  activeClockIns: Map<string, string>; // workerId → clockIn timestamp
+  setActiveClockIns: (clockIns: Map<string, string>) => void;
 
   // UI state
   isLoading: boolean;
@@ -71,6 +77,12 @@ export const useAppStore = create<AppState>((set) => ({
   // Settings
   claudeApiKey: "",
   setClaudeApiKey: (key) => set({ claudeApiKey: key }),
+
+  // Time tracking
+  activeTimeEntries: [],
+  setActiveTimeEntries: (entries) => set({ activeTimeEntries: entries }),
+  activeClockIns: new Map(),
+  setActiveClockIns: (clockIns) => set({ activeClockIns: clockIns }),
 
   // UI
   isLoading: false,

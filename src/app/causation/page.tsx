@@ -325,7 +325,7 @@ export default function CausationPage(): JSX.Element {
         <div className="space-y-3">
           <div className="grid grid-cols-3 gap-3">
             {/* Chains Found */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-card">
+            <div className="bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card">
               <p className="text-field-xs text-warm-gray mb-2">Chains Found</p>
               <p className="text-field-2xl font-bold text-onyx">{stats.totalChains}</p>
               <p className="text-field-xs text-warm-gray mt-1">
@@ -334,16 +334,16 @@ export default function CausationPage(): JSX.Element {
             </div>
 
             {/* Average Completeness */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-card">
+            <div className="bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card">
               <p className="text-field-xs text-warm-gray mb-2">Avg Completeness</p>
               <p className="text-field-2xl font-bold text-onyx">{stats.avgCompleteness}/5</p>
               <p className="text-field-xs text-warm-gray mt-1">steps documented</p>
             </div>
 
             {/* Documentation Gaps */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-card">
+            <div className="bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card">
               <p className="text-field-xs text-warm-gray mb-2">Gaps</p>
-              <p className="text-field-2xl font-bold text-red-600">{stats.documentationGaps}</p>
+              <p className="text-field-2xl font-bold text-accent-red">{stats.documentationGaps}</p>
               <p className="text-field-xs text-warm-gray mt-1">missing data</p>
             </div>
           </div>
@@ -357,8 +357,8 @@ export default function CausationPage(): JSX.Element {
             onClick={() => setState((prev) => ({ ...prev, filter: "all" }))}
             className={`px-4 py-2 rounded-lg text-field-xs font-semibold transition-colors ${
               state.filter === "all"
-                ? "bg-onyx text-white"
-                : "bg-white border border-gray-100 text-onyx hover:bg-gray-50"
+                ? "bg-accent-violet text-white"
+                : "bg-glass border border-white/[0.06] text-onyx hover:bg-glass-light"
             }`}
           >
             All Chains
@@ -367,8 +367,8 @@ export default function CausationPage(): JSX.Element {
             onClick={() => setState((prev) => ({ ...prev, filter: "with_notices" }))}
             className={`px-4 py-2 rounded-lg text-field-xs font-semibold transition-colors ${
               state.filter === "with_notices"
-                ? "bg-green-600 text-white"
-                : "bg-white border border-gray-100 text-onyx hover:bg-gray-50"
+                ? "bg-accent-green text-white"
+                : "bg-glass border border-white/[0.06] text-onyx hover:bg-glass-light"
             }`}
           >
             With Notices
@@ -377,8 +377,8 @@ export default function CausationPage(): JSX.Element {
             onClick={() => setState((prev) => ({ ...prev, filter: "missing_notices" }))}
             className={`px-4 py-2 rounded-lg text-field-xs font-semibold transition-colors ${
               state.filter === "missing_notices"
-                ? "bg-red-600 text-white"
-                : "bg-white border border-gray-100 text-onyx hover:bg-gray-50"
+                ? "bg-accent-red text-white"
+                : "bg-glass border border-white/[0.06] text-onyx hover:bg-glass-light"
             }`}
           >
             Missing Notices
@@ -410,15 +410,15 @@ export default function CausationPage(): JSX.Element {
             return (
               <div
                 key={chain.id}
-                className="bg-white border border-gray-100 rounded-xl shadow-card overflow-hidden"
+                className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card overflow-hidden"
               >
                 {/* Header / Trigger Event */}
                 <button
                   onClick={() => toggleExpanded(chain.id)}
-                  className="w-full p-5 flex items-start gap-4 hover:bg-gray-50 transition-colors text-left"
+                  className="w-full p-5 flex items-start gap-4 hover:bg-glass-light transition-colors text-left"
                 >
                   {/* Completeness Ring */}
-                  <div className={`flex-shrink-0 w-12 h-12 rounded-full ring-4 ${completenessRingColor} flex items-center justify-center bg-white`}>
+                  <div className={`flex-shrink-0 w-12 h-12 rounded-full ring-4 ${completenessRingColor} flex items-center justify-center bg-glass`}>
                     <div className="text-field-sm font-bold text-onyx">{chain.completenessScore}</div>
                   </div>
 
@@ -485,7 +485,7 @@ export default function CausationPage(): JSX.Element {
 
                 {/* Expanded Chain Timeline */}
                 {isExpanded && (
-                  <div className="border-t border-gray-100 p-5 space-y-6 bg-gray-50">
+                  <div className="border-t border-white/[0.06] p-5 space-y-6 bg-glass-light">
                     <ChainTimeline chain={chain} />
                   </div>
                 )}
@@ -510,8 +510,8 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
   // Step 1: Trigger Event
   const triggerTypeLabel = chain.type === "delay_event" ? "DELAY EVENT" :
                            chain.type === "change_order" ? "CHANGE ORDER" : "CONFLICT";
-  const triggerTypeBg = chain.type === "delay_event" ? "bg-amber-100" :
-                        chain.type === "change_order" ? "bg-blue-100" : "bg-red-100";
+  const triggerTypeBg = chain.type === "delay_event" ? "bg-accent-amber/10" :
+                        chain.type === "change_order" ? "bg-accent-violet/10" : "bg-accent-red/10";
 
   steps.push({
     step: 1,
@@ -519,7 +519,7 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
     completed: true,
     icon: <Clock className="w-4 h-4" />,
     content: (
-      <div className={`${triggerTypeBg} rounded-lg p-4 border border-gray-200`}>
+      <div className={`${triggerTypeBg} rounded-lg p-4 border border-white/[0.06]`}>
         <div className="flex items-center gap-2 mb-2">
           <span className={`text-field-xs font-bold px-2 py-1 rounded ${triggerTypeBg}`}>
             {triggerTypeLabel}
@@ -583,15 +583,15 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
       <div
         className={`rounded-lg p-4 border ${
           chain.relatedLogs.length > 0
-            ? "bg-green-50 border-green-200"
-            : "bg-red-50 border-red-200"
+            ? "bg-accent-green/10 border-white/[0.06]"
+            : "bg-accent-red/10 border-white/[0.06]"
         }`}
       >
         <div className="flex items-start gap-2 mb-2">
           {chain.relatedLogs.length > 0 ? (
-            <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="w-5 h-5 text-accent-green flex-shrink-0 mt-0.5" />
           ) : (
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 text-accent-red flex-shrink-0 mt-0.5" />
           )}
           <div className="flex-1">
             <p className="text-field-sm font-semibold text-onyx">
@@ -619,15 +619,15 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
       <div
         className={`rounded-lg p-4 border ${
           hasNotices
-            ? "bg-green-50 border-green-200"
-            : "bg-red-50 border-red-200"
+            ? "bg-accent-green/10 border-white/[0.06]"
+            : "bg-accent-red/10 border-white/[0.06]"
         }`}
       >
         <div className="flex items-start gap-2 mb-2">
           {hasNotices ? (
-            <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="w-5 h-5 text-accent-green flex-shrink-0 mt-0.5" />
           ) : (
-            <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="w-5 h-5 text-accent-red flex-shrink-0 mt-0.5" />
           )}
           <div className="flex-1">
             {hasNotices ? (
@@ -641,7 +641,7 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
                       Via {notice.deliveryMethod.replace(/_/g, " ")} to {notice.sentTo}
                     </p>
                     {notice.responseRequired && (
-                      <p className={notice.responseReceived ? "text-green-700" : "text-amber-700"}>
+                      <p className={notice.responseReceived ? "text-accent-green" : "text-accent-amber"}>
                         Response {notice.responseReceived ? "received" : "pending"}
                         {notice.responseDeadline && ` (due ${formatDate(notice.responseDeadline)})`}
                       </p>
@@ -650,7 +650,7 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
                 ))}
               </div>
             ) : (
-              <p className="text-field-sm font-semibold text-red-700">NO NOTICE SENT</p>
+              <p className="text-field-sm font-semibold text-accent-red">NO NOTICE SENT</p>
             )}
           </div>
         </div>
@@ -669,8 +669,8 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
       <div
         className={`rounded-lg p-4 border ${
           hasProductivityData
-            ? "bg-green-50 border-green-200"
-            : "bg-gray-50 border-gray-200"
+            ? "bg-accent-green/10 border-white/[0.06]"
+            : "bg-glass-light border-white/[0.06]"
         }`}
       >
         {hasProductivityData ? (
@@ -692,9 +692,9 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
               </div>
             )}
             {chain.productivityImpact?.productivityLoss && (
-              <div className="flex items-center justify-between text-field-xs pt-1 border-t border-green-200">
+              <div className="flex items-center justify-between text-field-xs pt-1 border-t border-white/[0.06]">
                 <span className="text-warm-gray">Lost productivity:</span>
-                <span className="font-bold text-red-600">
+                <span className="font-bold text-accent-red">
                   {chain.productivityImpact.productivityLoss.toFixed(1)}% decline
                 </span>
               </div>
@@ -702,7 +702,7 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
           </div>
         ) : (
           <div className="flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 text-white/[0.4] flex-shrink-0 mt-0.5" />
             <p className="text-field-sm text-warm-gray">No measured productivity data available</p>
           </div>
         )}
@@ -720,8 +720,8 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
       <div
         className={`rounded-lg p-4 border ${
           chain.estimatedCostImpact > 0
-            ? "bg-amber-50 border-amber-200"
-            : "bg-gray-50 border-gray-200"
+            ? "bg-accent-amber/10 border-white/[0.06]"
+            : "bg-glass-light border-white/[0.06]"
         }`}
       >
         <div className="space-y-2">
@@ -732,7 +732,7 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
             ${formatCurrency(chain.estimatedCostImpact)}
           </p>
           {chain.type === "delay_event" && (
-            <div className="text-field-xs text-warm-gray pt-2 border-t border-amber-200">
+            <div className="text-field-xs text-warm-gray pt-2 border-t border-white/[0.06]">
               <p>
                 Schedule impact: {(chain.triggerEvent as DelayEvent).calendarDaysImpacted || 0} calendar days
               </p>
@@ -748,18 +748,18 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
     <div className="space-y-4">
       <div className="relative">
         {/* Timeline connector */}
-        <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-300" />
+        <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-white/[0.2]" />
 
         {/* Steps */}
         {steps.map((step, idx) => (
           <div key={idx} className="relative pl-16">
             {/* Step dot */}
-            <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-white border-2 border-gray-300" />
+            <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-glass border-2 border-white/[0.2]" />
 
             {/* Step content */}
             <div className="pb-4">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-5 h-5 flex items-center justify-center text-gray-600">
+                <div className="w-5 h-5 flex items-center justify-center text-warm-gray">
                   {step.icon}
                 </div>
                 <h4 className="text-field-sm font-semibold text-onyx">
@@ -773,16 +773,16 @@ function ChainTimeline({ chain }: { chain: CausationChain }): JSX.Element {
       </div>
 
       {/* Completeness Indicator */}
-      <div className="bg-white border border-gray-200 rounded-lg p-3 mt-4">
+      <div className="bg-glass border border-white/[0.06] rounded-lg p-3 mt-4">
         <p className="text-field-xs text-warm-gray mb-2">Chain Strength: {chain.completenessScore}/5</p>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-white/[0.1] rounded-full h-2">
           <div
             className={`rounded-full h-2 transition-all ${
               chain.completenessScore >= 4
-                ? "bg-green-500"
+                ? "bg-accent-green"
                 : chain.completenessScore >= 2
-                  ? "bg-amber-500"
-                  : "bg-red-500"
+                  ? "bg-accent-amber"
+                  : "bg-accent-red"
             }`}
             style={{ width: `${(chain.completenessScore / 5) * 100}%` }}
           />

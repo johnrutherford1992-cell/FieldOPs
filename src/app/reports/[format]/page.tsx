@@ -220,7 +220,7 @@ export default function ReportPage() {
         <Header title={formatLabels[formatType]} backHref="/reports" />
         <div className="screen px-5 pt-6 pb-8">
           {/* Report Info Card */}
-          <div className="bg-alabaster rounded-lg p-6 mb-6 border border-gray-200">
+          <div className="bg-glass rounded-lg p-6 mb-6 border border-white/[0.06]">
             <div className="flex gap-3 mb-4">
               <FileBarChart className="w-6 h-6 text-onyx flex-shrink-0 mt-0.5" />
               <div>
@@ -235,7 +235,7 @@ export default function ReportPage() {
           </div>
 
           {/* Logs Summary */}
-          <div className="bg-white rounded-lg p-4 mb-6 border border-gray-200">
+          <div className="bg-glass rounded-lg p-4 mb-6 border border-white/[0.06]">
             <p className="text-sm text-warm-gray mb-2">Daily logs available for this week:</p>
             <p className="text-2xl font-semibold text-onyx">{logs.length}</p>
             <p className="text-xs text-warm-gray mt-1">
@@ -247,7 +247,7 @@ export default function ReportPage() {
 
           {/* API Key Note */}
           {!claudeApiKey && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <div className="bg-accent-amber/10 border border-white/[0.06] rounded-lg p-4 mb-6">
               <p className="text-sm text-warm-gray">
                 <strong>Demo Mode:</strong> No Claude API key configured. Reports will be
                 generated using mock data. Add your API key in Settings for AI-generated reports.
@@ -262,7 +262,7 @@ export default function ReportPage() {
             style={{
               minHeight: "56px",
             }}
-            className="w-full bg-onyx text-white font-semibold rounded-lg px-5 py-3 flex items-center justify-center gap-2 hover:bg-gray-900 active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-accent-violet text-white font-semibold rounded-lg px-5 py-3 flex items-center justify-center gap-2 hover:bg-accent-violet/80 active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
@@ -293,7 +293,7 @@ export default function ReportPage() {
             style={{
               minHeight: "56px",
             }}
-            className="flex-1 bg-alabaster text-onyx border border-gray-300 font-semibold rounded-lg px-3 py-3 flex items-center justify-center gap-2 hover:bg-gray-100 active:scale-95 transition-transform"
+            className="flex-1 bg-glass text-onyx border border-white/[0.06] font-semibold rounded-lg px-3 py-3 flex items-center justify-center gap-2 hover:bg-glass-light active:scale-95 transition-transform"
             title="Export as PDF"
           >
             <Download className="w-5 h-5" />
@@ -305,7 +305,7 @@ export default function ReportPage() {
             style={{
               minHeight: "56px",
             }}
-            className="flex-1 bg-alabaster text-onyx border border-gray-300 font-semibold rounded-lg px-3 py-3 flex items-center justify-center gap-2 hover:bg-gray-100 active:scale-95 transition-transform"
+            className="flex-1 bg-glass text-onyx border border-white/[0.06] font-semibold rounded-lg px-3 py-3 flex items-center justify-center gap-2 hover:bg-glass-light active:scale-95 transition-transform"
             title="Print report"
           >
             <Printer className="w-5 h-5" />
@@ -317,7 +317,7 @@ export default function ReportPage() {
             style={{
               minHeight: "56px",
             }}
-            className="flex-1 bg-alabaster text-onyx border border-gray-300 font-semibold rounded-lg px-3 py-3 flex items-center justify-center gap-2 hover:bg-gray-100 active:scale-95 transition-transform"
+            className="flex-1 bg-glass text-onyx border border-white/[0.06] font-semibold rounded-lg px-3 py-3 flex items-center justify-center gap-2 hover:bg-glass-light active:scale-95 transition-transform"
             title="Generate new report"
           >
             <RefreshCw className="w-5 h-5" />
@@ -326,7 +326,7 @@ export default function ReportPage() {
         </div>
 
         {/* Report Container */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-glass rounded-lg border border-white/[0.06] overflow-hidden">
           <div
             className="p-6 prose prose-sm max-w-none"
             dangerouslySetInnerHTML={{ __html: reportHtml }}

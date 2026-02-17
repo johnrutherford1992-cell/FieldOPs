@@ -1,22 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================================
-   BLACKSTONE CONSTRUCTION — FieldOps Design System
-   Brand: Onyx #000000 / Alabaster #f2f0e6 / Slate #2d2d2f
+   FIELDOPS — OBSIDIAN GLASS Design System
+   Theme: Dark charcoal gradient + glass morphism + violet/teal accents
    ============================================================ */
 
 @layer base {
   :root {
-    /* Brand tokens */
-    --color-onyx: #000000;
-    --color-alabaster: #f2f0e6;
-    --color-slate: #2d2d2f;
-    --color-warm-gray: #8c8c8c;
-    --color-accent-green: #2d8a4e;
-    --color-accent-amber: #d4a017;
-    --color-accent-red: #c0392b;
+    /* Brand tokens — Obsidian Glass */
+    --color-obsidian: #1a1a2e;
+    --color-obsidian-deep: #0f1525;
+    --color-obsidian-light: #16213e;
+    --color-accent-violet: #8b5cf6;
+    --color-accent-teal: #14b8a6;
+    --color-accent-amber: #eab308;
+    --color-accent-pink: #ec4899;
+    --color-text-primary: #e2e8f0;
+    --color-text-secondary: #94a3b8;
+    --color-text-muted: #64748b;
 
     /* Layout */
     --nav-height: 72px;
@@ -25,49 +30,80 @@
   }
 
   html {
-    /* Prevent iOS zoom on input focus (minimum 16px font) */
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
   }
 
   body {
-    @apply font-body text-onyx bg-white antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #e2e8f0;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     padding-bottom: var(--safe-area-bottom);
     overscroll-behavior: none;
   }
 
   *:focus-visible {
-    @apply outline-2 outline-offset-2 outline-onyx;
+    @apply outline-2 outline-offset-2 outline-accent-violet;
   }
 
   * {
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Scrollbar styling for dark theme */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.2);
+  }
 }
 
 @layer components {
+  /* ---- Glass Card System ---- */
+  .glass-card {
+    @apply bg-glass border border-white/[0.06] rounded-xl shadow-glass-card backdrop-blur-sm;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300;
+  }
+  .glass-card-hover:hover {
+    @apply border-white/[0.12] shadow-glass-glow;
+  }
+
   /* ---- Big Button Card ---- */
   .big-button {
     @apply relative flex items-center w-full min-h-[72px] px-5 py-4
-           bg-white border border-gray-100 rounded-xl shadow-card
-           transition-all duration-150 ease-out
+           bg-glass border border-white/[0.06] rounded-xl shadow-glass-card
+           transition-all duration-200 ease-out backdrop-blur-sm
            active:scale-[0.98] active:shadow-none;
   }
 
   .big-button:hover {
-    @apply shadow-card-hover;
+    @apply shadow-glass-glow border-white/[0.12];
   }
 
   .big-button-dark {
     @apply relative flex items-center w-full min-h-[72px] px-5 py-4
-           bg-onyx text-white border border-slate rounded-xl shadow-card
-           transition-all duration-150 ease-out
+           bg-gradient-violet text-white border border-accent-violet/30 rounded-xl
+           shadow-violet-glow transition-all duration-200 ease-out
            active:scale-[0.98];
   }
 
   /* ---- Section Header ---- */
   .section-header {
-    @apply font-heading text-field-lg font-medium text-onyx tracking-wide uppercase;
+    @apply font-heading text-field-xs font-medium text-warm-gray tracking-[0.15em] uppercase;
   }
 
   /* ---- Status Badges ---- */
@@ -75,29 +111,29 @@
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
   }
   .badge-green {
-    @apply badge bg-green-50 text-accent-green;
+    @apply badge bg-accent-green/15 text-accent-green;
   }
   .badge-amber {
-    @apply badge bg-amber-50 text-accent-amber;
+    @apply badge bg-accent-amber/15 text-accent-amber;
   }
   .badge-red {
-    @apply badge bg-red-50 text-accent-red;
+    @apply badge bg-accent-red/15 text-accent-red;
   }
   .badge-gray {
-    @apply badge bg-gray-100 text-warm-gray;
+    @apply badge bg-glass-medium text-warm-gray;
   }
 
-  /* ---- Form inputs (field-optimized) ---- */
+  /* ---- Form inputs (field-optimized, dark theme) ---- */
   .field-input {
     @apply w-full min-h-[56px] px-4 py-3 text-field-base
-           bg-white border border-gray-200 rounded-lg
-           focus:border-onyx focus:ring-1 focus:ring-onyx
+           bg-glass border border-white/[0.08] rounded-lg text-onyx
+           focus:border-accent-violet focus:ring-1 focus:ring-accent-violet
            placeholder:text-warm-gray;
   }
 
   .field-select {
     @apply field-input appearance-none bg-no-repeat;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238c8c8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 12px center;
     background-size: 20px;
     padding-right: 40px;
@@ -114,65 +150,65 @@
   /* ---- Buttons ---- */
   .btn-primary {
     @apply flex items-center justify-center gap-2 w-full min-h-[56px]
-           px-6 py-3 bg-onyx text-white text-field-base font-medium
-           rounded-lg transition-all duration-150
-           active:scale-[0.98] active:bg-slate
+           px-6 py-3 bg-gradient-violet text-white text-field-base font-medium
+           rounded-lg transition-all duration-200 shadow-violet-glow
+           active:scale-[0.98] active:opacity-90
            disabled:opacity-40 disabled:pointer-events-none;
   }
 
   .btn-secondary {
     @apply flex items-center justify-center gap-2 w-full min-h-[56px]
-           px-6 py-3 bg-alabaster text-onyx text-field-base font-medium
-           border border-gray-200 rounded-lg transition-all duration-150
-           active:scale-[0.98] active:bg-gray-100
+           px-6 py-3 bg-glass text-onyx text-field-base font-medium
+           border border-white/[0.08] rounded-lg transition-all duration-200
+           active:scale-[0.98] active:bg-glass-medium
            disabled:opacity-40 disabled:pointer-events-none;
   }
 
   .btn-outline {
     @apply flex items-center justify-center gap-2 w-full min-h-[56px]
-           px-6 py-3 bg-transparent text-onyx text-field-base font-medium
-           border-2 border-onyx rounded-lg transition-all duration-150
-           active:scale-[0.98] active:bg-onyx active:text-white
+           px-6 py-3 bg-transparent text-accent-violet text-field-base font-medium
+           border-2 border-accent-violet rounded-lg transition-all duration-200
+           active:scale-[0.98] active:bg-accent-violet active:text-white
            disabled:opacity-40 disabled:pointer-events-none;
   }
 
   /* ---- Cards ---- */
   .card {
-    @apply bg-white border border-gray-100 rounded-xl shadow-card p-5;
+    @apply bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-5 backdrop-blur-sm;
   }
 
   .card-alabaster {
-    @apply bg-alabaster border border-gray-100 rounded-xl p-5;
+    @apply bg-glass-light border border-white/[0.06] rounded-xl p-5 backdrop-blur-sm;
   }
 
   /* ---- Bottom navigation ---- */
   .bottom-nav {
     @apply fixed bottom-0 left-0 right-0 z-50
            flex items-stretch justify-around
-           bg-white border-t border-gray-200 shadow-nav;
+           bg-obsidian-deep/95 backdrop-blur-md border-t border-white/[0.06] shadow-nav;
     height: var(--nav-height);
     padding-bottom: var(--safe-area-bottom);
   }
 
   .bottom-nav-item {
     @apply flex flex-col items-center justify-center gap-0.5
-           flex-1 py-2 text-warm-gray transition-colors duration-150
+           flex-1 py-2 text-warm-gray transition-colors duration-200
            no-underline;
   }
 
   .bottom-nav-item-active {
     @apply flex flex-col items-center justify-center gap-0.5
-           flex-1 py-2 text-onyx transition-colors duration-150
+           flex-1 py-2 text-accent-violet transition-colors duration-200
            no-underline;
   }
 
   /* ---- Progress bar ---- */
   .progress-track {
-    @apply w-full h-1.5 bg-gray-100 rounded-full overflow-hidden;
+    @apply w-full h-1.5 bg-glass-medium rounded-full overflow-hidden;
   }
 
   .progress-fill {
-    @apply h-full bg-onyx rounded-full transition-all duration-500 ease-out;
+    @apply h-full bg-gradient-violet rounded-full transition-all duration-500 ease-out;
   }
 
   /* ---- Screen container ---- */
@@ -182,19 +218,24 @@
   }
 
   .screen-header {
-    @apply sticky top-0 z-40 bg-white/95 backdrop-blur-sm
-           border-b border-gray-100 px-5 py-3;
+    @apply sticky top-0 z-40 bg-obsidian/90 backdrop-blur-md
+           border-b border-white/[0.06] px-5 py-3;
+  }
+
+  /* ---- Gradient dividers ---- */
+  .divider-gradient {
+    @apply h-px bg-gradient-divider;
   }
 }
 
 /* ============================================================
    JHA & Toolbox Talk Rendered Content Styles
-   Applied to AI-generated HTML output
+   Applied to AI-generated HTML output — dark theme
    ============================================================ */
 
 .jha-rendered-content h2,
 .toolbox-rendered-content h2 {
-  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-gray-100;
+  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-white/[0.06];
 }
 
 .jha-rendered-content h2:first-child,
@@ -220,7 +261,7 @@
 .jha-rendered-content ul li::before,
 .toolbox-rendered-content ul li::before {
   content: "";
-  @apply absolute left-0 top-[10px] w-2 h-2 bg-onyx rounded-full;
+  @apply absolute left-0 top-[10px] w-2 h-2 bg-accent-violet rounded-full;
 }
 
 .jha-rendered-content table.jha-table,
@@ -229,7 +270,7 @@
 }
 
 .jha-rendered-content table thead th {
-  @apply text-left text-sm font-medium text-white bg-onyx px-4 py-3;
+  @apply text-left text-sm font-medium text-white bg-accent-violet/80 px-4 py-3;
 }
 
 .jha-rendered-content table thead th:first-child {
@@ -241,11 +282,11 @@
 }
 
 .jha-rendered-content table tbody td {
-  @apply text-sm text-slate px-4 py-3 border-b border-gray-100 align-top;
+  @apply text-sm text-slate px-4 py-3 border-b border-white/[0.06] align-top;
 }
 
 .jha-rendered-content table tbody tr:nth-child(even) td {
-  @apply bg-alabaster;
+  @apply bg-glass;
 }
 
 .jha-rendered-content table tbody tr:last-child td {
@@ -264,7 +305,7 @@
 
 .jha-rendered-content .jha-note,
 .toolbox-rendered-content .toolbox-note {
-  @apply text-sm text-warm-gray italic mt-6 pt-4 border-t border-gray-100;
+  @apply text-sm text-warm-gray italic mt-6 pt-4 border-t border-white/[0.06];
 }
 
 .toolbox-rendered-content .toolbox-subtitle {
@@ -272,7 +313,7 @@
 }
 
 .toolbox-rendered-content .toolbox-focus {
-  @apply text-lg text-center py-4 px-6 bg-alabaster rounded-xl;
+  @apply text-lg text-center py-4 px-6 bg-glass rounded-xl text-onyx;
 }
 
 /* ============================================================
@@ -285,7 +326,7 @@
 }
 
 .report-rendered-content h2 {
-  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-gray-100;
+  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-white/[0.06];
 }
 
 .report-rendered-content p {
@@ -297,15 +338,15 @@
 }
 
 .report-rendered-content table th {
-  @apply text-left font-medium text-white bg-onyx px-3 py-2;
+  @apply text-left font-medium text-white bg-accent-violet/80 px-3 py-2;
 }
 
 .report-rendered-content table td {
-  @apply px-3 py-2 border-b border-gray-100 align-top;
+  @apply px-3 py-2 border-b border-white/[0.06] align-top text-slate;
 }
 
 .report-rendered-content table tr:nth-child(even) td {
-  @apply bg-alabaster;
+  @apply bg-glass;
 }
 
 .report-rendered-content ul {
@@ -341,11 +382,11 @@
 
   /* Page transitions */
   .animate-fade-in {
-    animation: fadeIn 0.2s ease-out;
+    animation: fadeIn 0.3s ease-out;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.25s ease-out;
+    animation: slideUp 0.3s ease-out;
   }
 
   @keyframes fadeIn {

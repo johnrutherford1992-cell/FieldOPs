@@ -23,7 +23,7 @@ export default function ToolboxTalkDisplay({
   return (
     <div className="space-y-4">
       {/* Document header */}
-      <div className="bg-slate text-white rounded-xl p-5">
+      <div className="bg-accent-violet text-white rounded-xl p-5">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
             <MessageSquare className="w-5 h-5" />
@@ -51,7 +51,7 @@ export default function ToolboxTalkDisplay({
         {onExportPDF && (
           <button
             onClick={onExportPDF}
-            className="flex-1 flex items-center justify-center gap-2 min-h-[48px] bg-alabaster text-onyx rounded-lg text-sm font-medium active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center gap-2 min-h-[48px] bg-glass text-onyx rounded-lg text-sm font-medium active:scale-[0.98] transition-transform"
           >
             <Download className="w-4 h-4" />
             Export PDF
@@ -59,7 +59,7 @@ export default function ToolboxTalkDisplay({
         )}
         <button
           onClick={() => window.print()}
-          className="flex-1 flex items-center justify-center gap-2 min-h-[48px] bg-alabaster text-onyx rounded-lg text-sm font-medium active:scale-[0.98] transition-transform"
+          className="flex-1 flex items-center justify-center gap-2 min-h-[48px] bg-glass text-onyx rounded-lg text-sm font-medium active:scale-[0.98] transition-transform"
         >
           <Printer className="w-4 h-4" />
           Print
@@ -68,7 +68,7 @@ export default function ToolboxTalkDisplay({
 
       {/* Rendered Toolbox Talk content */}
       <div
-        className="toolbox-rendered-content bg-white border border-gray-100 rounded-xl p-5 overflow-x-auto"
+        className="toolbox-rendered-content bg-glass border border-white/[0.06] rounded-xl p-5 overflow-x-auto"
         dangerouslySetInnerHTML={{ __html: htmlContent }}
       />
     </div>

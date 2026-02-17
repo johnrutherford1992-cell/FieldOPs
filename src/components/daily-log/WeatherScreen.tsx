@@ -137,8 +137,8 @@ export default function WeatherScreen({
                 transition-all duration-150 font-body text-field-base font-medium
                 ${
                   weather.conditions === option.id
-                    ? "bg-onyx text-white shadow-card-active"
-                    : "bg-white text-onyx border border-gray-200 hover:border-gray-300"
+                    ? "bg-accent-violet text-white shadow-card-active"
+                    : "bg-glass text-onyx border border-white/[0.06] hover:border-white/[0.08]"
                 }
               `}
             >
@@ -175,8 +175,8 @@ export default function WeatherScreen({
               transition-all duration-150
               ${
                 temperatureUnit === "F"
-                  ? "bg-onyx text-white"
-                  : "bg-white border border-gray-200 text-onyx hover:border-gray-300"
+                  ? "bg-accent-violet text-white"
+                  : "bg-glass border border-white/[0.06] text-onyx hover:border-white/[0.08]"
               }
             `}
           >
@@ -200,8 +200,8 @@ export default function WeatherScreen({
               border-2 font-body
               ${
                 weather.impact === "full_day"
-                  ? "bg-accent-green bg-opacity-10 border-accent-green shadow-card-active"
-                  : "bg-white border-gray-200 hover:border-accent-green"
+                  ? "bg-accent-green/15 border-accent-green shadow-card-active"
+                  : "bg-glass border-white/[0.06] hover:border-accent-green"
               }
             `}
           >
@@ -224,8 +224,8 @@ export default function WeatherScreen({
               border-2 font-body
               ${
                 weather.impact === "partial_delay"
-                  ? "bg-accent-amber bg-opacity-10 border-accent-amber shadow-card-active"
-                  : "bg-white border-gray-200 hover:border-accent-amber"
+                  ? "bg-accent-amber/15 border-accent-amber shadow-card-active"
+                  : "bg-glass border-white/[0.06] hover:border-accent-amber"
               }
             `}
           >
@@ -248,8 +248,8 @@ export default function WeatherScreen({
               border-2 font-body
               ${
                 weather.impact === "weather_day"
-                  ? "bg-accent-red bg-opacity-10 border-accent-red shadow-card-active"
-                  : "bg-white border-gray-200 hover:border-accent-red"
+                  ? "bg-accent-red/15 border-accent-red shadow-card-active"
+                  : "bg-glass border-white/[0.06] hover:border-accent-red"
               }
             `}
           >
@@ -275,7 +275,7 @@ export default function WeatherScreen({
             <button
               onClick={() => adjustHoursLost(-0.5)}
               disabled={weather.impact === "weather_day" || (weather.hoursLost || 0) <= 0.5}
-              className="min-h-[56px] min-w-[56px] rounded-button bg-white border border-gray-200 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all"
+              className="min-h-[56px] min-w-[56px] rounded-button bg-glass border border-white/[0.06] hover:border-white/[0.08] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all"
             >
               <Minus size={20} className="text-onyx" />
             </button>
@@ -305,7 +305,7 @@ export default function WeatherScreen({
             <button
               onClick={() => adjustHoursLost(0.5)}
               disabled={weather.impact === "weather_day" || (weather.hoursLost || 0) >= 8}
-              className="min-h-[56px] min-w-[56px] rounded-button bg-white border border-gray-200 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all"
+              className="min-h-[56px] min-w-[56px] rounded-button bg-glass border border-white/[0.06] hover:border-white/[0.08] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all"
             >
               <Plus size={20} className="text-onyx" />
             </button>
@@ -332,16 +332,16 @@ export default function WeatherScreen({
                     font-body text-field-base
                     ${
                       isSelected
-                        ? "bg-onyx text-white"
-                        : "bg-white border border-gray-200 text-onyx hover:border-gray-300"
+                        ? "bg-accent-violet text-white"
+                        : "bg-glass border border-white/[0.06] text-onyx hover:border-white/[0.08]"
                     }
                   `}
                 >
                   <div
                     className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                       isSelected
-                        ? "bg-onyx border-onyx"
-                        : "border-gray-300 bg-white"
+                        ? "bg-accent-violet border-accent-violet"
+                        : "border-white/[0.10] bg-glass"
                     }`}
                   >
                     {isSelected && <Check size={16} className="text-white" />}
@@ -359,7 +359,7 @@ export default function WeatherScreen({
       <section className="mb-8">
         <button
           onClick={() => setShowDetailedConditions(!showDetailedConditions)}
-          className="w-full flex items-center justify-between px-4 py-3 rounded-card bg-white border border-gray-200 hover:border-gray-300 transition-all mb-4"
+          className="w-full flex items-center justify-between px-4 py-3 rounded-card bg-glass border border-white/[0.06] hover:border-white/[0.08] transition-all mb-4"
         >
           <h2 className="font-heading text-lg font-medium text-onyx">
             Detailed Conditions
@@ -373,7 +373,7 @@ export default function WeatherScreen({
         </button>
 
         {showDetailedConditions && (
-          <div className="space-y-4 bg-alabaster rounded-card p-4 border border-gray-200">
+          <div className="space-y-4 bg-glass rounded-card p-4 border border-white/[0.06]">
             {/* Humidity Slider */}
             <div>
               <label className="block text-field-sm font-semibold text-onyx mb-2">
@@ -388,7 +388,7 @@ export default function WeatherScreen({
                   const value = parseInt(e.target.value, 10);
                   onWeatherChange({ ...weather, humidity: value });
                 }}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 bg-glass-medium rounded-lg appearance-none cursor-pointer"
               />
               <div className="text-field-sm text-warm-gray mt-1 text-center">
                 {weather.humidity ?? 50}%
@@ -433,8 +433,8 @@ export default function WeatherScreen({
                     }}
                     className={`py-2 px-1 rounded-button text-field-sm font-semibold transition-all ${
                       weather.windDirection === dir
-                        ? "bg-onyx text-white"
-                        : "bg-white border border-gray-200 text-onyx hover:border-gray-300"
+                        ? "bg-accent-violet text-white"
+                        : "bg-glass border border-white/[0.06] text-onyx hover:border-white/[0.08]"
                     }`}
                   >
                     {dir}
@@ -463,8 +463,8 @@ export default function WeatherScreen({
                     }}
                     className={`py-2 px-3 rounded-button text-field-sm font-medium transition-all capitalize ${
                       weather.precipitationType === type
-                        ? "bg-onyx text-white"
-                        : "bg-white border border-gray-200 text-onyx hover:border-gray-300"
+                        ? "bg-accent-violet text-white"
+                        : "bg-glass border border-white/[0.06] text-onyx hover:border-white/[0.08]"
                     }`}
                   >
                     {type}
@@ -520,8 +520,8 @@ export default function WeatherScreen({
                     }}
                     className={`py-2 px-3 rounded-button text-field-sm font-medium transition-all capitalize ${
                       weather.groundConditions === condition
-                        ? "bg-onyx text-white"
-                        : "bg-white border border-gray-200 text-onyx hover:border-gray-300"
+                        ? "bg-accent-violet text-white"
+                        : "bg-glass border border-white/[0.06] text-onyx hover:border-white/[0.08]"
                     }`}
                   >
                     {condition.replace("_", " ")}

@@ -199,8 +199,8 @@ export default function ChangeOrdersPage() {
         <div className="screen">
           <Header title="Change Order Draft" backHref="/reports/change-orders" />
 
-          <div className="overflow-auto flex-1 bg-alabaster">
-            <div className="max-w-3xl mx-auto p-5 bg-white rounded-lg m-5 shadow-sm">
+          <div className="overflow-auto flex-1 bg-obsidian">
+            <div className="max-w-3xl mx-auto p-5 bg-glass rounded-lg m-5 shadow-sm">
               <div
                 dangerouslySetInnerHTML={{ __html: draftHTML }}
                 className="prose prose-sm max-w-none"
@@ -209,20 +209,20 @@ export default function ChangeOrdersPage() {
           </div>
 
           {/* Action buttons */}
-          <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 flex gap-3 safe-area-inset-bottom">
+          <div className="sticky bottom-0 bg-glass border-t border-white/[0.06] p-4 flex gap-3 safe-area-inset-bottom">
             <button
               onClick={() => {
                 setDraftHTML("");
                 setSelectedChangeIndex(null);
               }}
-              className="flex-1 h-14 flex items-center justify-center gap-2 rounded-lg border border-onyx text-onyx font-semibold text-field-base transition-colors active:scale-95 hover:bg-gray-50"
+              className="flex-1 h-14 flex items-center justify-center gap-2 rounded-lg border border-accent-violet text-accent-violet font-semibold text-field-base transition-colors active:scale-95 hover:bg-glass-light"
             >
               <ArrowLeft className="w-5 h-5" />
               Back to List
             </button>
             <button
               onClick={handlePrint}
-              className="flex-1 h-14 flex items-center justify-center gap-2 rounded-lg bg-onyx text-white font-semibold text-field-base transition-colors active:scale-95 hover:bg-slate"
+              className="flex-1 h-14 flex items-center justify-center gap-2 rounded-lg bg-accent-violet text-white font-semibold text-field-base transition-colors active:scale-95 hover:bg-accent-violet/80"
             >
               <Printer className="w-5 h-5" />
               Print
@@ -317,7 +317,7 @@ function ChangeItemCard({
     change.change.initiatedBy.slice(1).replace("_", " ");
 
   return (
-    <div className="border border-gray-200 rounded-lg bg-white p-4">
+    <div className="border border-white/[0.06] rounded-lg bg-glass p-4">
       {/* Header row with date and status */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
@@ -332,8 +332,8 @@ function ChangeItemCard({
           <span
             className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
               statusLabel === "New"
-                ? "bg-blue-100 text-blue-900"
-                : "bg-green-100 text-green-900"
+                ? "bg-accent-violet/15 text-accent-violet"
+                : "bg-accent-green/15 text-accent-green"
             }`}
           >
             {statusLabel}
@@ -344,7 +344,7 @@ function ChangeItemCard({
       {/* Badges row */}
       <div className="flex flex-wrap gap-2 mb-3">
         {/* Initiator badge */}
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-onyx">
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white/[0.1] text-onyx">
           {initiatorLabel}
         </span>
 
@@ -396,7 +396,7 @@ function ChangeItemCard({
       <button
         onClick={change.existingCO ? onView : onDraft}
         disabled={isLoading}
-        className="w-full h-14 flex items-center justify-center gap-2 rounded-lg bg-onyx text-white font-semibold text-field-base transition-colors active:scale-95 hover:bg-slate disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full h-14 flex items-center justify-center gap-2 rounded-lg bg-accent-violet text-white font-semibold text-field-base transition-colors active:scale-95 hover:bg-accent-violet/80 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <>

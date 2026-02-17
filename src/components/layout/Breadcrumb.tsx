@@ -31,7 +31,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
                 disabled={isLast && !item.onClick}
                 className={`text-sm transition-colors px-1 ${
                   isLast
-                    ? "font-semibold text-black cursor-default"
+                    ? "font-semibold text-onyx cursor-default"
                     : "font-medium text-warm-gray hover:text-onyx active:scale-95 cursor-pointer"
                 }`}
               >

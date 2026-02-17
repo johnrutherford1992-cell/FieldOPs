@@ -173,11 +173,11 @@ export default function SignaturePad({
             {signatures.map((sig, index) => (
               <div
                 key={index}
-                className="p-4 rounded-card bg-surface-elevated border border-gray-200"
+                className="p-4 rounded-card bg-glass-light border border-white/[0.06]"
               >
                 <div className="flex items-start gap-4">
                   {/* Signature Preview */}
-                  <div className="flex-shrink-0 w-20 h-10 rounded-md border border-gray-300 bg-white overflow-hidden">
+                  <div className="flex-shrink-0 w-20 h-10 rounded-md border border-white/[0.1] bg-white overflow-hidden">
                     <img
                       src={sig.signatureData}
                       alt={`Signature by ${sig.name}`}
@@ -208,7 +208,7 @@ export default function SignaturePad({
       <button
         onClick={() => setShowModal(true)}
         className="
-          w-full min-h-[56px] rounded-card bg-onyx text-white
+          w-full min-h-[56px] rounded-card bg-accent-violet text-white
           font-semibold font-body text-field-base transition-all
           hover:bg-slate active:scale-[0.98]
           flex items-center justify-center gap-2
@@ -229,7 +229,7 @@ export default function SignaturePad({
               </h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-glass-light rounded-lg transition-colors"
               >
                 <X size={20} className="text-onyx" />
               </button>
@@ -250,7 +250,7 @@ export default function SignaturePad({
                   className="
                     w-full px-4 py-3 rounded-card border border-gray-200
                     text-field-base font-body text-onyx
-                    focus:outline-none focus:ring-2 focus:ring-onyx focus:border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-accent-violet focus:border-transparent
                     placeholder-warm-gray
                   "
                 />
@@ -269,7 +269,7 @@ export default function SignaturePad({
                   className="
                     w-full px-4 py-3 rounded-card border border-gray-200
                     text-field-base font-body text-onyx
-                    focus:outline-none focus:ring-2 focus:ring-onyx focus:border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-accent-violet focus:border-transparent
                     placeholder-warm-gray
                   "
                 />
@@ -280,7 +280,7 @@ export default function SignaturePad({
                 <label className="block text-field-base font-semibold text-onyx mb-2">
                   Signature
                 </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-card bg-gray-50 p-0 overflow-hidden">
+                <div className="border-2 border-dashed border-white/[0.1] rounded-card bg-glass-light p-0 overflow-hidden">
                   <canvas
                     ref={canvasRef}
                     onMouseDown={startDrawing}
@@ -304,7 +304,7 @@ export default function SignaturePad({
                 <button
                   onClick={handleClearCanvas}
                   className="
-                    flex-1 min-h-[48px] rounded-card bg-alabaster text-onyx
+                    flex-1 min-h-[48px] rounded-card bg-glass text-onyx
                     font-semibold font-body text-field-base transition-all
                     hover:bg-gray-200 active:scale-[0.98]
                     flex items-center justify-center gap-2

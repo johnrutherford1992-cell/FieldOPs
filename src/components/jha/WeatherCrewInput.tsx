@@ -97,8 +97,8 @@ export default function WeatherCrewInput({
                   text-field-sm transition-all active:scale-[0.98]
                   ${
                     isActive
-                      ? "bg-onyx text-white"
-                      : "bg-alabaster text-onyx hover:bg-gray-200"
+                      ? "bg-accent-violet text-white"
+                      : "bg-glass text-onyx hover:bg-glass-light"
                   }
                 `}
               >
@@ -121,9 +121,9 @@ export default function WeatherCrewInput({
             value={weather.temperature}
             onChange={(e) => handleTemperatureChange(e.target.value)}
             className="
-              flex-1 px-4 py-3 rounded-card border border-gray-200
+              flex-1 px-4 py-3 rounded-card border border-white/[0.06]
               text-field-base font-body text-onyx
-              focus:outline-none focus:ring-2 focus:ring-onyx focus:border-transparent
+              focus:outline-none focus:ring-2 focus:ring-accent-violet focus:border-transparent
               placeholder-warm-gray
             "
             placeholder="Enter temp"
@@ -146,8 +146,8 @@ export default function WeatherCrewInput({
             onClick={handleCrewSizeDecrement}
             className="
               flex items-center justify-center w-14 h-14 rounded-card
-              bg-alabaster text-onyx font-semibold text-field-lg
-              hover:bg-gray-200 active:scale-[0.95] transition-all
+              bg-glass text-onyx font-semibold text-field-lg
+              hover:bg-glass-light active:scale-[0.95] transition-all
             "
             aria-label="Decrease crew size"
           >
@@ -159,9 +159,9 @@ export default function WeatherCrewInput({
             value={crewSize}
             onChange={(e) => handleCrewSizeChange(e.target.value)}
             className="
-              flex-1 px-4 py-3 rounded-card border border-gray-200
+              flex-1 px-4 py-3 rounded-card border border-white/[0.06]
               text-field-xl font-semibold font-body text-onyx text-center
-              focus:outline-none focus:ring-2 focus:ring-onyx focus:border-transparent
+              focus:outline-none focus:ring-2 focus:ring-accent-violet focus:border-transparent
             "
             placeholder="0"
             min="0"
@@ -171,7 +171,7 @@ export default function WeatherCrewInput({
             onClick={handleCrewSizeIncrement}
             className="
               flex items-center justify-center w-14 h-14 rounded-card
-              bg-onyx text-white font-semibold text-field-lg
+              bg-accent-violet text-white font-semibold text-field-lg
               hover:bg-slate active:scale-[0.95] transition-all
             "
             aria-label="Increase crew size"
@@ -191,9 +191,9 @@ export default function WeatherCrewInput({
           onChange={(e) => onSiteNotesChange(e.target.value)}
           placeholder="Any site-specific notes (crane on-site, occupied building, etc.)"
           className="
-            w-full px-4 py-3 rounded-card border border-gray-200
+            w-full px-4 py-3 rounded-card border border-white/[0.06]
             text-field-base font-body text-onyx
-            focus:outline-none focus:ring-2 focus:ring-onyx focus:border-transparent
+            focus:outline-none focus:ring-2 focus:ring-accent-violet focus:border-transparent
             placeholder-warm-gray
             resize-none
             min-h-[120px]

@@ -248,10 +248,10 @@ export default function LegalPage() {
           <Header title="Legal Correspondence" backHref="/reports" />
 
           {/* Tab buttons */}
-          <div className="flex gap-2 px-5 pt-5 border-b border-gray-100">
+          <div className="flex gap-2 px-5 pt-5 border-b border-white/[0.06]">
             <button
               onClick={() => setView("compose")}
-              className="flex-1 pb-4 font-heading font-semibold text-field-base transition-colors text-onyx border-b-2 border-onyx"
+              className="flex-1 pb-4 font-heading font-semibold text-field-base transition-colors text-onyx border-b-2 border-accent-violet"
             >
               Compose
             </button>
@@ -269,7 +269,7 @@ export default function LegalPage() {
               <div className="space-y-6">
                 {/* Letter Preview */}
                 <div
-                  className="border-2 border-onyx rounded-lg p-6 bg-alabaster overflow-auto max-h-96"
+                  className="border-2 border-accent-violet rounded-lg p-6 bg-glass overflow-auto max-h-96"
                   dangerouslySetInnerHTML={{ __html: generatedLetter }}
                 />
 
@@ -277,14 +277,14 @@ export default function LegalPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={handlePrint}
-                    className="flex items-center justify-center gap-2 h-14 bg-onyx text-white rounded-lg font-heading font-semibold transition-all active:scale-95"
+                    className="flex items-center justify-center gap-2 h-14 bg-accent-violet text-white rounded-lg font-heading font-semibold transition-all active:scale-95"
                   >
                     <Printer className="w-5 h-5" />
                     Print
                   </button>
                   <button
                     onClick={handleBackToCompose}
-                    className="flex items-center justify-center gap-2 h-14 border-2 border-onyx text-onyx rounded-lg font-heading font-semibold transition-all active:scale-95"
+                    className="flex items-center justify-center gap-2 h-14 border-2 border-accent-violet text-accent-violet rounded-lg font-heading font-semibold transition-all active:scale-95"
                   >
                     <FileText className="w-5 h-5" />
                     New Letter
@@ -309,8 +309,8 @@ export default function LegalPage() {
                       }}
                       className={`flex items-start gap-4 p-4 rounded-lg border-2 transition-all text-left ${
                         selectedType === type.id
-                          ? "border-onyx bg-surface-elevated"
-                          : "border-gray-100 bg-white hover:border-gray-200"
+                          ? "border-accent-violet bg-glass"
+                          : "border-white/[0.06] bg-glass hover:border-white/[0.1]"
                       }`}
                     >
                       <div className="flex-shrink-0 mt-1">{type.icon}</div>
@@ -351,7 +351,7 @@ export default function LegalPage() {
                               sub.primaryContact.name
                             )
                           }
-                          className="flex-shrink-0 px-4 py-2 bg-onyx text-white rounded-lg font-body text-sm font-semibold transition-all active:scale-95 whitespace-nowrap"
+                          className="flex-shrink-0 px-4 py-2 bg-accent-violet text-white rounded-lg font-body text-sm font-semibold transition-all active:scale-95 whitespace-nowrap"
                         >
                           {sub.company}
                         </button>
@@ -370,7 +370,7 @@ export default function LegalPage() {
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
                     placeholder="John Smith"
-                    className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-onyx outline-none transition-colors"
+                    className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors"
                   />
                 </div>
 
@@ -384,7 +384,7 @@ export default function LegalPage() {
                     value={recipientCompany}
                     onChange={(e) => setRecipientCompany(e.target.value)}
                     placeholder="ABC Plumbing, Inc."
-                    className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-onyx outline-none transition-colors"
+                    className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors"
                   />
                 </div>
 
@@ -392,14 +392,14 @@ export default function LegalPage() {
                 <button
                   onClick={() => setStep("description")}
                   disabled={!recipientName.trim() || !recipientCompany.trim()}
-                  className="w-full h-14 bg-onyx text-white rounded-lg font-heading font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                  className="w-full h-14 bg-accent-violet text-white rounded-lg font-heading font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                 >
                   Continue
                 </button>
 
                 <button
                   onClick={() => setStep("type")}
-                  className="w-full h-14 border-2 border-onyx text-onyx rounded-lg font-heading font-semibold transition-all active:scale-95"
+                  className="w-full h-14 border-2 border-accent-violet text-accent-violet rounded-lg font-heading font-semibold transition-all active:scale-95"
                 >
                   Back
                 </button>
@@ -421,7 +421,7 @@ export default function LegalPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the issue, delay, or matter that necessitates this correspondence..."
-                    className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-onyx outline-none transition-colors min-h-32 resize-none"
+                    className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors min-h-32 resize-none"
                   />
                 </div>
 
@@ -429,14 +429,14 @@ export default function LegalPage() {
                 <button
                   onClick={() => setStep("references")}
                   disabled={!description.trim()}
-                  className="w-full h-14 bg-onyx text-white rounded-lg font-heading font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                  className="w-full h-14 bg-accent-violet text-white rounded-lg font-heading font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                 >
                   Continue
                 </button>
 
                 <button
                   onClick={() => setStep("recipient")}
-                  className="w-full h-14 border-2 border-onyx text-onyx rounded-lg font-heading font-semibold transition-all active:scale-95"
+                  className="w-full h-14 border-2 border-accent-violet text-accent-violet rounded-lg font-heading font-semibold transition-all active:scale-95"
                 >
                   Back
                 </button>
@@ -451,7 +451,7 @@ export default function LegalPage() {
                 </h3>
 
                 {/* New Reference Form */}
-                <div className="space-y-4 p-4 bg-alabaster rounded-lg border-2 border-gray-100">
+                <div className="space-y-4 p-4 bg-glass rounded-lg border-2 border-white/[0.06]">
                   <div className="space-y-2">
                     <label className="font-heading text-xs font-medium text-warm-gray tracking-widest uppercase">
                       Clause Number
@@ -461,7 +461,7 @@ export default function LegalPage() {
                       value={newRefClause}
                       onChange={(e) => setNewRefClause(e.target.value)}
                       placeholder="e.g., Section 3.2, Article 4"
-                      className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-onyx outline-none transition-colors bg-white"
+                      className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors bg-white"
                     />
                   </div>
 
@@ -473,14 +473,14 @@ export default function LegalPage() {
                       value={newRefQuote}
                       onChange={(e) => setNewRefQuote(e.target.value)}
                       placeholder="Paste the relevant contract language here..."
-                      className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-onyx outline-none transition-colors bg-white min-h-20 resize-none"
+                      className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors bg-white min-h-20 resize-none"
                     />
                   </div>
 
                   <button
                     onClick={handleAddReference}
                     disabled={!newRefClause.trim() || !newRefQuote.trim()}
-                    className="w-full flex items-center justify-center gap-2 h-12 bg-onyx text-white rounded-lg font-heading font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                    className="w-full flex items-center justify-center gap-2 h-12 bg-accent-violet text-white rounded-lg font-heading font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                   >
                     <Plus className="w-4 h-4" />
                     Add Reference
@@ -496,7 +496,7 @@ export default function LegalPage() {
                     {contractReferences.map((ref, idx) => (
                       <div
                         key={idx}
-                        className="p-4 border-2 border-gray-100 rounded-lg bg-white"
+                        className="p-4 border-2 border-white/[0.06] rounded-lg bg-white"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 min-w-0">
@@ -524,7 +524,7 @@ export default function LegalPage() {
                   <button
                     onClick={handleGenerateLetter}
                     disabled={isLoading}
-                    className="w-full h-14 bg-onyx text-white rounded-lg font-heading font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 flex items-center justify-center gap-2"
+                    className="w-full h-14 bg-accent-violet text-white rounded-lg font-heading font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 flex items-center justify-center gap-2"
                   >
                     {isLoading ? (
                       <>
@@ -541,7 +541,7 @@ export default function LegalPage() {
 
                   <button
                     onClick={() => setStep("description")}
-                    className="w-full h-14 border-2 border-onyx text-onyx rounded-lg font-heading font-semibold transition-all active:scale-95"
+                    className="w-full h-14 border-2 border-accent-violet text-accent-violet rounded-lg font-heading font-semibold transition-all active:scale-95"
                   >
                     Back
                   </button>
@@ -561,7 +561,7 @@ export default function LegalPage() {
         <Header title="Legal Correspondence" backHref="/reports" />
 
         {/* Tab buttons */}
-        <div className="flex gap-2 px-5 pt-5 border-b border-gray-100">
+        <div className="flex gap-2 px-5 pt-5 border-b border-white/[0.06]">
           <button
             onClick={() => setView("compose")}
             className="flex-1 pb-4 font-heading font-semibold text-field-base transition-colors text-warm-gray border-b-2 border-transparent"
@@ -570,7 +570,7 @@ export default function LegalPage() {
           </button>
           <button
             onClick={() => setView("archive")}
-            className="flex-1 pb-4 font-heading font-semibold text-field-base transition-colors text-onyx border-b-2 border-onyx"
+            className="flex-1 pb-4 font-heading font-semibold text-field-base transition-colors text-onyx border-b-2 border-accent-violet"
           >
             Archive ({letters.length})
           </button>
@@ -589,7 +589,7 @@ export default function LegalPage() {
 
               {/* Letter Preview */}
               <div
-                className="border-2 border-onyx rounded-lg p-6 bg-alabaster overflow-auto max-h-96"
+                className="border-2 border-accent-violet rounded-lg p-6 bg-glass overflow-auto max-h-96"
                 dangerouslySetInnerHTML={{
                   __html: selectedLetter.generatedLetter || "",
                 }}
@@ -623,14 +623,14 @@ export default function LegalPage() {
                         printWindow.print();
                       }
                     }}
-                    className="flex items-center justify-center gap-2 h-14 bg-onyx text-white rounded-lg font-heading font-semibold transition-all active:scale-95"
+                    className="flex items-center justify-center gap-2 h-14 bg-accent-violet text-white rounded-lg font-heading font-semibold transition-all active:scale-95"
                   >
                     <Printer className="w-5 h-5" />
                     Print
                   </button>
                   <button
                     onClick={() => setSelectedLetter(null)}
-                    className="flex items-center justify-center gap-2 h-14 border-2 border-onyx text-onyx rounded-lg font-heading font-semibold transition-all active:scale-95"
+                    className="flex items-center justify-center gap-2 h-14 border-2 border-accent-violet text-accent-violet rounded-lg font-heading font-semibold transition-all active:scale-95"
                   >
                     Close
                   </button>
@@ -649,7 +649,7 @@ export default function LegalPage() {
               </p>
               <button
                 onClick={() => setView("compose")}
-                className="px-6 h-12 bg-onyx text-white rounded-lg font-heading font-semibold transition-all active:scale-95"
+                className="px-6 h-12 bg-accent-violet text-white rounded-lg font-heading font-semibold transition-all active:scale-95"
               >
                 Start Composing
               </button>

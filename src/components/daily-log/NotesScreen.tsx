@@ -50,7 +50,7 @@ export default function NotesScreen({
   return (
     <div className="min-h-screen bg-alabaster">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-6 py-4">
+      <div className="sticky top-0 z-10 bg-glass border-b border-white/[0.08] px-6 py-4">
         <h1 className="text-2xl font-bold text-onyx">Daily Log</h1>
       </div>
 
@@ -68,12 +68,12 @@ export default function NotesScreen({
               value={notes}
               onChange={(e) => onNotesChange(e.target.value)}
               placeholder="General observations, coordination issues, key decisions made today..."
-              className="w-full min-h-[200px] p-4 bg-white border border-gray-300 rounded-xl text-onyx text-lg font-normal placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-onyx resize-none"
+              className="w-full min-h-[200px] p-4 bg-glass border border-white/[0.10] rounded-xl text-onyx text-lg font-normal placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet resize-none"
               aria-label="Daily notes"
             />
 
             <div className="flex justify-end">
-              <span className="text-sm text-gray-600 font-medium">
+              <span className="text-sm text-warm-gray font-medium">
                 {notes.length} characters
               </span>
             </div>
@@ -90,7 +90,7 @@ export default function NotesScreen({
           <div className="space-y-3">
             <button
               onClick={() => setExpandedSuggestions(!expandedSuggestions)}
-              className="w-full h-14 flex items-center justify-center gap-2 bg-white border-2 border-onyx rounded-xl text-onyx font-bold text-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              className="w-full h-14 flex items-center justify-center gap-2 bg-glass border-2 border-accent-violet rounded-xl text-onyx font-bold text-lg hover:bg-glass-light active:bg-glass-medium transition-colors"
               aria-label="Add item"
             >
               <Plus className="w-6 h-6" />
@@ -98,14 +98,14 @@ export default function NotesScreen({
             </button>
 
             {expandedSuggestions && (
-              <div className="bg-white rounded-xl p-4 border border-gray-200 space-y-3">
-                <p className="text-sm text-gray-600 font-medium">Quick suggestions:</p>
+              <div className="bg-glass rounded-xl p-4 border border-white/[0.08] space-y-3">
+                <p className="text-sm text-warm-gray font-medium">Quick suggestions:</p>
                 <div className="flex flex-wrap gap-2">
                   {QUICK_ADD_SUGGESTIONS.map((suggestion) => (
                     <button
                       key={suggestion}
                       onClick={() => handleAddSuggestion(suggestion)}
-                      className="px-4 py-2 bg-onyx text-alabaster rounded-lg text-sm font-semibold hover:opacity-90 active:opacity-75 transition-opacity"
+                      className="px-4 py-2 bg-accent-violet text-alabaster rounded-lg text-sm font-semibold hover:bg-accent-violet/90 active:bg-accent-violet/80 transition-opacity"
                       aria-label={`Add ${suggestion}`}
                     >
                       {suggestion}
@@ -122,7 +122,7 @@ export default function NotesScreen({
               {tomorrowPlan.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-3 bg-white rounded-xl p-4 min-h-14 border border-gray-200"
+                  className="flex items-center gap-3 bg-glass rounded-xl p-4 min-h-14 border border-white/[0.08]"
                 >
                   <span className="text-lg font-bold text-onyx min-w-6">
                     {index + 1}.
@@ -133,23 +133,23 @@ export default function NotesScreen({
                     value={item}
                     onChange={(e) => handleUpdatePlanItem(index, e.target.value)}
                     placeholder="Task description..."
-                    className="flex-1 bg-transparent text-onyx text-lg font-normal placeholder-gray-400 focus:outline-none"
+                    className="flex-1 bg-transparent text-onyx text-lg font-normal placeholder-warm-gray focus:outline-none"
                     aria-label={`Tomorrow plan item ${index + 1}`}
                   />
 
                   <button
                     onClick={() => handleRemovePlanItem(index)}
-                    className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-red-50 active:bg-red-100 transition-colors flex-shrink-0"
+                    className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-accent-red/10 active:bg-accent-red/20 transition-colors flex-shrink-0"
                     aria-label={`Remove item ${index + 1}`}
                   >
-                    <X className="w-6 h-6 text-red-600" />
+                    <X className="w-6 h-6 text-accent-red" />
                   </button>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-xl p-8 text-center border border-gray-200">
-              <p className="text-gray-600 font-medium text-lg">
+            <div className="bg-glass rounded-xl p-8 text-center border border-white/[0.08]">
+              <p className="text-warm-gray font-medium text-lg">
                 What&apos;s the plan for tomorrow?
               </p>
             </div>

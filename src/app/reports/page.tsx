@@ -82,7 +82,7 @@ export default function ReportsPage() {
               This Week&apos;s Snapshot
             </h3>
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-alabaster rounded-xl p-4">
+              <div className="bg-glass rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <HardHat className="w-5 h-5 text-onyx" />
                   <span className="text-sm font-medium text-warm-gray">
@@ -98,7 +98,7 @@ export default function ReportsPage() {
                   week
                 </p>
               </div>
-              <div className="bg-alabaster rounded-xl p-4">
+              <div className="bg-glass rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Truck className="w-5 h-5 text-onyx" />
                   <span className="text-sm font-medium text-warm-gray">

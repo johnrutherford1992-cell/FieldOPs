@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import AppShell from "@/components/layout/AppShell";
 import Header from "@/components/layout/Header";
 import EmptyState from "@/components/ui/EmptyState";
@@ -16,8 +16,11 @@ import DelayEventsScreen from "@/components/daily-log/DelayEventsScreen";
 import SafetyIncidentsScreen from "@/components/daily-log/SafetyIncidentsScreen";
 import PhotosScreen from "@/components/daily-log/PhotosScreen";
 import NotesScreen from "@/components/daily-log/NotesScreen";
+import TimeTrackingScreen from "@/components/daily-log/TimeTrackingScreen";
+import MaterialsScreen from "@/components/daily-log/MaterialsScreen";
+import QualityScreen from "@/components/daily-log/QualityScreen";
 import { useAppStore } from "@/lib/store";
-import { db, generateId } from "@/lib/db";
+import { db, generateId, getCostCodesForProject } from "@/lib/db";
 import { deriveProductivityEntries } from "@/lib/productivity-engine";
 import { recomputeAnalytics } from "@/lib/analytics-engine";
 import { CSI_DIVISIONS } from "@/data/csi-divisions";
@@ -35,6 +38,12 @@ import type {
   DelayEvent,
   SafetyIncident,
   PhotoEntry,
+  TimeEntry,
+  CostCode,
+  MaterialDelivery,
+  CompletedChecklist,
+  Deficiency,
+  ChecklistTemplate,
   DailyLogScreenId,
 } from "@/lib/types";
 import {
@@ -53,7 +62,9 @@ import {
   AlertTriangle,
   ShieldAlert,
   Clock,
+  Timer,
   HeartPulse,
+  Package,
   Camera,
   Pencil,
 } from "lucide-react";
@@ -62,6 +73,7 @@ import {
 const SCREEN_ICONS: Record<DailyLogScreenId, React.ReactNode> = {
   weather: <Cloud size={18} />,
   manpower: <Users size={18} />,
+  time: <Timer size={18} />,
   equipment: <Truck size={18} />,
   work: <Hammer size={18} />,
   rfis: <FileText size={18} />,
@@ -70,6 +82,8 @@ const SCREEN_ICONS: Record<DailyLogScreenId, React.ReactNode> = {
   conflicts: <ShieldAlert size={18} />,
   delays: <Clock size={18} />,
   safety: <HeartPulse size={18} />,
+  materials: <Package size={18} />,
+  quality: <ClipboardCheck size={18} />,
   photos: <Camera size={18} />,
   notes: <Pencil size={18} />,
 };
@@ -93,6 +107,10 @@ export default function DailyLogPage() {
 
   // Screen 2: Manpower
   const [manpower, setManpower] = useState<ManpowerEntry[]>([]);
+
+  // Screen 2.5: Time Tracking (follows manpower)
+  const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
+  const [costCodes, setCostCodes] = useState<CostCode[]>([]);
 
   // Screen 3: Equipment
   const [equipment, setEquipment] = useState<EquipmentEntry[]>([]);
@@ -119,12 +137,39 @@ export default function DailyLogPage() {
   // Screen 10: Safety Incidents (Phase 6)
   const [safetyIncidents, setSafetyIncidents] = useState<SafetyIncident[]>([]);
 
-  // Screen 11: Photos
+  // Screen 12: Materials (Phase 9)
+  const [materialDeliveries, setMaterialDeliveries] = useState<MaterialDelivery[]>([]);
+
+  // Screen 13: Quality (Phase 10)
+  const [completedChecklists, setCompletedChecklists] = useState<CompletedChecklist[]>([]);
+  const [qualityDeficiencies, setQualityDeficiencies] = useState<Deficiency[]>([]);
+  const [checklistTemplates, setChecklistTemplates] = useState<ChecklistTemplate[]>([]);
+
+  // Screen 14: Photos
   const [photos, setPhotos] = useState<PhotoEntry[]>([]);
 
   // Screen 10: Notes
   const [notes, setNotes] = useState("");
   const [tomorrowPlan, setTomorrowPlan] = useState<string[]>([]);
+
+  // ---- Load cost codes for time tracking ----
+  useEffect(() => {
+    if (activeProject) {
+      getCostCodesForProject(activeProject.id).then(setCostCodes);
+    }
+  }, [activeProject]);
+
+  // ---- Load checklist templates for quality screen ----
+  useEffect(() => {
+    if (activeProject) {
+      db.checklistTemplates
+        .where("projectId")
+        .equals(activeProject.id)
+        .toArray()
+        .then(setChecklistTemplates)
+        .catch((err) => console.error("Failed to load checklist templates:", err));
+    }
+  }, [activeProject]);
 
   // ---- Navigation helpers ----
   const screenIndex = DAILY_LOG_SCREENS.findIndex((s) => s.id === currentScreen);
@@ -166,6 +211,10 @@ export default function DailyLogPage() {
           );
           return total > 0 ? `${total}` : undefined;
         }
+        case "time": {
+          const totalTimeHrs = timeEntries.reduce((s, e) => s + e.totalHours, 0);
+          return timeEntries.length > 0 ? `${totalTimeHrs.toFixed(0)}h` : undefined;
+        }
         case "equipment":
           return equipment.length > 0 ? `${equipment.length}` : undefined;
         case "work":
@@ -184,6 +233,12 @@ export default function DailyLogPage() {
           return delayEvents.length > 0 ? `${delayEvents.length}` : undefined;
         case "safety":
           return safetyIncidents.length > 0 ? `${safetyIncidents.length}` : undefined;
+        case "materials":
+          return materialDeliveries.length > 0 ? `${materialDeliveries.length}` : undefined;
+        case "quality": {
+          const total = completedChecklists.length + qualityDeficiencies.length;
+          return total > 0 ? `${total}` : undefined;
+        }
         case "photos":
           return photos.length > 0 ? `${photos.length}` : undefined;
         case "notes":
@@ -192,7 +247,7 @@ export default function DailyLogPage() {
           return undefined;
       }
     },
-    [weather, manpower, equipment, workPerformed, rfis, submittals, inspections, changes, conflicts, delayEvents, safetyIncidents, photos, notes, tomorrowPlan]
+    [weather, manpower, timeEntries, equipment, workPerformed, rfis, submittals, inspections, changes, conflicts, delayEvents, safetyIncidents, materialDeliveries, completedChecklists, qualityDeficiencies, photos, notes, tomorrowPlan]
   );
 
   // ---- Save daily log ----
@@ -226,6 +281,36 @@ export default function DailyLogPage() {
 
       await db.dailyLogs.put(dailyLog);
 
+      // Save time entries to their own table (linked via dailyLogId)
+      if (timeEntries.length > 0) {
+        const linkedTimeEntries = timeEntries.map((te) => ({
+          ...te,
+          dailyLogId: dailyLog.id,
+        }));
+        await db.timeEntries.bulkPut(linkedTimeEntries);
+      }
+
+      // Save material deliveries (linked via dailyLogId)
+      if (materialDeliveries.length > 0) {
+        const linkedDeliveries = materialDeliveries.map((d) => ({
+          ...d,
+          dailyLogId: dailyLog.id,
+        }));
+        await db.materialDeliveries.bulkPut(linkedDeliveries);
+      }
+
+      // Save completed checklists and deficiencies
+      if (completedChecklists.length > 0) {
+        const linkedChecklists = completedChecklists.map((c) => ({
+          ...c,
+          dailyLogId: dailyLog.id,
+        }));
+        await db.completedChecklists.bulkPut(linkedChecklists);
+      }
+      if (qualityDeficiencies.length > 0) {
+        await db.deficiencies.bulkPut(qualityDeficiencies);
+      }
+
       // Auto-derive productivity entries and recompute analytics
       try {
         await deriveProductivityEntries(dailyLog, activeProject.id);
@@ -251,6 +336,7 @@ export default function DailyLogPage() {
     setCurrentScreen("weather");
     setWeather({ conditions: "Clear", temperature: 72, impact: "full_day" });
     setManpower([]);
+    setTimeEntries([]);
     setEquipment([]);
     setWorkPerformed([]);
     setRFIs([]);
@@ -260,6 +346,9 @@ export default function DailyLogPage() {
     setConflicts([]);
     setDelayEvents([]);
     setSafetyIncidents([]);
+    setMaterialDeliveries([]);
+    setCompletedChecklists([]);
+    setQualityDeficiencies([]);
     setPhotos([]);
     setNotes("");
     setTomorrowPlan([]);
@@ -299,7 +388,7 @@ export default function DailyLogPage() {
                     setIsCreating(true);
                     setCurrentScreen(screen.id);
                   }}
-                  className="flex items-center gap-2 px-4 py-3 bg-alabaster rounded-lg text-left text-sm font-medium text-onyx active:scale-[0.98] transition-transform"
+                  className="flex items-center gap-2 px-4 py-3 bg-glass rounded-lg text-left text-sm font-medium text-onyx active:scale-[0.98] transition-transform"
                 >
                   {SCREEN_ICONS[screen.id]}
                   {screen.label}
@@ -346,11 +435,19 @@ export default function DailyLogPage() {
             </p>
 
             {/* Summary stats */}
-            <div className="w-full bg-alabaster rounded-xl p-4 space-y-2 mb-8">
+            <div className="w-full bg-glass rounded-xl p-4 space-y-2 mb-8">
               {totalWorkers > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-warm-gray">Workers on site</span>
                   <span className="font-medium">{totalWorkers}</span>
+                </div>
+              )}
+              {timeEntries.length > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-warm-gray">Time tracked</span>
+                  <span className="font-medium">
+                    {timeEntries.reduce((s, e) => s + e.totalHours, 0).toFixed(1)} hrs ({timeEntries.length} workers)
+                  </span>
                 </div>
               )}
               {equipment.length > 0 && (
@@ -395,6 +492,24 @@ export default function DailyLogPage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-warm-gray">Safety incidents</span>
                   <span className="font-medium text-accent-red">{safetyIncidents.length}</span>
+                </div>
+              )}
+              {materialDeliveries.length > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-warm-gray">Material deliveries</span>
+                  <span className="font-medium">{materialDeliveries.length}</span>
+                </div>
+              )}
+              {completedChecklists.length > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-warm-gray">Quality inspections</span>
+                  <span className="font-medium">{completedChecklists.length}</span>
+                </div>
+              )}
+              {qualityDeficiencies.length > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-warm-gray">Deficiencies logged</span>
+                  <span className="font-medium text-accent-red">{qualityDeficiencies.length}</span>
                 </div>
               )}
             </div>
@@ -459,7 +574,7 @@ export default function DailyLogPage() {
                       ? badge
                         ? "bg-accent-green"
                         : "bg-warm-gray/40"
-                      : "bg-gray-200"
+                      : "bg-white/[0.08]"
                   }`}
                   title={screen.label}
                 />
@@ -485,6 +600,20 @@ export default function DailyLogPage() {
               entries={manpower}
               onEntriesChange={setManpower}
               subcontractors={activeProject.subcontractors}
+            />
+          )}
+
+          {/* Screen 2.5: Time Tracking */}
+          {currentScreen === "time" && activeProject && (
+            <TimeTrackingScreen
+              entries={timeEntries}
+              onEntriesChange={setTimeEntries}
+              manpower={manpower}
+              subcontractors={activeProject.subcontractors}
+              taktZones={activeProject.taktZones}
+              costCodes={costCodes}
+              projectId={activeProject.id}
+              date={currentDate}
             />
           )}
 
@@ -565,7 +694,31 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 11: Photos */}
+          {/* Screen 12: Materials */}
+          {currentScreen === "materials" && activeProject && (
+            <MaterialsScreen
+              deliveries={materialDeliveries}
+              onDeliveriesChange={setMaterialDeliveries}
+              projectId={activeProject.id}
+              date={currentDate}
+            />
+          )}
+
+          {/* Screen 13: Quality */}
+          {currentScreen === "quality" && activeProject && (
+            <QualityScreen
+              checklists={completedChecklists}
+              onChecklistsChange={setCompletedChecklists}
+              deficiencies={qualityDeficiencies}
+              onDeficienciesChange={setQualityDeficiencies}
+              templates={checklistTemplates}
+              taktZones={activeProject.taktZones}
+              projectId={activeProject.id}
+              date={currentDate}
+            />
+          )}
+
+          {/* Screen 14: Photos */}
           {currentScreen === "photos" && activeProject && (
             <PhotosScreen
               photos={photos}
@@ -586,7 +739,7 @@ export default function DailyLogPage() {
         </div>
 
         {/* Bottom action bar */}
-        <div className="fixed bottom-[72px] left-0 right-0 z-30 bg-white border-t border-gray-100 px-5 py-3 safe-bottom">
+        <div className="fixed bottom-[72px] left-0 right-0 z-30 bg-glass border-t border-white/[0.06] px-5 py-3 safe-bottom">
           {isLastScreen ? (
             <button
               onClick={handleSave}
@@ -610,7 +763,7 @@ export default function DailyLogPage() {
               {/* Skip button for optional screens */}
               <button
                 onClick={goNext}
-                className="flex-1 py-3 rounded-button text-warm-gray font-medium text-base bg-alabaster active:scale-[0.98] transition-transform"
+                className="flex-1 py-3 rounded-button text-warm-gray font-medium text-base bg-glass active:scale-[0.98] transition-transform"
               >
                 Skip
               </button>

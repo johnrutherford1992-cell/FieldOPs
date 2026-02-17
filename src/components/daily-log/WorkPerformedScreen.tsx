@@ -58,7 +58,7 @@ const statusConfig: Record<
   starting_next_week: {
     label: "Starting Next Week",
     color: "text-white",
-    bgColor: "bg-blue-600",
+    bgColor: "bg-accent-violet",
   },
 };
 
@@ -189,9 +189,9 @@ export default function WorkPerformedScreen({
   };
 
   return (
-    <div className="min-h-screen bg-alabaster pb-safe-bottom">
+    <div className="min-h-screen bg-white pb-safe-bottom">
       {/* Header with summary */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-4 sm:px-6">
+      <div className="sticky top-0 z-10 bg-glass border-b border-white/[0.06] px-4 py-4 sm:px-6">
         <h2 className="font-heading font-semibold text-field-xl text-onyx mb-3">
           Work Performed
         </h2>
@@ -205,7 +205,7 @@ export default function WorkPerformedScreen({
         {/* Add Work Item Button */}
         <button
           onClick={openModal}
-          className="w-full min-h-touch-target rounded-card bg-onyx text-white transition-all duration-200 flex items-center justify-center gap-2 px-4 py-3 hover:bg-slate active:scale-[0.98] font-body font-semibold text-field-base mb-6"
+          className="w-full min-h-touch-target rounded-card bg-accent-violet text-white transition-all duration-200 flex items-center justify-center gap-2 px-4 py-3 hover:bg-accent-violet/80 active:scale-[0.98] font-body font-semibold text-field-base mb-6"
         >
           <Plus size={20} />
           Add Work Item
@@ -230,12 +230,12 @@ export default function WorkPerformedScreen({
             entries.map((entry, index) => (
               <div
                 key={index}
-                className="rounded-card bg-white border border-gray-100 p-4 animate-fade-in"
+                className="rounded-card bg-glass border border-white/[0.06] p-4 animate-fade-in"
               >
                 {/* Header row: Division badge, Activity, Zone code */}
                 <div className="flex items-start gap-3 mb-2">
                   {/* CSI Division Badge */}
-                  <div className="flex-shrink-0 w-10 h-10 bg-onyx rounded flex items-center justify-center">
+                  <div className="flex-shrink-0 w-10 h-10 bg-accent-violet rounded flex items-center justify-center">
                     <span className="text-white font-heading font-semibold text-field-sm">
                       {entry.csiDivision}
                     </span>
@@ -311,7 +311,7 @@ export default function WorkPerformedScreen({
                     <button
                       key={division.code}
                       onClick={() => handleDivisionSelect(division)}
-                      className="w-full flex items-center gap-4 px-4 py-4 rounded-card bg-alabaster hover:bg-gray-200 transition-colors text-left"
+                      className="w-full flex items-center gap-4 px-4 py-4 rounded-card bg-glass hover:bg-glass-light transition-colors text-left"
                     >
                       <div className="flex-1 min-w-0">
                         <p className="font-heading font-semibold text-field-base text-onyx">
@@ -327,7 +327,7 @@ export default function WorkPerformedScreen({
                 </div>
                 <button
                   onClick={closeModal}
-                  className="w-full min-h-touch-target rounded-card bg-gray-100 text-onyx transition-all duration-200 px-4 py-3 hover:bg-gray-200 active:scale-[0.98] font-body font-semibold text-field-base"
+                  className="w-full min-h-touch-target rounded-card bg-glass-medium text-onyx transition-all duration-200 px-4 py-3 hover:bg-glass-heavy active:scale-[0.98] font-body font-semibold text-field-base"
                 >
                   Cancel
                 </button>
@@ -355,7 +355,7 @@ export default function WorkPerformedScreen({
                     <button
                       key={activity.id}
                       onClick={() => handleActivitySelect(activity)}
-                      className="w-full flex items-center gap-4 px-4 py-4 rounded-card bg-alabaster hover:bg-gray-200 transition-colors text-left"
+                      className="w-full flex items-center gap-4 px-4 py-4 rounded-card bg-glass hover:bg-glass-light transition-colors text-left"
                     >
                       <div className="flex-1 min-w-0">
                         <p className="font-heading font-semibold text-field-base text-onyx">
@@ -375,7 +375,7 @@ export default function WorkPerformedScreen({
                 </div>
                 <button
                   onClick={closeModal}
-                  className="w-full min-h-touch-target rounded-card bg-gray-100 text-onyx transition-all duration-200 px-4 py-3 hover:bg-gray-200 active:scale-[0.98] font-body font-semibold text-field-base"
+                  className="w-full min-h-touch-target rounded-card bg-glass-medium text-onyx transition-all duration-200 px-4 py-3 hover:bg-glass-heavy active:scale-[0.98] font-body font-semibold text-field-base"
                 >
                   Cancel
                 </button>
@@ -431,7 +431,7 @@ export default function WorkPerformedScreen({
                 </div>
                 <button
                   onClick={closeModal}
-                  className="w-full min-h-touch-target rounded-card bg-gray-100 text-onyx transition-all duration-200 px-4 py-3 hover:bg-gray-200 active:scale-[0.98] font-body font-semibold text-field-base"
+                  className="w-full min-h-touch-target rounded-card bg-glass-medium text-onyx transition-all duration-200 px-4 py-3 hover:bg-glass-heavy active:scale-[0.98] font-body font-semibold text-field-base"
                 >
                   Cancel
                 </button>
@@ -463,8 +463,8 @@ export default function WorkPerformedScreen({
                       onClick={() => handleStatusSelect(status)}
                       className={`w-full min-h-touch-target flex items-center justify-center gap-2 px-4 py-3 rounded-card transition-all duration-200 font-body font-semibold text-field-base ${
                         modal.selectedStatus === status
-                          ? `${statusConfig[status].bgColor} ${statusConfig[status].color} ring-2 ring-offset-2 ring-onyx`
-                          : `bg-alabaster text-onyx hover:bg-gray-200`
+                          ? `${statusConfig[status].bgColor} ${statusConfig[status].color} ring-2 ring-offset-2 ring-accent-violet`
+                          : `bg-glass text-onyx hover:bg-glass-light`
                       }`}
                     >
                       {status === "completed" && (
@@ -476,13 +476,13 @@ export default function WorkPerformedScreen({
                 </div>
                 <button
                   onClick={() => setModal({ ...modal, step: "productivity" })}
-                  className="w-full min-h-touch-target rounded-card bg-onyx text-white transition-all duration-200 px-4 py-3 hover:bg-slate active:scale-[0.98] font-body font-semibold text-field-base mb-3"
+                  className="w-full min-h-touch-target rounded-card bg-accent-violet text-white transition-all duration-200 px-4 py-3 hover:bg-accent-violet/80 active:scale-[0.98] font-body font-semibold text-field-base mb-3"
                 >
                   Continue
                 </button>
                 <button
                   onClick={closeModal}
-                  className="w-full min-h-touch-target rounded-card bg-gray-100 text-onyx transition-all duration-200 px-4 py-3 hover:bg-gray-200 active:scale-[0.98] font-body font-semibold text-field-base"
+                  className="w-full min-h-touch-target rounded-card bg-glass-medium text-onyx transition-all duration-200 px-4 py-3 hover:bg-glass-heavy active:scale-[0.98] font-body font-semibold text-field-base"
                 >
                   Cancel
                 </button>
@@ -521,7 +521,7 @@ export default function WorkPerformedScreen({
                         setModal({ ...modal, quantity: val });
                       }}
                       placeholder="Enter quantity"
-                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
+                      className="w-full px-4 py-3 rounded-card border border-white/[0.10] font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
                       min="0"
                       step="0.01"
                     />
@@ -545,8 +545,8 @@ export default function WorkPerformedScreen({
                           }}
                           className={`py-2 px-3 rounded-card text-field-sm font-medium transition-all ${
                             modal.unitOfMeasure === unit
-                              ? "bg-onyx text-white"
-                              : "bg-alabaster text-onyx hover:bg-gray-200"
+                              ? "bg-accent-violet text-white"
+                              : "bg-glass text-onyx hover:bg-glass-light"
                           }`}
                         >
                           {unit}
@@ -569,7 +569,7 @@ export default function WorkPerformedScreen({
                         setModal({ ...modal, crewSize: val });
                       }}
                       placeholder="Number of workers"
-                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
+                      className="w-full px-4 py-3 rounded-card border border-white/[0.10] font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
                       min="0"
                     />
                   </div>
@@ -588,7 +588,7 @@ export default function WorkPerformedScreen({
                         setModal({ ...modal, crewHoursWorked: val });
                       }}
                       placeholder="Total crew hours"
-                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
+                      className="w-full px-4 py-3 rounded-card border border-white/[0.10] font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
                       min="0"
                       step="0.5"
                     />
@@ -608,7 +608,7 @@ export default function WorkPerformedScreen({
                         setModal({ ...modal, percentComplete: Math.max(0, Math.min(100, val ?? 0)) });
                       }}
                       placeholder="0-100"
-                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-onyx"
+                      className="w-full px-4 py-3 rounded-card border border-white/[0.10] font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
                       min="0"
                       max="100"
                     />
@@ -617,13 +617,13 @@ export default function WorkPerformedScreen({
 
                 <button
                   onClick={() => setModal({ ...modal, step: "notes" })}
-                  className="w-full min-h-touch-target rounded-card bg-onyx text-white transition-all duration-200 px-4 py-3 hover:bg-slate active:scale-[0.98] font-body font-semibold text-field-base mb-3"
+                  className="w-full min-h-touch-target rounded-card bg-accent-violet text-white transition-all duration-200 px-4 py-3 hover:bg-accent-violet/80 active:scale-[0.98] font-body font-semibold text-field-base mb-3"
                 >
                   Continue
                 </button>
                 <button
                   onClick={closeModal}
-                  className="w-full min-h-touch-target rounded-card bg-gray-100 text-onyx transition-all duration-200 px-4 py-3 hover:bg-gray-200 active:scale-[0.98] font-body font-semibold text-field-base"
+                  className="w-full min-h-touch-target rounded-card bg-glass-medium text-onyx transition-all duration-200 px-4 py-3 hover:bg-glass-heavy active:scale-[0.98] font-body font-semibold text-field-base"
                 >
                   Cancel
                 </button>
@@ -648,7 +648,7 @@ export default function WorkPerformedScreen({
                 </p>
 
                 {/* Notes summary */}
-                <div className="bg-alabaster rounded-card p-4 mb-6 space-y-2">
+                <div className="bg-glass rounded-card p-4 mb-6 space-y-2">
                   <div className="flex items-start gap-2">
                     <span className="text-field-sm font-semibold text-onyx flex-shrink-0 w-16">
                       Division:
@@ -700,14 +700,14 @@ export default function WorkPerformedScreen({
                 {/* Add Button */}
                 <button
                   onClick={handleAddEntry}
-                  className="w-full min-h-touch-target rounded-card bg-accent-green text-white transition-all duration-200 px-4 py-3 hover:bg-opacity-90 active:scale-[0.98] font-body font-semibold text-field-base mb-3 flex items-center justify-center gap-2"
+                  className="w-full min-h-touch-target rounded-card bg-accent-green text-white transition-all duration-200 px-4 py-3 hover:bg-accent-green/90 active:scale-[0.98] font-body font-semibold text-field-base mb-3 flex items-center justify-center gap-2"
                 >
                   <Check size={20} />
                   Add Work Item
                 </button>
                 <button
                   onClick={closeModal}
-                  className="w-full min-h-touch-target rounded-card bg-gray-100 text-onyx transition-all duration-200 px-4 py-3 hover:bg-gray-200 active:scale-[0.98] font-body font-semibold text-field-base"
+                  className="w-full min-h-touch-target rounded-card bg-glass-medium text-onyx transition-all duration-200 px-4 py-3 hover:bg-glass-heavy active:scale-[0.98] font-body font-semibold text-field-base"
                 >
                   Cancel
                 </button>
