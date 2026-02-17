@@ -370,13 +370,13 @@ export default function JHAPage() {
                   </div>
 
                   {/* Task summary */}
-                  <div className="bg-alabaster rounded-xl p-4 space-y-2">
+                  <div className="bg-glass rounded-xl p-4 space-y-2">
                     {selectedTasks.map((t, i) => (
                       <div
                         key={i}
                         className="flex items-center gap-2 text-sm"
                       >
-                        <span className="w-6 h-6 bg-onyx text-white rounded flex items-center justify-center text-xs flex-shrink-0">
+                        <span className="w-6 h-6 bg-accent-violet text-white rounded flex items-center justify-center text-xs flex-shrink-0">
                           {t.csiDivision}
                         </span>
                         <span className="flex-1 truncate">
@@ -431,7 +431,7 @@ export default function JHAPage() {
 
         {/* Bottom action bar */}
         {currentStep !== "generate" && (
-          <div className="fixed bottom-[72px] left-0 right-0 z-30 bg-white border-t border-gray-100 px-5 py-3 safe-bottom">
+          <div className="fixed bottom-[72px] left-0 right-0 z-30 bg-glass border-t border-white/[0.06] px-5 py-3 safe-bottom">
             {currentStep === "review" ? (
               <button
                 onClick={handleSave}
@@ -484,8 +484,8 @@ function ReviewTabs({
           onClick={() => setActiveTab("jha")}
           className={`flex-1 py-3 rounded-lg text-base font-medium transition-colors ${
             activeTab === "jha"
-              ? "bg-onyx text-white"
-              : "bg-alabaster text-onyx"
+              ? "bg-accent-violet text-white"
+              : "bg-glass text-onyx"
           }`}
         >
           JHA Document
@@ -494,8 +494,8 @@ function ReviewTabs({
           onClick={() => setActiveTab("toolbox")}
           className={`flex-1 py-3 rounded-lg text-base font-medium transition-colors ${
             activeTab === "toolbox"
-              ? "bg-onyx text-white"
-              : "bg-alabaster text-onyx"
+              ? "bg-accent-violet text-white"
+              : "bg-glass text-onyx"
           }`}
         >
           Toolbox Talk

@@ -15,6 +15,7 @@ import {
   MapPin,
   CheckCircle2,
   Clock,
+  Timer,
   BarChart3,
   TrendingUp,
   BookOpen,
@@ -135,9 +136,9 @@ export default function HomePage() {
         {/* Active project card */}
         {activeProject && (
           <div className="px-5 pb-4">
-            <div className="bg-alabaster border border-gray-100 rounded-xl p-5">
+            <div className="bg-glass border border-white/[0.06] rounded-xl p-5">
               <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-10 h-10 bg-onyx rounded-lg flex items-center justify-center">
+                <div className="flex-shrink-0 w-10 h-10 bg-accent-violet rounded-lg flex items-center justify-center">
                   <Building2 className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -169,7 +170,7 @@ export default function HomePage() {
           <div className="px-5 pb-4">
             <div className="grid grid-cols-2 gap-3">
               {/* Morning JHA Card */}
-              <div className="bg-alabaster border border-gray-100 rounded-xl p-4 flex items-center gap-3">
+              <div className="bg-glass border border-white/[0.06] rounded-xl p-4 flex items-center gap-3">
                 <div className="flex-shrink-0">
                   {jhaExists ? (
                     <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center">
@@ -190,7 +191,7 @@ export default function HomePage() {
               </div>
 
               {/* Daily Log Card */}
-              <div className="bg-alabaster border border-gray-100 rounded-xl p-4 flex items-center gap-3">
+              <div className="bg-glass border border-white/[0.06] rounded-xl p-4 flex items-center gap-3">
                 <div className="flex-shrink-0">
                   {logExists ? (
                     <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center">
@@ -217,15 +218,15 @@ export default function HomePage() {
         {weeklyStats && (
           <div className="px-5 pb-4">
             <div className="flex gap-2 justify-center">
-              <div className="bg-alabaster border border-gray-100 rounded-lg px-4 py-2.5 text-center">
+              <div className="bg-glass border border-white/[0.06] rounded-lg px-4 py-2.5 text-center">
                 <p className="text-xs text-warm-gray font-medium">Workers</p>
                 <p className="text-lg font-heading font-bold text-onyx">{weeklyStats.totalWorkers}</p>
               </div>
-              <div className="bg-alabaster border border-gray-100 rounded-lg px-4 py-2.5 text-center">
+              <div className="bg-glass border border-white/[0.06] rounded-lg px-4 py-2.5 text-center">
                 <p className="text-xs text-warm-gray font-medium">Work Items</p>
                 <p className="text-lg font-heading font-bold text-onyx">{weeklyStats.workItems}</p>
               </div>
-              <div className="bg-alabaster border border-gray-100 rounded-lg px-4 py-2.5 text-center">
+              <div className="bg-glass border border-white/[0.06] rounded-lg px-4 py-2.5 text-center">
                 <p className="text-xs text-warm-gray font-medium">Issues</p>
                 <p className="text-lg font-heading font-bold text-onyx">{weeklyStats.issuesTracked}</p>
               </div>
@@ -255,6 +256,22 @@ export default function HomePage() {
               label="Daily Log"
               sublabel="Record manpower, work, equipment & more"
               icon={<ClipboardList className="w-6 h-6" />}
+            />
+          </Link>
+
+          <Link href="/time-tracking" className="block no-underline">
+            <BigButton
+              label="Time Tracking"
+              sublabel="Approve hours & export to ADP"
+              icon={<Timer className="w-6 h-6" />}
+            />
+          </Link>
+
+          <Link href="/resources" className="block no-underline">
+            <BigButton
+              label="Resource Scheduling"
+              sublabel="Requests, schedule & Kinetic sync"
+              icon={<Users className="w-6 h-6" />}
             />
           </Link>
 
@@ -320,7 +337,8 @@ export default function HomePage() {
           <img
             src="/logos/blackstone-black.png"
             alt="Blackstone Construction"
-            className="w-28 opacity-20"
+            className="w-28 opacity-40"
+            style={{ filter: "brightness(0) invert(1)" }}
           />
         </div>
       </div>

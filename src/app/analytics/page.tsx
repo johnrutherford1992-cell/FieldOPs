@@ -401,7 +401,7 @@ export default function AnalyticsPage(): JSX.Element {
             <button
               onClick={handleRefreshAnalytics}
               disabled={state.isRefreshing}
-              className="flex items-center justify-center w-10 h-10 text-onyx hover:bg-gray-50 rounded-lg transition-colors active:scale-95 disabled:opacity-50"
+              className="flex items-center justify-center w-10 h-10 text-onyx hover:bg-glass-light rounded-lg transition-colors active:scale-95 disabled:opacity-50"
               aria-label="Refresh analytics"
               title="Refresh analytics"
             >
@@ -419,7 +419,7 @@ export default function AnalyticsPage(): JSX.Element {
             <button
               onClick={handleRefreshAnalytics}
               disabled={state.isRefreshing}
-              className="px-6 py-3 bg-onyx text-white rounded-button font-semibold text-field-sm hover:bg-slate transition-colors active:scale-95 disabled:opacity-50"
+              className="px-6 py-3 bg-accent-violet text-white rounded-button font-semibold text-field-sm hover:bg-glass-heavy transition-colors active:scale-95 disabled:opacity-50"
             >
               {state.isRefreshing ? "Computing..." : "Compute Analytics"}
             </button>
@@ -457,17 +457,17 @@ export default function AnalyticsPage(): JSX.Element {
         {/* ════════════════════════════════════════════════════════════ */}
         {/* 1. PROJECT HEALTH SCORE */}
         {/* ════════════════════════════════════════════════════════════ */}
-        <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-card">
+        <div className="bg-glass border border-white/[0.06] rounded-xl p-6 shadow-glass-card">
           <div className="flex items-center gap-4">
             {/* Circular Score */}
             <div className="flex-shrink-0 flex flex-col items-center">
               <div
                 className={`w-20 h-20 rounded-full border-4 flex items-center justify-center ${
                   health.score >= 90
-                    ? "border-green-600 bg-green-50"
+                    ? "border-accent-green bg-accent-green/10"
                     : health.score >= 75
-                      ? "border-amber-600 bg-amber-50"
-                      : "border-red-600 bg-red-50"
+                      ? "border-accent-amber bg-accent-amber/10"
+                      : "border-accent-red bg-accent-red/10"
                 }`}
               >
                 <div className="text-center">
@@ -493,21 +493,21 @@ export default function AnalyticsPage(): JSX.Element {
         <div className="space-y-3">
           {/* Cost Variance */}
           <div
-            className={`bg-white border border-gray-100 rounded-xl p-4 shadow-card flex items-start justify-between ${
-              costVariance > 0 ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+            className={`bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card flex items-start justify-between ${
+              costVariance > 0 ? "bg-accent-green/10 border-accent-green/30" : "bg-accent-red/10 border-accent-red/30"
             }`}
           >
             <div className="flex items-start gap-3">
-              <DollarSign size={20} className={costVariance > 0 ? "text-green-600" : "text-red-600"} />
+              <DollarSign size={20} className={costVariance > 0 ? "text-accent-green" : "text-accent-red"} />
               <div>
                 <p className="text-field-xs text-warm-gray">Cost Variance</p>
-                <p className={`text-field-lg font-bold ${costVariance > 0 ? "text-green-600" : "text-red-600"}`}>
+                <p className={`text-field-lg font-bold ${costVariance > 0 ? "text-accent-green" : "text-accent-red"}`}>
                   {formatCurrency(Math.abs(costVariance))}
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <p className={`text-field-sm font-semibold ${costVariance > 0 ? "text-green-600" : "text-red-600"}`}>
+              <p className={`text-field-sm font-semibold ${costVariance > 0 ? "text-accent-green" : "text-accent-red"}`}>
                 {costVariance > 0 ? "+" : ""}{formatPercent(Math.abs(costVariance) / 100000 * 100)}%
               </p>
               <p className="text-field-xs text-warm-gray">{costVariance > 0 ? "Under" : "Over"} Budget</p>
@@ -516,21 +516,21 @@ export default function AnalyticsPage(): JSX.Element {
 
           {/* Schedule Variance */}
           <div
-            className={`bg-white border border-gray-100 rounded-xl p-4 shadow-card flex items-start justify-between ${
-              scheduleVariance < 0 ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+            className={`bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card flex items-start justify-between ${
+              scheduleVariance < 0 ? "bg-accent-green/10 border-accent-green/30" : "bg-accent-red/10 border-accent-red/30"
             }`}
           >
             <div className="flex items-start gap-3">
-              <Clock size={20} className={scheduleVariance < 0 ? "text-green-600" : "text-red-600"} />
+              <Clock size={20} className={scheduleVariance < 0 ? "text-accent-green" : "text-accent-red"} />
               <div>
                 <p className="text-field-xs text-warm-gray">Schedule Variance</p>
-                <p className={`text-field-lg font-bold ${scheduleVariance < 0 ? "text-green-600" : "text-red-600"}`}>
+                <p className={`text-field-lg font-bold ${scheduleVariance < 0 ? "text-accent-green" : "text-accent-red"}`}>
                   {Math.abs(Math.round(scheduleVariance))} days
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <p className={`text-field-sm font-semibold ${scheduleVariance < 0 ? "text-green-600" : "text-red-600"}`}>
+              <p className={`text-field-sm font-semibold ${scheduleVariance < 0 ? "text-accent-green" : "text-accent-red"}`}>
                 {scheduleVariance < 0 ? "Ahead" : "Behind"}
               </p>
               <p className="text-field-xs text-warm-gray">vs. Plan</p>
@@ -539,21 +539,21 @@ export default function AnalyticsPage(): JSX.Element {
 
           {/* Productivity Index */}
           <div
-            className={`bg-white border border-gray-100 rounded-xl p-4 shadow-card flex items-start justify-between ${
-              productivityIndex >= 1.0 ? "bg-green-50 border-green-200" : "bg-amber-50 border-amber-200"
+            className={`bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card flex items-start justify-between ${
+              productivityIndex >= 1.0 ? "bg-accent-green/10 border-accent-green/30" : "bg-accent-amber/10 border-accent-amber/30"
             }`}
           >
             <div className="flex items-start gap-3">
-              <Target size={20} className={productivityIndex >= 1.0 ? "text-green-600" : "text-amber-600"} />
+              <Target size={20} className={productivityIndex >= 1.0 ? "text-accent-green" : "text-accent-amber"} />
               <div>
                 <p className="text-field-xs text-warm-gray">Productivity Index</p>
-                <p className={`text-field-lg font-bold ${productivityIndex >= 1.0 ? "text-green-600" : "text-amber-600"}`}>
+                <p className={`text-field-lg font-bold ${productivityIndex >= 1.0 ? "text-accent-green" : "text-accent-amber"}`}>
                   {formatDecimal(productivityIndex)}x
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <p className={`text-field-sm font-semibold ${productivityIndex >= 1.0 ? "text-green-600" : "text-amber-600"}`}>
+              <p className={`text-field-sm font-semibold ${productivityIndex >= 1.0 ? "text-accent-green" : "text-accent-amber"}`}>
                 {productivityIndex >= 1.0 ? "Above" : "Below"}
               </p>
               <p className="text-field-xs text-warm-gray">Baseline</p>
@@ -577,17 +577,17 @@ export default function AnalyticsPage(): JSX.Element {
             const varianceColor = variancePercent > 0 ? "text-red-600" : "text-green-600";
 
             return (
-              <div key={summary.costCode.id} className="bg-white border border-gray-100 rounded-xl shadow-card overflow-hidden">
+              <div key={summary.costCode.id} className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card overflow-hidden">
                 {/* Header - Always Visible */}
                 <button
                   onClick={() => toggleExpanded(summary.costCode.id)}
-                  className="w-full p-4 flex items-start justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full p-4 flex items-start justify-between hover:bg-glass-light transition-colors"
                 >
                   <div className="flex-1 min-w-0 text-left">
                     {/* Cost Code & CSI Division */}
                     <div className="flex items-center gap-2 mb-2">
                       <p className="text-field-sm font-bold text-onyx">{summary.costCode.code}</p>
-                      <span className="text-field-xs bg-onyx text-white px-1.5 py-0.5 rounded">
+                      <span className="text-field-xs bg-accent-violet text-white px-1.5 py-0.5 rounded">
                         {summary.costCode.csiDivision}
                       </span>
                     </div>
@@ -630,7 +630,7 @@ export default function AnalyticsPage(): JSX.Element {
 
                 {/* Expanded Content */}
                 {isExpanded && (
-                  <div className="border-t border-gray-100 p-4 space-y-4 bg-gray-50">
+                  <div className="border-t border-white/[0.06] p-4 space-y-4 bg-glass-light">
                     {latestAnalytics ? (
                       <>
                         {/* Unit Rate Stats */}
@@ -656,7 +656,7 @@ export default function AnalyticsPage(): JSX.Element {
                         </div>
 
                         {/* Standard Deviation */}
-                        <div className="bg-white rounded-lg p-3 border border-gray-200">
+                        <div className="bg-glass rounded-lg p-3 border border-white/[0.06]">
                           <p className="text-field-xs text-warm-gray mb-1">Standard Deviation</p>
                           <p className="text-field-base font-semibold text-onyx">
                             {formatDecimal(latestAnalytics.standardDeviation)}
@@ -671,9 +671,9 @@ export default function AnalyticsPage(): JSX.Element {
                               {Math.round(summary.percentComplete)}%
                             </p>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
+                          <div className="w-full bg-glass-medium rounded-full h-2 mb-1">
                             <div
-                              className="bg-onyx rounded-full h-2 transition-all"
+                              className="bg-accent-violet rounded-full h-2 transition-all"
                               style={{ width: `${summary.percentComplete}%` }}
                             />
                           </div>
@@ -684,7 +684,7 @@ export default function AnalyticsPage(): JSX.Element {
                         </div>
 
                         {/* Labor Hours */}
-                        <div className="bg-white rounded-lg p-3 border border-gray-200">
+                        <div className="bg-glass rounded-lg p-3 border border-white/[0.06]">
                           <p className="text-field-xs text-warm-gray mb-1">Total Labor Hours</p>
                           <p className="text-field-base font-semibold text-onyx">
                             {Math.round(latestAnalytics.totalLaborHours)} hrs
@@ -709,12 +709,12 @@ export default function AnalyticsPage(): JSX.Element {
             <h2 className="text-field-lg font-semibold text-onyx px-1">Top Variances</h2>
 
             {topVariances.map((variance, idx) => (
-              <div key={variance.costCodeId} className="bg-white border border-gray-100 rounded-xl p-4 shadow-card">
+              <div key={variance.costCodeId} className="bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card">
                 {/* Rank & Code */}
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-onyx text-white text-field-xs font-bold">
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-accent-violet text-white text-field-xs font-bold">
                         {idx + 1}
                       </span>
                       <p className="text-field-sm font-semibold text-onyx">{variance.code}</p>
@@ -733,7 +733,7 @@ export default function AnalyticsPage(): JSX.Element {
                   </div>
 
                   {/* Mini Color Bar */}
-                  <div className="flex-shrink-0 w-1 h-12 rounded-full ml-3" style={{ backgroundColor: variance.isFavorable ? "#16a34a" : "#dc2626" }} />
+                  <div className="flex-shrink-0 w-1 h-12 rounded-full ml-3" style={{ backgroundColor: variance.isFavorable ? "#14b8a6" : "#ec4899" }} />
                 </div>
               </div>
             ))}

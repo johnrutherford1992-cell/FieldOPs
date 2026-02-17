@@ -113,7 +113,7 @@ export default function BidFeedbackPage() {
       />
 
       {/* Tab Navigation */}
-      <div className="sticky top-[56px] z-30 bg-white border-b border-gray-100 px-4 pt-3 pb-0 overflow-x-auto">
+      <div className="sticky top-[56px] z-30 bg-obsidian/90 border-b border-white/[0.06] px-4 pt-3 pb-0 overflow-x-auto">
         <div className="flex gap-2 min-w-min pb-3">
           <TabButton
             label="Bid Feedback"
@@ -173,8 +173,8 @@ function TabButton({ label, active, onClick, icon }: TabButtonProps) {
         text-field-base transition-colors flex items-center gap-2
         ${
           active
-            ? "bg-onyx text-white"
-            : "bg-alabaster text-onyx hover:bg-gray-200"
+            ? "bg-accent-violet text-white"
+            : "bg-glass text-onyx hover:bg-glass-light"
         }
       `}
     >
@@ -217,7 +217,7 @@ function TabBidFeedback({
         <button
           onClick={onGenerateReport}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2.5 bg-onyx text-white rounded-full font-body font-semibold transition-opacity disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2.5 bg-accent-violet text-white rounded-full font-body font-semibold transition-opacity disabled:opacity-50"
         >
           {loading ? (
             <Loader size={18} className="animate-spin" />
@@ -320,7 +320,7 @@ function ReportSummaryCard({ report }: ReportSummaryCardProps) {
   const underBudget = report.keyFindings.filter((f) => f.variance < -5).length;
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl shadow-card p-4">
+    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4">
       <div className="space-y-4">
         <div>
           <p className="text-field-xs text-warm-gray">Generated Date</p>
@@ -369,9 +369,9 @@ interface SummaryBadgeProps {
 
 function SummaryBadge({ label, color, icon }: SummaryBadgeProps) {
   const colorClasses: Record<string, string> = {
-    red: "bg-red-50 text-red-700 border-red-200",
-    green: "bg-green-50 text-green-700 border-green-200",
-    blue: "bg-blue-50 text-blue-700 border-blue-200",
+    red: "bg-accent-red/10 text-accent-red border-accent-red/30",
+    green: "bg-accent-green/10 text-accent-green border-accent-green/30",
+    blue: "bg-accent-violet/10 text-accent-violet border-accent-violet/30",
   };
 
   return (
@@ -417,7 +417,7 @@ function KeyFindingCard({ finding }: KeyFindingCardProps) {
   }
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl shadow-card p-4 space-y-3">
+    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4 space-y-3">
       {/* Header: Description and Badge */}
       <div className="flex items-start gap-3 justify-between">
         <div>
@@ -449,7 +449,7 @@ function KeyFindingCard({ finding }: KeyFindingCardProps) {
       </div>
 
       {/* Recommendation Callout */}
-      <div className="bg-alabaster border-l-4 border-onyx rounded p-3">
+      <div className="bg-glass-light border-l-4 border-accent-violet rounded p-3">
         <p className="text-field-xs text-onyx">{finding.recommendation}</p>
       </div>
     </div>
@@ -468,7 +468,7 @@ function AdjustmentCard({ recommendation }: AdjustmentCardProps) {
   const confidenceFilled = Math.round(recommendation.confidence * 5);
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl shadow-card p-4 space-y-3">
+    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4 space-y-3">
       {/* Header: CSI Division + Activity */}
       <div>
         <p className="text-field-xs font-semibold text-warm-gray uppercase">
@@ -556,7 +556,7 @@ function TabUnitPriceBook({
         <button
           onClick={onUpdate}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2.5 bg-onyx text-white rounded-full font-body font-semibold transition-opacity disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2.5 bg-accent-violet text-white rounded-full font-body font-semibold transition-opacity disabled:opacity-50"
         >
           {loading ? (
             <Loader size={18} className="animate-spin" />
@@ -722,11 +722,11 @@ function UnitPriceCard({
 
         {/* Historical Rates List (Expanded) */}
         {expanded && priceEntry.historicalRates.length > 0 && (
-          <div className="border-t border-gray-100 pt-3 space-y-2">
+          <div className="border-t border-white/[0.06] pt-3 space-y-2">
             {priceEntry.historicalRates.map((rate, idx) => (
               <div
                 key={idx}
-                className="bg-alabaster rounded p-2.5 text-field-xs space-y-1"
+                className="bg-glass-light rounded p-2.5 text-field-xs space-y-1"
               >
                 <div className="font-semibold text-onyx">{rate.projectName}</div>
                 <div className="text-warm-gray">
@@ -750,7 +750,7 @@ function UnitPriceCard({
         {/* Seasonal Adjustments (if present) */}
         {priceEntry.seasonalAdjustments &&
           priceEntry.seasonalAdjustments.length > 0 && (
-            <div className="border-t border-gray-100 pt-3">
+            <div className="border-t border-white/[0.06] pt-3">
               <p className="text-field-xs font-semibold text-onyx mb-2">
                 Seasonal Adjustments
               </p>
@@ -758,7 +758,7 @@ function UnitPriceCard({
                 {priceEntry.seasonalAdjustments.map((adj) => (
                   <div
                     key={adj.quarter}
-                    className="bg-alabaster rounded p-2 text-center"
+                    className="bg-glass-light rounded p-2 text-center"
                   >
                     <p className="text-field-xs font-semibold text-onyx">
                       {adj.quarter}
@@ -775,7 +775,7 @@ function UnitPriceCard({
         {/* Complexity Tiers (if present) */}
         {priceEntry.complexityTiers &&
           priceEntry.complexityTiers.length > 0 && (
-            <div className="border-t border-gray-100 pt-3">
+            <div className="border-t border-white/[0.06] pt-3">
               <p className="text-field-xs font-semibold text-onyx mb-2">
                 Complexity Tiers
               </p>
@@ -826,7 +826,7 @@ interface EmptyStateProps {
 
 function EmptyState({ title, description, icon }: EmptyStateProps) {
   return (
-    <div className="bg-white border border-gray-100 rounded-xl shadow-card p-8 flex flex-col items-center justify-center gap-4 text-center">
+    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-8 flex flex-col items-center justify-center gap-4 text-center">
       <div className="flex-shrink-0">{icon}</div>
       <div>
         <h3 className="text-field-base font-semibold text-onyx">{title}</h3>

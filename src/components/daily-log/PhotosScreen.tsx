@@ -19,11 +19,11 @@ interface CategoryInfo {
 }
 
 const photoCategories: CategoryInfo[] = [
-  { id: "progress", label: "Progress", color: "bg-blue-500", bgColor: "bg-blue-100" },
-  { id: "safety", label: "Safety", color: "bg-green-500", bgColor: "bg-green-100" },
-  { id: "quality", label: "Quality", color: "bg-purple-500", bgColor: "bg-purple-100" },
-  { id: "issue", label: "Issue", color: "bg-amber-500", bgColor: "bg-amber-100" },
-  { id: "damage", label: "Damage", color: "bg-red-500", bgColor: "bg-red-100" },
+  { id: "progress", label: "Progress", color: "bg-accent-violet", bgColor: "bg-accent-violet/15" },
+  { id: "safety", label: "Safety", color: "bg-accent-green", bgColor: "bg-accent-green/15" },
+  { id: "quality", label: "Quality", color: "bg-accent-violet", bgColor: "bg-accent-violet/15" },
+  { id: "issue", label: "Issue", color: "bg-accent-amber", bgColor: "bg-accent-amber/15" },
+  { id: "damage", label: "Damage", color: "bg-accent-red", bgColor: "bg-accent-red/15" },
 ];
 
 export default function PhotosScreen({
@@ -210,7 +210,7 @@ export default function PhotosScreen({
             return (
               <div key={photo.id} className="flex flex-col">
                 {/* Photo Container */}
-                <div className="relative rounded-xl overflow-hidden mb-2 bg-white border border-gray-200">
+                <div className="relative rounded-xl overflow-hidden mb-2 bg-glass border border-white/[0.08]">
                   <img
                     src={photo.file}
                     alt={photo.caption || "Photo"}
@@ -234,8 +234,8 @@ export default function PhotosScreen({
                   <button
                     onClick={() => handleRemovePhoto(photo.id)}
                     className="
-                      absolute top-2 left-2 bg-white rounded-full p-1
-                      shadow-card hover:shadow-card-hover
+                      absolute top-2 left-2 bg-glass rounded-full p-1
+                      shadow-glass-card hover:shadow-glass-card
                       transition-all duration-150 min-h-[32px] min-w-[32px]
                       flex items-center justify-center
                     "
@@ -270,12 +270,12 @@ export default function PhotosScreen({
                   {/* Inline tags */}
                   <div className="flex flex-wrap gap-1">
                     {photo.taktZone && (
-                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                      <span className="text-xs bg-accent-violet/15 text-accent-violet px-2 py-0.5 rounded-full">
                         {getTaktZoneLabel(photo.taktZone)}
                       </span>
                     )}
                     {photo.csiDivision && (
-                      <span className="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">
+                      <span className="text-xs bg-accent-violet/10 text-accent-violet px-2 py-0.5 rounded-full">
                         {getCSIDivisionName(photo.csiDivision)}
                       </span>
                     )}
@@ -297,7 +297,7 @@ export default function PhotosScreen({
       {/* Tagging Modal */}
       {showTaggingModal && pendingPhoto && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-card-hover">
+          <div className="bg-obsidian rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-glass-card">
             <div className="p-6">
               {/* Modal Header */}
               <div className="flex items-center justify-between mb-6">
@@ -320,7 +320,7 @@ export default function PhotosScreen({
                 <img
                   src={pendingPhoto.file}
                   alt="Preview"
-                  className="max-h-[200px] rounded-xl border border-gray-200 object-contain"
+                  className="max-h-[200px] rounded-xl border border-white/[0.08] object-contain"
                 />
               </div>
 

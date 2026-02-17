@@ -68,7 +68,7 @@ export default function CostCodesTab({ projectId }: CostCodesTabProps) {
 
       {/* Cost Codes by Division */}
       {costCodes.length === 0 ? (
-        <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center gap-3">
+        <div className="border-2 border-dashed border-white/[0.1] rounded-xl p-8 flex flex-col items-center justify-center gap-3">
           <p className="text-field-sm text-warm-gray text-center">
             No cost codes added yet. Create your first cost code to get started.
           </p>
@@ -107,7 +107,7 @@ export default function CostCodesTab({ projectId }: CostCodesTabProps) {
       {/* Add Cost Code Button (Floating) */}
       <button
         onClick={() => setShowAddForm(true)}
-        className="fixed bottom-20 left-4 right-4 bg-onyx text-white rounded-xl py-4 font-semibold text-center shadow-lg z-40"
+        className="fixed bottom-20 left-4 right-4 bg-accent-violet text-white rounded-xl py-4 font-semibold text-center shadow-lg z-40"
       >
         <Plus size={20} className="inline mr-2" />
         Add Cost Code
@@ -174,7 +174,7 @@ function CostCodeCard({ code, onDelete, onToggleActive }: CostCodeCardProps) {
   const totalBudgetedValue = code.budgetedQuantity * code.budgetedUnitPrice;
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl shadow-card p-4 relative">
+    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4 relative">
       {/* Header with Code and Status */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1">
@@ -189,12 +189,12 @@ function CostCodeCard({ code, onDelete, onToggleActive }: CostCodeCardProps) {
           <div className="relative">
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-1 hover:bg-glass-light rounded-lg transition-colors"
             >
               <MoreVertical size={16} className="text-warm-gray" />
             </button>
             {showMenu && (
-              <div className="absolute right-0 top-full mt-1 bg-white border border-gray-100 rounded-lg shadow-lg z-50 w-40">
+              <div className="absolute right-0 top-full mt-1 bg-white border border-white/[0.06] rounded-lg shadow-lg z-50 w-40">
                 <button
                   onClick={() => {
                     onToggleActive();
@@ -223,7 +223,7 @@ function CostCodeCard({ code, onDelete, onToggleActive }: CostCodeCardProps) {
       <p className="text-field-sm text-warm-gray mb-4">{code.description}</p>
 
       {/* Details Grid */}
-      <div className="grid grid-cols-2 gap-3 border-t border-gray-100 pt-4">
+      <div className="grid grid-cols-2 gap-3 border-t border-white/[0.06] pt-4">
         {/* Unit of Measure */}
         <DetailItem label="Unit" value={code.unitOfMeasure} />
 
@@ -253,7 +253,7 @@ function CostCodeCard({ code, onDelete, onToggleActive }: CostCodeCardProps) {
       </div>
 
       {/* Crew Mix */}
-      <div className="mt-4 p-3 bg-alabaster rounded-lg">
+      <div className="mt-4 p-3 bg-glass rounded-lg">
         <p className="text-field-xs text-warm-gray font-semibold mb-2">
           Budgeted Crew Mix
         </p>
@@ -408,9 +408,9 @@ function AddCostCodeModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end">
-      <div className="w-full bg-white rounded-t-2xl max-h-[90vh] overflow-y-auto">
+      <div className="w-full bg-glass rounded-t-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-white border-b border-white/[0.06] px-4 py-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-onyx">Add Cost Code</h2>
           <button
             onClick={onClose}
@@ -427,7 +427,7 @@ function AddCostCodeModal({
             <select
               value={formData.csiDivision || ""}
               onChange={(e) => handleChange("csiDivision", e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
             >
               <option value="">Select a division</option>
               {CSI_DIVISIONS.map((div) => (
@@ -445,7 +445,7 @@ function AddCostCodeModal({
               placeholder="e.g., 03-3100-F"
               value={formData.code || ""}
               onChange={(e) => handleChange("code", e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
             />
           </FormGroup>
 
@@ -456,7 +456,7 @@ function AddCostCodeModal({
               placeholder="e.g., Concrete Forming"
               value={formData.activity || ""}
               onChange={(e) => handleChange("activity", e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
             />
           </FormGroup>
 
@@ -467,7 +467,7 @@ function AddCostCodeModal({
               placeholder="Detailed description"
               value={formData.description || ""}
               onChange={(e) => handleChange("description", e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
             />
           </FormGroup>
 
@@ -476,7 +476,7 @@ function AddCostCodeModal({
             <select
               value={formData.unitOfMeasure || "SF"}
               onChange={(e) => handleChange("unitOfMeasure", e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
             >
               <option value="SF">Square Feet (SF)</option>
               <option value="LF">Linear Feet (LF)</option>
@@ -496,7 +496,7 @@ function AddCostCodeModal({
               onChange={(e) =>
                 handleChange("budgetedQuantity", parseFloat(e.target.value) || 0)
               }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
             />
           </FormGroup>
 
@@ -510,7 +510,7 @@ function AddCostCodeModal({
               onChange={(e) =>
                 handleChange("budgetedUnitPrice", parseFloat(e.target.value) || 0)
               }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
             />
           </FormGroup>
 
@@ -527,7 +527,7 @@ function AddCostCodeModal({
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
             />
           </FormGroup>
 
@@ -541,12 +541,12 @@ function AddCostCodeModal({
               onChange={(e) =>
                 handleChange("budgetedCrewSize", parseInt(e.target.value) || 1)
               }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
             />
           </FormGroup>
 
           {/* Crew Mix Section */}
-          <div className="border-t border-gray-100 pt-4">
+          <div className="border-t border-white/[0.06] pt-4">
             <h3 className="text-field-base font-semibold text-onyx mb-4">
               Budgeted Crew Mix
             </h3>
@@ -562,7 +562,7 @@ function AddCostCodeModal({
                   onChange={(e) =>
                     handleCrewMixChange("journeymen", parseInt(e.target.value) || 0)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+                  className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
                 />
               </FormGroup>
 
@@ -576,7 +576,7 @@ function AddCostCodeModal({
                   onChange={(e) =>
                     handleCrewMixChange("apprentices", parseInt(e.target.value) || 0)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+                  className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
                 />
               </FormGroup>
 
@@ -590,7 +590,7 @@ function AddCostCodeModal({
                   onChange={(e) =>
                     handleCrewMixChange("foremen", parseInt(e.target.value) || 0)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx"
+                  className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet"
                 />
               </FormGroup>
             </div>
@@ -603,23 +603,23 @@ function AddCostCodeModal({
               value={formData.notes || ""}
               onChange={(e) => handleChange("notes", e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-onyx resize-none"
+              className="w-full px-4 py-3 border border-white/[0.06] rounded-lg text-field-base focus:outline-none focus:ring-2 focus:ring-accent-violet resize-none"
             />
           </FormGroup>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 pt-4 border-t border-gray-100">
+          <div className="flex gap-3 pt-4 border-t border-white/[0.06]">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 text-onyx rounded-xl font-semibold text-field-base hover:bg-alabaster transition-colors"
+              className="flex-1 px-4 py-3 border border-white/[0.06] text-accent-violet rounded-xl font-semibold text-field-base hover:bg-alabaster transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 px-4 py-3 bg-onyx text-white rounded-xl font-semibold text-field-base hover:bg-opacity-90 transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-3 bg-accent-violet text-white rounded-xl font-semibold text-field-base hover:bg-opacity-90 transition-colors disabled:opacity-50"
             >
               {saving ? "Saving..." : "Add Cost Code"}
             </button>

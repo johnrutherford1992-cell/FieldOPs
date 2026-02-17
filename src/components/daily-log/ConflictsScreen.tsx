@@ -72,10 +72,10 @@ const SEVERITY_OPTIONS: {
   color: string;
   bgColor: string;
 }[] = [
-  { value: "low", label: "Low", color: "text-green-600", bgColor: "bg-green-100 border-green-300" },
-  { value: "medium", label: "Medium", color: "text-amber-600", bgColor: "bg-amber-100 border-amber-300" },
-  { value: "high", label: "High", color: "text-orange-600", bgColor: "bg-orange-100 border-orange-300" },
-  { value: "critical", label: "Critical", color: "text-red-600", bgColor: "bg-red-100 border-red-300" },
+  { value: "low", label: "Low", color: "text-accent-green", bgColor: "bg-accent-green/15 border-accent-green/30" },
+  { value: "medium", label: "Medium", color: "text-accent-amber", bgColor: "bg-accent-amber/15 border-accent-amber/30" },
+  { value: "high", label: "High", color: "text-accent-amber", bgColor: "bg-accent-amber/15 border-accent-amber/30" },
+  { value: "critical", label: "Critical", color: "text-accent-red", bgColor: "bg-accent-red/15 border-accent-red/30" },
 ];
 
 const getCategoryIcon = (category: ConflictCategory): React.ReactNode => {
@@ -94,10 +94,10 @@ const getSeverityColor = (
   severity: ConflictSeverity
 ): { text: string; bg: string } => {
   const colorMap: Record<ConflictSeverity, { text: string; bg: string }> = {
-    low: { text: "text-green-700", bg: "bg-green-100" },
-    medium: { text: "text-amber-700", bg: "bg-amber-100" },
-    high: { text: "text-orange-700", bg: "bg-orange-100" },
-    critical: { text: "text-red-700", bg: "bg-red-100" },
+    low: { text: "text-accent-green", bg: "bg-accent-green/15" },
+    medium: { text: "text-accent-amber", bg: "bg-accent-amber/15" },
+    high: { text: "text-accent-amber", bg: "bg-accent-amber/15" },
+    critical: { text: "text-accent-red", bg: "bg-accent-red/15" },
   };
   return colorMap[severity];
 };
@@ -195,9 +195,9 @@ export default function ConflictsScreen({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-obsidian">
       {/* Header and Add Button */}
-      <div className="sticky top-0 bg-alabaster border-b border-gray-200 p-6">
+      <div className="sticky top-0 bg-glass border-b border-white/[0.08] p-6">
         <div className="flex items-center gap-3 mb-4">
           <ShieldAlert className="w-8 h-8 text-onyx" />
           <h1 className="text-3xl font-bold text-onyx">Conflicts & Issues</h1>

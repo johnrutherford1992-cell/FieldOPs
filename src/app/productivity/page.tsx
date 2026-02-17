@@ -94,33 +94,33 @@ export default function ProductivityPage() {
     badge: string;
   } => {
     if (index === null) {
-      return { bg: "bg-gray-50", text: "text-warm-gray", badge: "text-warm-gray" };
+      return { bg: "bg-glass", text: "text-warm-gray", badge: "text-warm-gray" };
     }
     if (index >= 1.05) {
       return {
-        bg: "bg-green-50",
+        bg: "bg-accent-green/10",
         text: "text-accent-green",
-        badge: "bg-green-100 text-accent-green",
+        badge: "bg-accent-green/15 text-accent-green",
       };
     }
     if (index >= 0.95) {
       return {
-        bg: "bg-amber-50",
-        text: "text-amber-700",
-        badge: "bg-amber-100 text-amber-700",
+        bg: "bg-accent-amber/10",
+        text: "text-accent-amber",
+        badge: "bg-accent-amber/15 text-accent-amber",
       };
     }
     if (index >= 0.85) {
       return {
-        bg: "bg-amber-50",
-        text: "text-amber-700",
-        badge: "bg-amber-100 text-amber-700",
+        bg: "bg-accent-amber/10",
+        text: "text-accent-amber",
+        badge: "bg-accent-amber/15 text-accent-amber",
       };
     }
     return {
-      bg: "bg-red-50",
+      bg: "bg-accent-red/10",
       text: "text-accent-red",
-      badge: "bg-red-100 text-accent-red",
+      badge: "bg-accent-red/15 text-accent-red",
     };
   };
 
@@ -140,10 +140,10 @@ export default function ProductivityPage() {
 
   // Get progress bar fill color
   const getProgressFillColor = (index: number | null): string => {
-    if (index === null) return "bg-gray-200";
+    if (index === null) return "bg-glass-medium";
     if (index >= 1.05) return "bg-accent-green";
     if (index < 0.85) return "bg-accent-red";
-    return "bg-onyx";
+    return "bg-accent-violet";
   };
 
   // Filter cost codes based on active filter
@@ -270,7 +270,7 @@ export default function ProductivityPage() {
             </p>
             <Link
               href="/daily-log"
-              className="mt-4 px-6 py-3 bg-onyx text-white rounded-button font-semibold text-field-sm hover:bg-slate transition-colors active:scale-95"
+              className="mt-4 px-6 py-3 bg-accent-violet text-white rounded-button font-semibold text-field-sm hover:bg-glass-heavy transition-colors active:scale-95"
             >
               Go to Daily Log
             </Link>
@@ -293,7 +293,7 @@ export default function ProductivityPage() {
         <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
           {/* Overall Productivity Index */}
           <div className="flex-shrink-0 w-[calc(50%-8px)] snap-center">
-            <div className="bg-onyx text-white rounded-xl p-4 h-full flex flex-col justify-between">
+            <div className="bg-accent-violet text-white rounded-xl p-4 h-full flex flex-col justify-between">
               <p className="text-field-sm opacity-90">Productivity Index</p>
               <div>
                 <p
@@ -324,7 +324,7 @@ export default function ProductivityPage() {
 
           {/* At Risk Activities */}
           <div className="flex-shrink-0 w-[calc(50%-8px)] snap-center">
-            <div className="bg-onyx text-white rounded-xl p-4 h-full flex flex-col justify-between">
+            <div className="bg-accent-violet text-white rounded-xl p-4 h-full flex flex-col justify-between">
               <p className="text-field-sm opacity-90">Activities At Risk</p>
               <div>
                 <p
@@ -343,7 +343,7 @@ export default function ProductivityPage() {
 
           {/* Cost Codes Tracked */}
           <div className="flex-shrink-0 w-[calc(50%-8px)] snap-center">
-            <div className="bg-onyx text-white rounded-xl p-4 h-full flex flex-col justify-between">
+            <div className="bg-accent-violet text-white rounded-xl p-4 h-full flex flex-col justify-between">
               <p className="text-field-sm opacity-90">Cost Codes Tracked</p>
               <div>
                 <p className="text-field-3xl font-semibold leading-none mb-1">
@@ -376,7 +376,7 @@ export default function ProductivityPage() {
                 return (
                   <div
                     key={summary.costCode.id}
-                    className={`border-l-4 border-accent-red bg-white rounded-xl p-4 shadow-card`}
+                    className={`border-l-4 border-accent-red bg-glass rounded-xl p-4 shadow-glass-card`}
                   >
                     {/* Header: Cost Code & Activity Name */}
                     <div className="mb-3">
@@ -389,7 +389,7 @@ export default function ProductivityPage() {
                     </div>
 
                     {/* Productivity Index - Large Red Text */}
-                    <div className="mb-3 pb-3 border-b border-gray-100">
+                    <div className="mb-3 pb-3 border-b border-white/[0.06]">
                       <p className={`text-field-2xl font-bold ${colors.text}`}>
                         {summary.productivityIndex === null
                           ? "—"
@@ -400,7 +400,7 @@ export default function ProductivityPage() {
                     {/* Days Behind Badge & Current vs Baseline */}
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex-1">
-                        <div className="inline-block px-2 py-1 bg-red-100 rounded-button">
+                        <div className="inline-block px-2 py-1 bg-accent-red/15 rounded-button">
                           <p className="text-field-xs font-semibold text-accent-red">
                             {Math.round(summary.daysBehind)} days behind
                           </p>
@@ -429,7 +429,7 @@ export default function ProductivityPage() {
                           {Math.round(summary.percentComplete)}%
                         </p>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-glass-medium rounded-full h-2">
                         <div
                           className="bg-accent-red rounded-full h-2 transition-all"
                           style={{ width: `${summary.percentComplete}%` }}
@@ -463,8 +463,8 @@ export default function ProductivityPage() {
                 }
                 className={`flex-shrink-0 px-4 py-2 rounded-button text-field-sm font-semibold transition-all snap-center ${
                   state.activeFilter === tab.id
-                    ? "bg-onyx text-white"
-                    : "bg-gray-100 text-onyx hover:bg-gray-200"
+                    ? "bg-accent-violet text-white"
+                    : "bg-glass text-onyx hover:bg-glass-light"
                 }`}
               >
                 {tab.label}
@@ -489,10 +489,10 @@ export default function ProductivityPage() {
                 return (
                   <div
                     key={summary.costCode.id}
-                    className="bg-white border border-gray-100 rounded-xl p-4 shadow-card"
+                    className="bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card"
                   >
                     {/* Header: Cost Code & Activity */}
-                    <div className="flex items-start justify-between mb-3 pb-3 border-b border-gray-100">
+                    <div className="flex items-start justify-between mb-3 pb-3 border-b border-white/[0.06]">
                       <div className="flex-1 min-w-0">
                         <p className="text-field-sm font-bold text-onyx truncate">
                           {summary.costCode.code}
@@ -527,7 +527,7 @@ export default function ProductivityPage() {
                     </div>
 
                     {/* Unit Rate Details */}
-                    <div className="space-y-2 mb-3 pb-3 border-b border-gray-100">
+                    <div className="space-y-2 mb-3 pb-3 border-b border-white/[0.06]">
                       <div className="flex items-baseline justify-between">
                         <p className="text-field-xs text-warm-gray">Current Rate</p>
                         <p className="text-field-sm font-semibold text-onyx">
@@ -556,7 +556,7 @@ export default function ProductivityPage() {
                           {Math.round(summary.percentComplete)}%
                         </p>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-glass-medium rounded-full h-2">
                         <div
                           className={`${getProgressFillColor(
                             summary.productivityIndex

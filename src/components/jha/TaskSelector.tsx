@@ -297,7 +297,7 @@ export default function TaskSelector({
       <div className="border-t border-gray-100 bg-white px-4 py-3 sticky bottom-0">
         <button
           onClick={() => setShowSelectedModal(true)}
-          className="w-full min-h-[56px] rounded-card bg-onyx text-white font-semibold font-body transition-all hover:bg-slate active:scale-[0.98] flex items-center justify-center"
+          className="w-full min-h-[56px] rounded-card bg-accent-violet text-white font-semibold font-body transition-all hover:bg-glass-heavy active:scale-[0.98] flex items-center justify-center"
         >
           <span>{selectedTasks.length} Task</span>
           <span>{selectedTasks.length !== 1 ? "s" : ""}</span>
@@ -314,7 +314,7 @@ export default function TaskSelector({
               </h2>
               <button
                 onClick={() => setShowSelectedModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:hover:bg-glass-light rounded-lg transition-colors"
               >
                 <X size={20} className="text-onyx" />
               </button>
@@ -338,7 +338,7 @@ export default function TaskSelector({
                   return (
                     <div
                       key={index}
-                      className="flex items-start justify-between gap-3 p-3 bg-surface-elevated rounded-lg"
+                      className="flex items-start justify-between gap-3 p-3 bg-glass-light rounded-lg"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-semibold text-onyx">
@@ -355,7 +355,7 @@ export default function TaskSelector({
                       </div>
                       <button
                         onClick={() => handleRemoveTask(task)}
-                        className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="flex-shrink-0 p-2 hover:hover:bg-glass-light rounded-lg transition-colors"
                       >
                         <X size={16} className="text-onyx" />
                       </button>
