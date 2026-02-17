@@ -69,8 +69,48 @@ const TABLE_MAP: Record<string, string> = {
 
 // ---- Generic table proxy for db.tableName.method() pattern ----
 
-function createTableProxy<T>(tableName: string) {
-  const pgTable = TABLE_MAP[tableName] || tableName;
+interface WhereEqualsChain<T> {
+  toArray(): Promise<T[]>;
+  first(): Promise<T | undefined>;
+  count(): Promise<number>;
+  filter(fn: (item: T) => boolean): WhereFilterChain<T>;
+  reverse(): { sortBy(field: string): Promise<T[]> };
+  delete(): Promise<void>;
+}
+
+interface WhereFilterChain<T> {
+  toArray(): Promise<T[]>;
+  first(): Promise<T | undefined>;
+  reverse(): { sortBy(field: string): Promise<T[]> };
+  delete(): Promise<void>;
+}
+
+interface WhereCompoundChain<T> {
+  toArray(): Promise<T[]>;
+  first(): Promise<T | undefined>;
+  filter(fn: (item: T) => boolean): { toArray(): Promise<T[]>; first(): Promise<T | undefined> };
+}
+
+interface TableProxy<T> {
+  toArray(): Promise<T[]>;
+  put(record: Partial<T> & { id: string }): Promise<void>;
+  add(record: Partial<T> & { id: string }): Promise<void>;
+  bulkPut(records: (Partial<T> & { id: string })[]): Promise<void>;
+  bulkAdd(records: (Partial<T> & { id: string })[]): Promise<void>;
+  get(id: string): Promise<T | undefined>;
+  update(id: string, changes: Partial<T>): Promise<void>;
+  delete(id: string): Promise<void>;
+  count(filters?: Record<string, unknown>): Promise<number>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  select(columns?: string): any;
+  where(columnOrFilter: string | Record<string, unknown>): { equals(value: unknown): WhereEqualsChain<T> } & WhereCompoundChain<T>;
+  orderBy(column: string): { last(): Promise<T | undefined> };
+  filter(fn: (item: T) => boolean): { toArray(): Promise<T[]> };
+  transaction(mode: string, tables: unknown[], fn: () => Promise<void>): Promise<void>;
+}
+
+function createTableProxy<T>(tableName: string): TableProxy<T> {
+  const pgTable: string = TABLE_MAP[tableName] ?? tableName;
 
   return {
     /** Fetch all records from table */
