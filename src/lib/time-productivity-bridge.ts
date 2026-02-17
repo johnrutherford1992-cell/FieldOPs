@@ -1,5 +1,5 @@
 import { db, generateId } from "./db";
-import type { TimeEntry, ProductivityEntry, CostCode, CrewComposition } from "./types";
+import type { TimeEntry, ProductivityEntry, CrewComposition } from "./types";
 
 // ============================================================
 // Time → Productivity Bridge

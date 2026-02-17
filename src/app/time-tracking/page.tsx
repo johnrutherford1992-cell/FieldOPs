@@ -5,7 +5,7 @@ import AppShell from "@/components/layout/AppShell";
 import Header from "@/components/layout/Header";
 import { useAppStore } from "@/lib/store";
 import { db, getTimeEntriesForDate, getApprovedUnexportedEntries, getActiveADPConfig } from "@/lib/db";
-import { deriveProductivityFromTimeEntries, computeWeeklyTimeSummary } from "@/lib/time-productivity-bridge";
+import { deriveProductivityFromTimeEntries } from "@/lib/time-productivity-bridge";
 import type { TimeEntry, ADPSyncConfig } from "@/lib/types";
 import {
   Timer,

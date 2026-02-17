@@ -10,14 +10,12 @@ import {
   AlertTriangle,
   ChevronDown,
   ChevronUp,
-  Camera,
 } from "lucide-react";
 import { generateId } from "@/lib/db";
 import type {
   MaterialDelivery,
   MaterialDeliveryItem,
   MaterialCategory,
-  DeliveryStatus,
 } from "@/lib/types";
 
 interface MaterialsScreenProps {

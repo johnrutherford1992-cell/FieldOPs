@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import AppShell from "@/components/layout/AppShell";
 import Header from "@/components/layout/Header";
 import { useAppStore } from "@/lib/store";
@@ -23,7 +23,6 @@ import {
   Box,
   AlertTriangle,
   Check,
-  Clock,
   ChevronDown,
   ChevronUp,
   Calendar,
