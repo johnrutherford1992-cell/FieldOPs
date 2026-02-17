@@ -26,7 +26,7 @@ const getBadgeStyles = (color: string): string => {
       return "bg-accent-red text-white";
     case "gray":
     default:
-      return "bg-gray-200 text-onyx";
+      return "bg-glass-medium text-warm-gray";
   }
 };
 
@@ -51,9 +51,9 @@ export default function BigButton({
       className={`
         relative w-full min-h-[72px] rounded-card transition-all duration-200
         flex items-center gap-4 px-4 py-3
-        ${isLight ? "bg-white border border-gray-100" : "bg-onyx text-white"}
-        ${!disabled && !selected ? (isLight ? "hover:border-gray-200 hover:shadow-card" : "hover:bg-slate") : ""}
-        ${selected ? (isLight ? "border-onyx bg-surface-elevated" : "bg-slate") : ""}
+        ${isLight ? "bg-glass border border-white/[0.06]" : "bg-gradient-to-br from-accent-violet to-purple-700 text-white"}
+        ${!disabled && !selected ? (isLight ? "hover:border-white/[0.12] hover:shadow-glass-glow" : "hover:bg-accent-violet/80") : ""}
+        ${selected ? (isLight ? "border-accent-violet bg-glass-medium" : "bg-accent-violet/80") : ""}
         ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer active:scale-[0.98]"}
         font-body
       `}
@@ -73,7 +73,7 @@ export default function BigButton({
         {sublabel && (
           <div
             className={`text-field-sm mt-1 leading-tight ${
-              isLight ? "text-warm-gray" : "text-gray-300"
+              isLight ? "text-warm-gray" : "text-white/70"
             }`}
           >
             {sublabel}
@@ -98,7 +98,7 @@ export default function BigButton({
         <div className="flex-shrink-0 flex items-center justify-center">
           <ChevronRight
             size={20}
-            className={isLight ? "text-warm-gray" : "text-gray-400"}
+            className={isLight ? "text-warm-gray" : "text-warm-gray"}
           />
         </div>
       )}

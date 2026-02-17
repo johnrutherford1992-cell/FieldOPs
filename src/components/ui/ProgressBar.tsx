@@ -31,10 +31,10 @@ export default function ProgressBar({
       )}
 
       {/* Progress bar track */}
-      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div className="w-full h-2 bg-glass-medium rounded-full overflow-hidden">
         {/* Progress fill */}
         <div
-          className="h-full bg-onyx rounded-full transition-all duration-300 ease-out"
+          className="h-full bg-accent-violet rounded-full transition-all duration-300 ease-out"
           style={{ width: `${percentage}%` }}
         />
       </div>

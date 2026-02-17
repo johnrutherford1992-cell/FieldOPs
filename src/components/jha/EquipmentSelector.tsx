@@ -72,8 +72,8 @@ export default function EquipmentSelector({
           border-l-4 flex items-start justify-between
           ${
             selected
-              ? "bg-green-50 border-l-accent-green"
-              : "bg-white border-l-transparent border border-gray-200"
+              ? "bg-accent-green/10 border-l-accent-green"
+              : "bg-glass border-l-transparent border border-white/[0.06]"
           }
         `}
       >

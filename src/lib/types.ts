@@ -791,12 +791,447 @@ export interface LegalCorrespondence {
 }
 
 // ════════════════════════════════════════════════════════════
+// TIME TRACKING MODULE — Phase 7: Field Time + ADP Integration
+// ════════════════════════════════════════════════════════════
+
+export type TimeEntryMethod = "manual" | "clock_in_out" | "bulk_import";
+export type TimeEntryApprovalStatus = "pending" | "approved" | "rejected" | "exported";
+
+export interface TimeEntry {
+  id: string;
+  projectId: string;
+  dailyLogId?: string;
+  date: string;
+  workerId: string;              // TeamMember id or subcontractor worker id
+  workerName: string;
+  trade: string;
+  csiDivision?: string;
+  costCodeId?: string;
+  taktZone?: string;
+  entryMethod: TimeEntryMethod;
+  clockIn?: string;              // ISO timestamp
+  clockOut?: string;             // ISO timestamp
+  regularHours: number;
+  overtimeHours: number;
+  doubleTimeHours: number;
+  breakMinutes: number;
+  totalHours: number;            // computed: regular + OT + DT
+  payRate?: number;              // $/hr for cost tracking
+  overtimeRate?: number;
+  notes?: string;
+  // Geofencing
+  gpsClockIn?: { lat: number; lng: number };
+  gpsClockOut?: { lat: number; lng: number };
+  withinGeofence?: boolean;
+  // Approval workflow
+  approvalStatus: TimeEntryApprovalStatus;
+  approvedBy?: string;
+  approvedAt?: string;
+  rejectionReason?: string;
+  // ADP Export tracking
+  adpExported?: boolean;
+  adpExportedAt?: string;
+  adpBatchId?: string;
+  adpPayrollCode?: string;
+  // Metadata
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TimePolicy {
+  id: string;
+  projectId: string;
+  regularHoursPerDay: number;     // typically 8
+  overtimeThresholdDaily: number;  // hours before OT kicks in
+  overtimeThresholdWeekly: number; // 40 typically
+  doubleTimeThreshold?: number;    // hours before DT (e.g., 12)
+  breakDurationMinutes: number;    // default lunch break
+  roundingIncrement: number;       // 15 = round to nearest 15 min
+  geofenceRadiusMeters: number;    // e.g., 100m
+  geofenceLatitude?: number;       // project site center
+  geofenceLongitude?: number;
+  requirePhotoClockIn?: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ADPSyncConfig {
+  id: string;
+  projectId: string;
+  companyCode: string;           // ADP company code
+  payGroupCode: string;          // ADP pay group
+  earningsCode: string;          // regular time earnings code
+  overtimeEarningsCode: string;  // OT earnings code
+  doubleTimeEarningsCode?: string;
+  lastSyncAt?: string;
+  lastSyncStatus?: "success" | "partial" | "failed";
+  lastSyncRecordCount?: number;
+  syncErrorLog?: string;
+  // OAuth managed server-side
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TimeSummary {
+  date: string;
+  totalWorkers: number;
+  totalRegularHours: number;
+  totalOvertimeHours: number;
+  totalDoubleTimeHours: number;
+  totalHours: number;
+  pendingApproval: number;
+  approved: number;
+  exported: number;
+}
+
+// ════════════════════════════════════════════════════════════
+// RESOURCE SCHEDULING MODULE — Phase 8: Cross-App Integration
+// with Kinetic Craft via REST + Webhooks
+// ════════════════════════════════════════════════════════════
+
+export type ResourceRequestStatus =
+  | "draft"
+  | "submitted"
+  | "acknowledged"
+  | "allocated"
+  | "partially_allocated"
+  | "denied"
+  | "completed"
+  | "cancelled";
+export type ResourcePriority = "low" | "medium" | "high" | "critical";
+export type ResourceType = "labor" | "equipment" | "material";
+export type ScheduleEntryStatus = "scheduled" | "confirmed" | "in_progress" | "completed" | "cancelled";
+export type ConflictType = "double_booking" | "capacity" | "skill_mismatch" | "timing" | "equipment_unavailable";
+export type ConflictSeverity_R = "warning" | "error" | "critical";
+
+export interface ResourceRequest {
+  id: string;
+  projectId: string;
+  requestType: ResourceType;
+  trade?: string;
+  csiDivision?: string;
+  description: string;
+  quantity: number;
+  unitOfMeasure: string;           // "workers", "units", "ea"
+  priority: ResourcePriority;
+  neededByDate: string;            // ISO date
+  neededUntilDate?: string;        // ISO date — for duration-based requests
+  taktZone?: string;
+  costCodeId?: string;
+  specialRequirements?: string;    // certifications, skills, etc.
+  requestedBy: string;             // TeamMember name
+  status: ResourceRequestStatus;
+  // Kinetic Craft sync
+  kineticRequestId?: string;       // ID in Kinetic Craft system
+  kineticSyncedAt?: string;
+  kineticResponse?: string;        // allocation details from Kinetic
+  // Workflow
+  approvedBy?: string;
+  approvedAt?: string;
+  denialReason?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ScheduleEntry {
+  id: string;
+  projectId: string;
+  resourceRequestId?: string;      // linked request
+  resourceType: ResourceType;
+  resourceName: string;            // "Concrete Crew Alpha" or equipment name
+  trade?: string;
+  date: string;
+  startTime?: string;
+  endTime?: string;
+  taktZone?: string;
+  costCodeId?: string;
+  status: ScheduleEntryStatus;
+  assignedFrom?: string;           // "kinetic_craft" | "manual"
+  kineticAllocationId?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ResourceConflict {
+  id: string;
+  projectId: string;
+  conflictType: ConflictType;
+  severity: ConflictSeverity_R;
+  description: string;
+  affectedResourceIds: string[];   // ScheduleEntry IDs
+  affectedDates: string[];
+  suggestedResolution?: string;
+  resolved: boolean;
+  resolvedAt?: string;
+  resolvedBy?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Kinetic Craft API Contract ──
+
+export interface KineticResourceAPIRequest {
+  fieldOpsProjectId: string;
+  fieldOpsRequestId: string;
+  resourceType: ResourceType;
+  trade?: string;
+  quantity: number;
+  neededByDate: string;
+  neededUntilDate?: string;
+  priority: ResourcePriority;
+  specialRequirements?: string;
+  siteAddress: string;
+  projectName: string;
+}
+
+export interface KineticResourceAPIResponse {
+  kineticRequestId: string;
+  status: "received" | "processing" | "allocated" | "denied";
+  allocations?: {
+    resourceName: string;
+    quantity: number;
+    availableDate: string;
+    confirmationId: string;
+  }[];
+  denialReason?: string;
+  estimatedResponseTime?: string;
+}
+
+export interface KineticWebhookPayload {
+  event: "allocation.created" | "allocation.updated" | "allocation.cancelled" | "conflict.detected";
+  timestamp: string;
+  fieldOpsRequestId: string;
+  kineticRequestId: string;
+  data: Record<string, unknown>;
+  signature: string;              // HMAC-SHA256
+}
+
+// ════════════════════════════════════════════════════════════
+// MATERIAL TRACKING MODULE — Phase 9: Delivery, Inventory, AI
+// ════════════════════════════════════════════════════════════
+
+export type DeliveryStatus = "scheduled" | "in_transit" | "delivered" | "partial" | "rejected" | "returned";
+export type MaterialCategory = "concrete" | "steel" | "lumber" | "masonry" | "electrical" | "plumbing" | "hvac" | "finishes" | "other";
+export type ConsumptionFlag = "normal" | "high" | "low" | "anomaly";
+
+export interface MaterialDelivery {
+  id: string;
+  projectId: string;
+  dailyLogId?: string;
+  date: string;
+  supplier: string;
+  poNumber?: string;
+  csiDivision?: string;
+  category: MaterialCategory;
+  items: MaterialDeliveryItem[];
+  deliveryTicketNumber?: string;
+  driver?: string;
+  receivedBy: string;
+  status: DeliveryStatus;
+  taktZone?: string;
+  photos?: string[];
+  notes?: string;
+  // Quality checks
+  conditionOnArrival?: "good" | "damaged" | "partial_damage";
+  temperatureCompliant?: boolean;   // for concrete, coatings
+  certificationProvided?: boolean;  // mill certs, test reports
+  // AI fields
+  aiVarianceFlag?: boolean;
+  aiVarianceDescription?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MaterialDeliveryItem {
+  materialName: string;
+  description?: string;
+  quantity: number;
+  unitOfMeasure: string;           // CY, TON, LF, EA, BDL, etc.
+  costCodeId?: string;
+  unitCost?: number;
+  totalCost?: number;
+  acceptedQuantity?: number;       // may differ from delivered
+  rejectedQuantity?: number;
+  rejectionReason?: string;
+}
+
+export interface MaterialInventory {
+  id: string;
+  projectId: string;
+  materialName: string;
+  category: MaterialCategory;
+  csiDivision?: string;
+  costCodeId?: string;
+  unitOfMeasure: string;
+  quantityOnHand: number;
+  quantityReserved: number;        // allocated but not consumed
+  quantityAvailable: number;       // onHand - reserved
+  reorderPoint?: number;           // trigger for AI alert
+  reorderQuantity?: number;
+  leadTimeDays?: number;
+  storageLocation?: string;        // takt zone or staging area
+  lastReceivedDate?: string;
+  lastConsumedDate?: string;
+  averageDailyConsumption?: number; // computed
+  daysOfSupplyRemaining?: number;   // computed
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MaterialConsumption {
+  id: string;
+  projectId: string;
+  dailyLogId?: string;
+  date: string;
+  materialInventoryId: string;
+  materialName: string;
+  quantityConsumed: number;
+  unitOfMeasure: string;
+  costCodeId?: string;
+  taktZone?: string;
+  installedBy?: string;            // sub or crew
+  wasteQuantity?: number;
+  wasteReason?: string;
+  consumptionFlag: ConsumptionFlag;
+  flagDescription?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ════════════════════════════════════════════════════════════
+// QUALITY MANAGEMENT MODULE — Phase 10: Checklists & Inspections
+// ════════════════════════════════════════════════════════════
+
+export type ChecklistCategory = "quality" | "safety" | "compliance" | "closeout" | "pre_task";
+export type ItemResponseType = "pass_fail" | "yes_no" | "numeric" | "text" | "photo_required" | "rating";
+export type DeficiencySeverity = "minor" | "major" | "critical" | "life_safety";
+export type DeficiencyStatus = "open" | "in_progress" | "corrected" | "verified" | "closed" | "escalated";
+
+export interface ChecklistTemplate {
+  id: string;
+  name: string;
+  category: ChecklistCategory;
+  csiDivision?: string;
+  trade?: string;
+  description: string;
+  version: number;
+  isPreloaded: boolean;            // shipped with app vs. user-created
+  isActive: boolean;
+  sections: ChecklistSection[];
+  specReferences?: string[];       // e.g., ["Section 03 30 00", "ASTM C143"]
+  estimatedDuration?: number;      // minutes
+  requiredCertifications?: string[];
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChecklistSection {
+  id: string;
+  title: string;
+  sortOrder: number;
+  items: ChecklistItem[];
+}
+
+export interface ChecklistItem {
+  id: string;
+  question: string;
+  responseType: ItemResponseType;
+  isRequired: boolean;
+  acceptanceCriteria?: string;     // e.g., "Compaction >= 95% Proctor"
+  numericRange?: { min: number; max: number; unit: string };
+  ratingScale?: { min: number; max: number; labels?: string[] };
+  helpText?: string;
+  photoRequired?: boolean;
+  branchLogic?: {
+    triggerValue: string;
+    action: "show_items" | "flag_deficiency" | "require_photo";
+    targetItemIds?: string[];
+  };
+}
+
+export interface CompletedChecklist {
+  id: string;
+  projectId: string;
+  templateId: string;
+  templateName: string;
+  dailyLogId?: string;
+  date: string;
+  inspectorName: string;
+  inspectorRole: string;
+  taktZone?: string;
+  costCodeId?: string;
+  responses: ChecklistResponse[];
+  overallScore?: number;           // 0-100 compliance score
+  passRate?: number;               // % of items passed
+  status: "in_progress" | "completed" | "requires_followup";
+  startedAt: string;
+  completedAt?: string;
+  signatureData?: string;          // base64 canvas
+  photos?: string[];
+  notes?: string;
+  deficiencyIds?: string[];        // linked deficiencies
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChecklistResponse {
+  itemId: string;
+  question: string;
+  responseType: ItemResponseType;
+  value: string | number | boolean;
+  passed?: boolean;
+  photo?: string;
+  notes?: string;
+  flagged?: boolean;
+  deficiencyCreated?: boolean;
+}
+
+export interface Deficiency {
+  id: string;
+  projectId: string;
+  checklistId?: string;
+  dailyLogId?: string;
+  date: string;
+  severity: DeficiencySeverity;
+  status: DeficiencyStatus;
+  description: string;
+  csiDivision?: string;
+  taktZone?: string;
+  location?: string;
+  responsibleParty?: string;       // sub ID or company name
+  specReference?: string;
+  photos?: string[];
+  correctionDeadline?: string;
+  correctedDate?: string;
+  correctedBy?: string;
+  correctionDescription?: string;
+  verifiedDate?: string;
+  verifiedBy?: string;
+  costImpact?: number;
+  scheduleImpact?: number;         // days
+  // Legal linkage
+  relatedNoticeIds?: string[];
+  relatedDelayEventIds?: string[];
+  contractClause?: string;
+  aiSuggestedAction?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ════════════════════════════════════════════════════════════
 // DAILY LOG SCREEN STEPS — Updated with new screens
 // ════════════════════════════════════════════════════════════
 
 export const DAILY_LOG_SCREENS = [
   { id: "weather", label: "Weather", icon: "Cloud" },
   { id: "manpower", label: "Manpower", icon: "Users" },
+  { id: "time", label: "Time Tracking", icon: "Timer" },
   { id: "equipment", label: "Equipment", icon: "Truck" },
   { id: "work", label: "Work Performed", icon: "Hammer" },
   { id: "rfis", label: "RFIs & Submittals", icon: "FileText" },
@@ -805,6 +1240,8 @@ export const DAILY_LOG_SCREENS = [
   { id: "conflicts", label: "Conflicts", icon: "ShieldAlert" },
   { id: "delays", label: "Delays", icon: "Clock" },
   { id: "safety", label: "Safety", icon: "HeartPulse" },
+  { id: "materials", label: "Materials", icon: "Package" },
+  { id: "quality", label: "Quality", icon: "ClipboardCheck" },
   { id: "photos", label: "Photos", icon: "Camera" },
   { id: "notes", label: "Notes & Tomorrow", icon: "Pencil" },
 ] as const;

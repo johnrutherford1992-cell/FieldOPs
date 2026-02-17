@@ -63,7 +63,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 shadow-nav safe-bottom"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-obsidian-deep/95 backdrop-blur-md border-t border-white/[0.06] shadow-nav safe-bottom"
       style={{
         height: "calc(72px + env(safe-area-inset-bottom, 0px))",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
@@ -72,7 +72,7 @@ export default function BottomNav() {
       <div className="flex h-[72px] items-center justify-around">
         {tabs.map((tab) => {
           const active = isActive(tab.path);
-          const textColor = active ? "text-black" : "text-warm-gray";
+          const textColor = active ? "text-accent-violet" : "text-warm-gray";
 
           return (
             <Link

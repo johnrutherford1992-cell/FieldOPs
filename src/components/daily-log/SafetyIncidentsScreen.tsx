@@ -28,11 +28,11 @@ const INCIDENT_TYPES: Record<
   SafetyIncidentType,
   { label: string; color: string; bgColor: string }
 > = {
-  near_miss: { label: "Near Miss", color: "text-blue-600", bgColor: "bg-blue-100" },
-  first_aid: { label: "First Aid", color: "text-amber-600", bgColor: "bg-amber-100" },
-  recordable: { label: "Recordable", color: "text-orange-600", bgColor: "bg-orange-100" },
-  lost_time: { label: "Lost Time", color: "text-red-600", bgColor: "bg-red-100" },
-  fatality: { label: "Fatality", color: "text-red-700 font-bold", bgColor: "bg-red-200" },
+  near_miss: { label: "Near Miss", color: "text-accent-violet", bgColor: "bg-accent-violet/15" },
+  first_aid: { label: "First Aid", color: "text-accent-amber", bgColor: "bg-accent-amber/15" },
+  recordable: { label: "Recordable", color: "text-accent-amber", bgColor: "bg-accent-amber/15" },
+  lost_time: { label: "Lost Time", color: "text-accent-red", bgColor: "bg-accent-red/15" },
+  fatality: { label: "Fatality", color: "text-accent-red font-bold", bgColor: "bg-accent-red/20" },
 };
 
 function generateUniqueId(): string {
@@ -187,13 +187,13 @@ export default function SafetyIncidentsScreen({
   if (entries.length === 0 && !showModal) {
     return (
       <div className="flex flex-col items-center justify-center py-12 px-4">
-        <HeartPulse className="w-12 h-12 text-gray-400 mb-4" />
-        <p className="text-gray-600 text-center mb-6">
+        <HeartPulse className="w-12 h-12 text-warm-gray mb-4" />
+        <p className="text-warm-gray text-center mb-6">
           No safety incidents today. Tap + to report an incident.
         </p>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition"
+          className="flex items-center gap-2 bg-accent-violet text-white px-4 py-2 rounded-lg hover:bg-accent-violet/90 transition"
         >
           <Plus className="w-5 h-5" />
           Report Incident
@@ -206,10 +206,10 @@ export default function SafetyIncidentsScreen({
     <div className="space-y-4 p-4">
       {/* Header with button */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-black">Safety Incidents</h2>
+        <h2 className="text-xl font-semibold text-onyx">Safety Incidents</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-black text-white px-3 py-2 rounded-lg hover:bg-gray-800 transition text-sm"
+          className="flex items-center gap-2 bg-accent-violet text-white px-3 py-2 rounded-lg hover:bg-accent-violet/90 transition text-sm"
         >
           <Plus className="w-4 h-4" />
           Report
@@ -228,15 +228,15 @@ export default function SafetyIncidentsScreen({
               key={incident.id}
               className={`rounded-lg p-4 transition ${
                 isOshaReportable
-                  ? "bg-red-50 border-2 border-red-500"
-                  : "bg-[#f2f0e6] border border-gray-200"
+                  ? "bg-accent-red/10 border-2 border-accent-red"
+                  : "bg-glass border border-white/[0.08]"
               }`}
             >
               {/* OSHA Banner */}
               {isOshaReportable && (
-                <div className="flex items-center gap-2 mb-3 p-2 bg-red-100 rounded border border-red-300">
-                  <AlertCircle className="w-4 h-4 text-red-600" />
-                  <span className="text-sm font-semibold text-red-700">
+                <div className="flex items-center gap-2 mb-3 p-2 bg-accent-red/15 rounded border border-accent-red/30">
+                  <AlertCircle className="w-4 h-4 text-accent-red" />
+                  <span className="text-sm font-semibold text-accent-red">
                     OSHA REPORTABLE
                   </span>
                 </div>
@@ -251,38 +251,38 @@ export default function SafetyIncidentsScreen({
                     >
                       {typeConfig.label}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-warm-gray">
                       {incident.time || "—"}
                     </span>
                   </div>
-                  <p className="font-semibold text-black">
+                  <p className="font-semibold text-onyx">
                     {incident.injuredPersonName || "No injured person reported"}
                   </p>
-                  <p className="text-sm text-gray-700 mt-1 line-clamp-2">
+                  <p className="text-sm text-slate mt-1 line-clamp-2">
                     {incident.description}
                   </p>
                 </div>
                 <button
                   onClick={() => toggleExpanded(incident.id)}
-                  className="ml-2 p-1 hover:bg-gray-300 rounded transition"
+                  className="ml-2 p-1 hover:bg-glass-light rounded transition"
                 >
                   {isExpanded ? (
-                    <ChevronUp className="w-5 h-5 text-black" />
+                    <ChevronUp className="w-5 h-5 text-onyx" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-black" />
+                    <ChevronDown className="w-5 h-5 text-onyx" />
                   )}
                 </button>
               </div>
 
               {/* Expanded Details */}
               {isExpanded && (
-                <div className="mt-4 pt-4 border-t border-gray-300 space-y-3">
+                <div className="mt-4 pt-4 border-t border-white/[0.10] space-y-3">
                   {incident.location && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-700 uppercase">
+                      <p className="text-xs font-semibold text-warm-gray uppercase">
                         Location
                       </p>
-                      <p className="text-sm text-black">
+                      <p className="text-sm text-onyx">
                         {incident.location.taktZone || "—"}
                         {incident.location.specific && ` / ${incident.location.specific}`}
                       </p>
@@ -291,10 +291,10 @@ export default function SafetyIncidentsScreen({
 
                   {incident.injuredPersonEmployer && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-700 uppercase">
+                      <p className="text-xs font-semibold text-warm-gray uppercase">
                         Employer
                       </p>
-                      <p className="text-sm text-black">
+                      <p className="text-sm text-onyx">
                         {incident.injuredPersonEmployer}
                       </p>
                     </div>
@@ -302,10 +302,10 @@ export default function SafetyIncidentsScreen({
 
                   {incident.injuredPersonTrade && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-700 uppercase">
+                      <p className="text-xs font-semibold text-warm-gray uppercase">
                         Trade
                       </p>
-                      <p className="text-sm text-black">
+                      <p className="text-sm text-onyx">
                         {incident.injuredPersonTrade}
                       </p>
                     </div>
@@ -313,10 +313,10 @@ export default function SafetyIncidentsScreen({
 
                   {incident.witnessNames && incident.witnessNames.length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-700 uppercase">
+                      <p className="text-xs font-semibold text-warm-gray uppercase">
                         Witnesses
                       </p>
-                      <ul className="text-sm text-black list-disc list-inside">
+                      <ul className="text-sm text-onyx list-disc list-inside">
                         {incident.witnessNames.map((w, i) => (
                           <li key={i}>{w}</li>
                         ))}
@@ -327,10 +327,10 @@ export default function SafetyIncidentsScreen({
                   {incident.immediateActions &&
                     incident.immediateActions.length > 0 && (
                       <div>
-                        <p className="text-xs font-semibold text-gray-700 uppercase">
+                        <p className="text-xs font-semibold text-warm-gray uppercase">
                           Immediate Actions
                         </p>
-                        <ul className="text-sm text-black list-disc list-inside">
+                        <ul className="text-sm text-onyx list-disc list-inside">
                           {incident.immediateActions.map((a, i) => (
                             <li key={i}>{a}</li>
                           ))}
@@ -340,20 +340,20 @@ export default function SafetyIncidentsScreen({
 
                   {incident.rootCause && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-700 uppercase">
+                      <p className="text-xs font-semibold text-warm-gray uppercase">
                         Root Cause
                       </p>
-                      <p className="text-sm text-black">{incident.rootCause}</p>
+                      <p className="text-sm text-onyx">{incident.rootCause}</p>
                     </div>
                   )}
 
                   {incident.correctiveActions &&
                     incident.correctiveActions.length > 0 && (
                       <div>
-                        <p className="text-xs font-semibold text-gray-700 uppercase">
+                        <p className="text-xs font-semibold text-warm-gray uppercase">
                           Corrective Actions
                         </p>
-                        <ul className="text-sm text-black list-disc list-inside">
+                        <ul className="text-sm text-onyx list-disc list-inside">
                           {incident.correctiveActions.map((a, i) => (
                             <li key={i}>{a}</li>
                           ))}
@@ -363,10 +363,10 @@ export default function SafetyIncidentsScreen({
 
                   {(incident.daysAwayFromWork || incident.restrictedDutyDays) && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-700 uppercase">
+                      <p className="text-xs font-semibold text-warm-gray uppercase">
                         Time Impact
                       </p>
-                      <p className="text-sm text-black">
+                      <p className="text-sm text-onyx">
                         {incident.daysAwayFromWork && `Days Away: ${incident.daysAwayFromWork}`}
                         {incident.daysAwayFromWork &&
                           incident.restrictedDutyDays &&
@@ -379,10 +379,10 @@ export default function SafetyIncidentsScreen({
 
                   {incident.followUpRequired && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-700 uppercase">
+                      <p className="text-xs font-semibold text-warm-gray uppercase">
                         Follow-up
                       </p>
-                      <p className="text-sm text-black">
+                      <p className="text-sm text-onyx">
                         {incident.followUpDate
                           ? `Scheduled for ${incident.followUpDate}`
                           : "Follow-up required"}
@@ -396,7 +396,7 @@ export default function SafetyIncidentsScreen({
               <div className="flex justify-end mt-3">
                 <button
                   onClick={() => handleDeleteIncident(incident.id)}
-                  className="p-2 text-red-600 hover:bg-red-100 rounded transition"
+                  className="p-2 text-accent-red hover:bg-accent-red/10 rounded transition"
                   title="Delete incident"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -410,9 +410,9 @@ export default function SafetyIncidentsScreen({
       {/* Modal Form */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-black">
+          <div className="bg-obsidian rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-obsidian border-b border-white/[0.08] p-4 flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-onyx">
                 Report Safety Incident
               </h3>
               <button
@@ -420,7 +420,7 @@ export default function SafetyIncidentsScreen({
                   setShowModal(false);
                   resetForm();
                 }}
-                className="text-gray-500 hover:text-black text-2xl"
+                className="text-warm-gray hover:text-onyx text-2xl"
               >
                 ×
               </button>

@@ -31,7 +31,7 @@ export default function SettingsPage() {
             value={apiKeyInput}
             onChange={handleApiKeyChange}
             placeholder="sk-ant-..."
-            className="field-input w-full px-4 py-3 rounded-lg border border-gray-100 bg-white font-body text-field-sm placeholder-warm-gray focus:outline-none focus:border-onyx focus:ring-1 focus:ring-onyx transition-colors"
+            className="field-input w-full px-4 py-3 rounded-lg border border-white/[0.06] bg-glass font-body text-field-sm placeholder-warm-gray focus:outline-none focus:border-accent-violet focus:ring-1 focus:ring-accent-violet transition-colors"
           />
 
           <p className="text-warm-gray text-field-sm font-body mt-2">
@@ -40,7 +40,7 @@ export default function SettingsPage() {
               href="https://console.anthropic.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-onyx underline hover:text-slate"
+              className="text-accent-violet underline hover:text-onyx"
             >
               console.anthropic.com
             </a>
@@ -53,9 +53,9 @@ export default function SettingsPage() {
             User Profile
           </h3>
 
-          <div className="bg-alabaster border border-gray-100 rounded-lg p-4">
+          <div className="bg-glass border border-white/[0.06] rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="flex-shrink-0 w-10 h-10 bg-onyx rounded-full flex items-center justify-center text-white font-heading font-semibold">
+              <div className="flex-shrink-0 w-10 h-10 bg-accent-violet rounded-full flex items-center justify-center text-white font-heading font-semibold">
                 JR
               </div>
               <div className="flex-1 min-w-0">

@@ -115,8 +115,8 @@ function EquipmentScreen({
                   onClick={() => handleEquipmentToggle(equipment)}
                   className={`w-full min-h-[56px] rounded-xl px-4 py-3 flex items-center gap-3 transition-colors ${
                     isSelected
-                      ? "bg-onyx text-white border-l-4 border-green-500"
-                      : "bg-alabaster border-l-4 border-transparent text-onyx hover:bg-opacity-80"
+                      ? "bg-accent-violet text-white border-l-4 border-accent-green"
+                      : "bg-glass border-l-4 border-transparent text-onyx hover:bg-glass-light"
                   }`}
                   aria-pressed={isSelected}
                 >
@@ -124,8 +124,8 @@ function EquipmentScreen({
                   <div
                     className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
                       isSelected
-                        ? "bg-green-500 border-green-600"
-                        : "border-gray-300 bg-white"
+                        ? "bg-accent-green border-accent-green"
+                        : "border-white/[0.10] bg-glass"
                     }`}
                   >
                     {isSelected && (
@@ -142,8 +142,8 @@ function EquipmentScreen({
                       <span
                         className={`inline-block px-2 py-1 rounded text-xs font-medium ${
                           equipment.ownership === "owned"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-amber-100 text-amber-700"
+                            ? "bg-accent-green/15 text-accent-green"
+                            : "bg-accent-amber/15 text-accent-amber"
                         }`}
                       >
                         {equipment.ownership === "owned"
@@ -175,7 +175,7 @@ function EquipmentScreen({
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-onyx min-h-[56px] text-base"
+                      className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet min-h-[56px] text-base bg-glass"
                       placeholder="0.0"
                     />
                   </div>
@@ -191,10 +191,10 @@ function EquipmentScreen({
   const hasEquipment = availableEquipment.length > 0;
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-alabaster">
       {/* Summary bar */}
       {hasEquipment && (
-        <div className="sticky top-0 bg-alabaster px-4 py-3 border-b border-gray-200">
+        <div className="sticky top-0 bg-glass px-4 py-3 border-b border-white/[0.06]">
           <div className="text-sm font-medium text-onyx">
             {entries.length} item{entries.length !== 1 ? "s" : ""} selected ·{" "}
             {totalHours.toFixed(1)} hrs total

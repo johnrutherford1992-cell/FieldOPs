@@ -53,15 +53,15 @@ const CAUSE_CATEGORY_OPTIONS: { value: DelayCause; label: string }[] = [
 const getDelayTypeBadgeColor = (delayType: DelayType): string => {
   switch (delayType) {
     case 'excusable_compensable':
-      return 'bg-amber-100 text-amber-800';
+      return 'bg-accent-amber/15 text-accent-amber';
     case 'excusable_noncompensable':
-      return 'bg-blue-100 text-blue-800';
+      return 'bg-accent-violet/15 text-accent-violet';
     case 'inexcusable':
-      return 'bg-red-100 text-red-800';
+      return 'bg-accent-red/15 text-accent-red';
     case 'concurrent':
-      return 'bg-purple-100 text-purple-800';
+      return 'bg-accent-violet/20 text-accent-violet';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-glass text-slate';
   }
 };
 
@@ -163,15 +163,15 @@ export default function DelayEventsScreen({
     <div className="w-full">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-black mb-2">Delay Events</h2>
-        <p className="text-gray-600">Document delay events that impacted the schedule</p>
+        <h2 className="text-2xl font-bold text-onyx mb-2">Delay Events</h2>
+        <p className="text-warm-gray">Document delay events that impacted the schedule</p>
       </div>
 
       {/* Empty State */}
       {entries.length === 0 && !showModal && (
-        <div className="flex flex-col items-center justify-center py-12 bg-[#f2f0e6] rounded-lg border border-gray-200">
-          <Clock className="w-12 h-12 text-gray-400 mb-4" />
-          <p className="text-gray-600 text-center mb-6">
+        <div className="flex flex-col items-center justify-center py-12 bg-glass rounded-lg border border-white/[0.08]">
+          <Clock className="w-12 h-12 text-warm-gray mb-4" />
+          <p className="text-warm-gray text-center mb-6">
             No delay events logged today. Tap + to document a delay.
           </p>
         </div>
@@ -183,14 +183,14 @@ export default function DelayEventsScreen({
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="bg-[#f2f0e6] rounded-lg border border-gray-200 overflow-hidden"
+              className="bg-glass rounded-lg border border-white/[0.08] overflow-hidden"
             >
               {/* Card Header */}
               <button
                 onClick={() =>
                   setExpandedId(expandedId === entry.id ? null : entry.id)
                 }
-                className="w-full px-4 py-4 flex items-start justify-between hover:bg-gray-100 transition-colors"
+                className="w-full px-4 py-4 flex items-start justify-between hover:bg-glass-light transition-colors"
               >
                 <div className="flex-1 text-left">
                   <div className="flex items-center gap-3 mb-2">
@@ -203,14 +203,14 @@ export default function DelayEventsScreen({
                     </span>
                     <span className="text-sm text-gray-600">{entry.causeCategory}</span>
                   </div>
-                  <p className="text-black font-medium mb-2 line-clamp-2">
+                  <p className="text-onyx font-medium mb-2 line-clamp-2">
                     {entry.description}
                   </p>
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-4 text-sm text-warm-gray">
                     <span>Calendar: {entry.calendarDaysImpacted}d</span>
                     <span>Working: {entry.workingDaysImpacted}d</span>
                     {entry.costImpact != null && entry.costImpact > 0 && (
-                      <span className="text-amber-700 font-medium">
+                      <span className="text-accent-amber font-medium">
                         ${entry.costImpact?.toLocaleString()}
                       </span>
                     )}
@@ -218,26 +218,26 @@ export default function DelayEventsScreen({
                 </div>
                 <div className="ml-4 flex items-center gap-2">
                   {expandedId === entry.id ? (
-                    <ChevronUp className="w-5 h-5 text-gray-400" />
+                    <ChevronUp className="w-5 h-5 text-warm-gray" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                    <ChevronDown className="w-5 h-5 text-warm-gray" />
                   )}
                 </div>
               </button>
 
               {/* Expanded Details */}
               {expandedId === entry.id && (
-                <div className="px-4 py-4 border-t border-gray-200 bg-white space-y-4">
+                <div className="px-4 py-4 border-t border-white/[0.08] bg-glass-light space-y-4">
                   <div>
-                    <h4 className="text-sm font-semibold text-black mb-2">
+                    <h4 className="text-sm font-semibold text-onyx mb-2">
                       Responsible Party
                     </h4>
-                    <p className="text-gray-700">{entry.responsibleParty}</p>
+                    <p className="text-slate">{entry.responsibleParty}</p>
                   </div>
 
                   {(entry.affectedTaktZones?.length ?? 0) > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold text-black mb-2">
+                      <h4 className="text-sm font-semibold text-onyx mb-2">
                         Affected Takt Zones
                       </h4>
                       <div className="flex flex-wrap gap-2">
@@ -246,7 +246,7 @@ export default function DelayEventsScreen({
                           return zone ? (
                             <span
                               key={zoneId}
-                              className="px-2 py-1 bg-gray-200 text-gray-700 rounded text-xs"
+                              className="px-2 py-1 bg-glass text-onyx rounded text-xs"
                             >
                               {zone.zoneName}
                             </span>
@@ -257,17 +257,17 @@ export default function DelayEventsScreen({
                   )}
 
                   {entry.criticalPathImpacted && (
-                    <div className="px-3 py-2 bg-red-50 border border-red-200 rounded text-sm text-red-800">
+                    <div className="px-3 py-2 bg-accent-red/10 border border-accent-red/30 rounded text-sm text-accent-red">
                       Critical Path Impacted
                     </div>
                   )}
 
                   {entry.contractNoticeRequired && (
                     <div>
-                      <h4 className="text-sm font-semibold text-black mb-2">
+                      <h4 className="text-sm font-semibold text-onyx mb-2">
                         Contract Notice
                       </h4>
-                      <p className="text-gray-700">
+                      <p className="text-slate">
                         Notice Sent: {entry.noticeSentDate || 'Pending'}
                       </p>
                     </div>
@@ -275,12 +275,12 @@ export default function DelayEventsScreen({
 
                   {(entry.mitigationActions?.length ?? 0) > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold text-black mb-2">
+                      <h4 className="text-sm font-semibold text-onyx mb-2">
                         Mitigation Actions
                       </h4>
                       <ul className="space-y-1">
                         {entry.mitigationActions?.map((action, idx) => (
-                          <li key={idx} className="text-gray-700 text-sm flex items-start">
+                          <li key={idx} className="text-slate text-sm flex items-start">
                             <span className="mr-2">•</span>
                             <span>{action}</span>
                           </li>
@@ -290,8 +290,8 @@ export default function DelayEventsScreen({
                   )}
 
                   {(entry.costImpact ?? 0) > 0 && (
-                    <div className="px-3 py-2 bg-amber-50 border border-amber-200 rounded">
-                      <p className="text-sm text-amber-900">
+                    <div className="px-3 py-2 bg-accent-amber/10 border border-accent-amber/30 rounded">
+                      <p className="text-sm text-accent-amber">
                         <span className="font-semibold">Cost Impact:</span> $
                         {entry.costImpact?.toLocaleString()}
                       </p>
@@ -301,7 +301,7 @@ export default function DelayEventsScreen({
                   {/* Delete Button */}
                   <button
                     onClick={() => handleDeleteEntry(entry.id)}
-                    className="w-full mt-4 px-3 py-2 flex items-center justify-center gap-2 bg-red-50 text-red-700 hover:bg-red-100 rounded font-medium text-sm transition-colors"
+                    className="w-full mt-4 px-3 py-2 flex items-center justify-center gap-2 bg-accent-red/10 text-accent-red hover:bg-accent-red/20 rounded font-medium text-sm transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                     Delete Entry
@@ -316,7 +316,7 @@ export default function DelayEventsScreen({
       {/* Add Button */}
       <button
         onClick={() => setShowModal(true)}
-        className="w-full px-4 py-3 flex items-center justify-center gap-2 bg-black text-white hover:bg-gray-900 rounded-lg font-medium transition-colors"
+        className="w-full px-4 py-3 flex items-center justify-center gap-2 bg-accent-violet text-white hover:bg-accent-violet/90 rounded-lg font-medium transition-colors"
       >
         <Plus className="w-5 h-5" />
         Add Delay
@@ -325,15 +325,15 @@ export default function DelayEventsScreen({
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
-          <div className="w-full bg-white rounded-t-xl max-h-[90vh] overflow-y-auto">
+          <div className="w-full bg-obsidian rounded-t-xl max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="sticky top-0 flex items-center justify-between px-4 py-4 border-b border-gray-200 bg-white">
-              <h3 className="text-xl font-bold text-black">Log Delay Event</h3>
+            <div className="sticky top-0 flex items-center justify-between px-4 py-4 border-b border-white/[0.08] bg-obsidian">
+              <h3 className="text-xl font-bold text-onyx">Log Delay Event</h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-1 hover:bg-glass-light rounded-lg transition-colors"
               >
-                <X className="w-6 h-6 text-gray-500" />
+                <X className="w-6 h-6 text-warm-gray" />
               </button>
             </div>
 
@@ -341,7 +341,7 @@ export default function DelayEventsScreen({
             <div className="p-4 space-y-6">
               {/* Delay Type */}
               <div>
-                <label className="block text-sm font-semibold text-black mb-2">
+                <label className="block text-sm font-semibold text-onyx mb-2">
                   Delay Type *
                 </label>
                 <select
@@ -349,7 +349,7 @@ export default function DelayEventsScreen({
                   onChange={(e) =>
                     setFormData({ ...formData, delayType: e.target.value as DelayType })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass text-onyx"
                 >
                   {DELAY_TYPE_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -361,7 +361,7 @@ export default function DelayEventsScreen({
 
               {/* Cause Category */}
               <div>
-                <label className="block text-sm font-semibold text-black mb-2">
+                <label className="block text-sm font-semibold text-onyx mb-2">
                   Cause Category *
                 </label>
                 <select
@@ -369,7 +369,7 @@ export default function DelayEventsScreen({
                   onChange={(e) =>
                     setFormData({ ...formData, causeCategory: e.target.value as DelayCause })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass text-onyx"
                 >
                   {CAUSE_CATEGORY_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -381,7 +381,7 @@ export default function DelayEventsScreen({
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-semibold text-black mb-2">
+                <label className="block text-sm font-semibold text-onyx mb-2">
                   Description *
                 </label>
                 <textarea
@@ -391,13 +391,13 @@ export default function DelayEventsScreen({
                   }
                   placeholder="Describe the delay event in detail..."
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black resize-none"
+                  className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet resize-none bg-glass text-onyx"
                 />
               </div>
 
               {/* Responsible Party */}
               <div>
-                <label className="block text-sm font-semibold text-black mb-2">
+                <label className="block text-sm font-semibold text-onyx mb-2">
                   Responsible Party *
                 </label>
                 <div className="space-y-2">
@@ -408,7 +408,7 @@ export default function DelayEventsScreen({
                       setFormData({ ...formData, responsibleParty: e.target.value })
                     }
                     placeholder="Enter name or select from list"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass text-onyx"
                   />
                   {subcontractors.length > 0 && (
                     <select
@@ -418,7 +418,7 @@ export default function DelayEventsScreen({
                           e.target.value = '';
                         }
                       }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-500"
+                      className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet text-warm-gray bg-glass"
                     >
                       <option value="">Or select subcontractor...</option>
                       {subcontractors.map((sub) => (

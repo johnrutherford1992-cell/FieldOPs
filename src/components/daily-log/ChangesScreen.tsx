@@ -58,13 +58,13 @@ const IMPACT_OPTIONS: {
     value: "cost",
     label: "Cost",
     icon: <DollarSign size={20} />,
-    color: "bg-amber-100 text-amber-700 border-amber-300",
+    color: "bg-accent-amber/15 text-accent-amber border-accent-amber/30",
   },
   {
     value: "schedule",
     label: "Schedule",
     icon: <Calendar size={20} />,
-    color: "bg-blue-100 text-blue-700 border-blue-300",
+    color: "bg-accent-violet/15 text-accent-violet border-accent-violet/30",
   },
   {
     value: "both",
@@ -75,16 +75,16 @@ const IMPACT_OPTIONS: {
         <Calendar size={16} />
       </div>
     ),
-    color: "bg-red-100 text-red-700 border-red-300",
+    color: "bg-accent-red/15 text-accent-red border-accent-red/30",
   },
 ];
 
 const getInitiatorColor = (initiator: ChangeInitiator): string => {
   const colorMap: Record<ChangeInitiator, string> = {
-    owner: "bg-purple-100 text-purple-700",
-    architect: "bg-indigo-100 text-indigo-700",
-    engineer: "bg-cyan-100 text-cyan-700",
-    field_condition: "bg-orange-100 text-orange-700",
+    owner: "bg-accent-violet/15 text-accent-violet",
+    architect: "bg-accent-violet/20 text-accent-violet",
+    engineer: "bg-accent-green/15 text-accent-green",
+    field_condition: "bg-accent-amber/15 text-accent-amber",
   };
   return colorMap[initiator];
 };
@@ -154,9 +154,9 @@ export default function ChangesScreen({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-alabaster">
       {/* Summary Bar */}
-      <div className="bg-onyx text-white px-4 py-4 rounded-card shadow-card">
+      <div className="bg-accent-violet text-white px-4 py-4 rounded-card shadow-card">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <AlertTriangle size={28} className="text-alabaster" />
@@ -192,7 +192,7 @@ export default function ChangesScreen({
           entries.map((entry, index) => (
             <div
               key={`change-${index}`}
-              className="bg-alabaster rounded-xl p-5 shadow-card"
+              className="bg-glass rounded-xl p-5 shadow-card"
             >
               {/* Card Header with Initiator Badge */}
               <div className="flex items-start justify-between mb-4">
@@ -203,7 +203,7 @@ export default function ChangesScreen({
                 </div>
                 <button
                   onClick={() => handleRemoveEntry(index)}
-                  className="flex items-center justify-center w-10 h-10 rounded-button bg-white text-onyx hover:bg-gray-100 active:scale-[0.95] transition-all flex-shrink-0"
+                  className="flex items-center justify-center w-10 h-10 rounded-button bg-glass-light text-onyx hover:bg-glass-medium active:scale-[0.95] transition-all flex-shrink-0"
                   aria-label="Remove change entry"
                 >
                   <X size={20} />
@@ -225,7 +225,7 @@ export default function ChangesScreen({
                     return (
                       <span
                         key={divCode}
-                        className="inline-block px-3 py-2 bg-white text-onyx rounded-full text-field-sm font-medium border border-gray-200"
+                        className="inline-block px-3 py-2 bg-glass text-onyx rounded-full text-field-sm font-medium border border-white/[0.08]"
                       >
                         {divCode}
                         {division && ` - ${division.name}`}
@@ -247,10 +247,10 @@ export default function ChangesScreen({
       </div>
 
       {/* Add Button - Bottom Fixed */}
-      <div className="border-t border-gray-200 bg-white p-4">
+      <div className="border-t border-white/[0.08] bg-glass p-4">
         <button
           onClick={() => setShowModal(true)}
-          className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 min-h-[56px] bg-onyx text-alabaster rounded-xl font-semibold text-field-base hover:bg-gray-900 transition-colors"
+          className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 min-h-[56px] bg-accent-violet text-alabaster rounded-xl font-semibold text-field-base hover:bg-accent-violet/90 transition-colors"
         >
           <Plus size={24} />
           Log Change / Directive
@@ -260,9 +260,9 @@ export default function ChangesScreen({
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-obsidian rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+            <div className="sticky top-0 bg-obsidian border-b border-white/[0.08] p-6 flex items-center justify-between">
               <h2 className="text-field-lg font-heading font-bold text-onyx">
                 Log Change / Directive
               </h2>
@@ -271,7 +271,7 @@ export default function ChangesScreen({
                   setShowModal(false);
                   setFormState(INITIAL_FORM_STATE);
                 }}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-glass-light rounded-lg transition-colors"
               >
                 <X size={24} className="text-onyx" />
               </button>
@@ -290,8 +290,8 @@ export default function ChangesScreen({
                       onClick={() => handleFormChange("initiatedBy", option.value)}
                       className={`px-4 py-4 min-h-[56px] rounded-xl font-body text-field-base font-semibold transition-all border-2 ${
                         formState.initiatedBy === option.value
-                          ? "bg-onyx text-white border-onyx"
-                          : "bg-alabaster text-onyx border-gray-300 hover:border-onyx"
+                          ? "bg-accent-violet text-white border-accent-violet"
+                          : "bg-glass text-onyx border-white/[0.10] hover:border-accent-violet"
                       }`}
                     >
                       {option.label}
@@ -319,7 +319,7 @@ export default function ChangesScreen({
                   Affected Divisions
                 </label>
                 <div
-                  className="border border-gray-300 rounded-card max-h-[240px] overflow-y-auto bg-alabaster"
+                  className="border border-white/[0.10] rounded-card max-h-[240px] overflow-y-auto bg-glass-light"
                 >
                   <div className="space-y-2 p-3">
                     {csiDivisions.length === 0 ? (
@@ -341,16 +341,16 @@ export default function ChangesScreen({
                               font-body text-field-sm
                               ${
                                 isSelected
-                                  ? "bg-onyx text-white"
-                                  : "bg-white border border-gray-200 text-onyx hover:border-gray-300"
+                                  ? "bg-accent-violet text-white"
+                                  : "bg-glass border border-white/[0.08] text-onyx hover:border-white/[0.10]"
                               }
                             `}
                           >
                             <div
                               className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                                 isSelected
-                                  ? "bg-onyx border-onyx"
-                                  : "border-gray-300 bg-white"
+                                  ? "bg-accent-violet border-accent-violet"
+                                  : "border-white/[0.10] bg-glass-light"
                               }`}
                             >
                               {isSelected && (
@@ -383,8 +383,8 @@ export default function ChangesScreen({
                       onClick={() => handleFormChange("impact", option.value)}
                       className={`px-4 py-4 min-h-[56px] rounded-xl font-body text-field-base font-semibold transition-all border-2 flex flex-col items-center gap-2 ${
                         formState.impact === option.value
-                          ? "bg-onyx text-white border-onyx"
-                          : "bg-alabaster text-onyx border-gray-300 hover:border-onyx"
+                          ? "bg-accent-violet text-white border-accent-violet"
+                          : "bg-glass text-onyx border-white/[0.10] hover:border-accent-violet"
                       }`}
                     >
                       <div
@@ -403,7 +403,7 @@ export default function ChangesScreen({
               </div>
 
               {/* Legal Details Section */}
-              <div className="border-t border-gray-200 pt-6">
+              <div className="border-t border-white/[0.08] pt-6">
                 <h3 className="text-field-base font-heading font-semibold text-onyx mb-4">
                   Legal Details (Optional)
                 </h3>
@@ -425,8 +425,8 @@ export default function ChangesScreen({
                         }}
                         className={`py-2 px-3 rounded-card text-field-sm font-medium transition-all ${
                           formState.changeType === type
-                            ? "bg-onyx text-white"
-                            : "bg-alabaster text-onyx hover:bg-gray-200"
+                            ? "bg-accent-violet text-white"
+                            : "bg-glass text-onyx hover:bg-glass-light"
                         }`}
                       >
                         {type}
@@ -511,7 +511,7 @@ export default function ChangesScreen({
               {/* Add Button */}
               <button
                 onClick={handleAddChange}
-                className="w-full min-h-[56px] bg-onyx text-alabaster rounded-xl font-semibold text-field-base hover:bg-gray-900 transition-colors flex items-center justify-center gap-2"
+                className="w-full min-h-[56px] bg-accent-violet text-alabaster rounded-xl font-semibold text-field-base hover:bg-accent-violet/90 transition-colors flex items-center justify-center gap-2"
               >
                 <Check size={20} />
                 Add

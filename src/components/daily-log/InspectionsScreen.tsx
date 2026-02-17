@@ -144,7 +144,7 @@ export default function InspectionsScreen({
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-alabaster min-h-screen">
+    <div className="flex flex-col gap-6 p-6 bg-white min-h-screen">
       {/* Header */}
       <div className="flex items-center gap-3">
         <ClipboardCheck className="w-8 h-8 text-onyx" />
@@ -154,7 +154,7 @@ export default function InspectionsScreen({
       {/* Add Button */}
       <button
         onClick={() => setShowModal(true)}
-        className="inline-flex items-center justify-center gap-2 px-6 py-4 min-h-14 bg-onyx text-alabaster rounded-xl font-semibold text-lg hover:bg-gray-900 transition-colors"
+        className="inline-flex items-center justify-center gap-2 px-6 py-4 min-h-14 bg-accent-violet text-white rounded-xl font-semibold text-lg hover:bg-accent-violet/80 transition-colors"
       >
         <Plus className="w-6 h-6" />
         Add Inspection / Visit
@@ -163,8 +163,8 @@ export default function InspectionsScreen({
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+          <div className="bg-alabaster rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-glass border-b border-white/[0.06] p-6 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-onyx">
                 Add Inspection / Visit
               </h2>
@@ -194,8 +194,8 @@ export default function InspectionsScreen({
                       }
                       className={`px-4 py-3 rounded-full font-semibold text-base transition-colors border-2 ${
                         formState.type === typeOption.value
-                          ? "bg-onyx text-alabaster border-onyx"
-                          : "bg-alabaster text-onyx border-gray-300 hover:border-onyx"
+                          ? "bg-accent-violet text-white border-accent-violet"
+                          : "bg-glass text-onyx border-white/[0.10] hover:border-accent-violet"
                       }`}
                     >
                       {typeOption.label}
@@ -216,7 +216,7 @@ export default function InspectionsScreen({
                     handleFormChange("inspectorName", e.target.value)
                   }
                   placeholder="Enter name"
-                  className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-onyx"
+                  className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
                 />
               </div>
 
@@ -230,7 +230,7 @@ export default function InspectionsScreen({
                   value={formState.company}
                   onChange={(e) => handleFormChange("company", e.target.value)}
                   placeholder="Enter company name"
-                  className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-onyx"
+                  className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
                 />
               </div>
 
@@ -244,7 +244,7 @@ export default function InspectionsScreen({
                     type="time"
                     value={formState.timeIn}
                     onChange={(e) => handleFormChange("timeIn", e.target.value)}
-                    className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-onyx"
+                    className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
                   />
                 </div>
                 <div>
@@ -257,7 +257,7 @@ export default function InspectionsScreen({
                     onChange={(e) =>
                       handleFormChange("timeOut", e.target.value)
                     }
-                    className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-onyx"
+                    className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
                   />
                 </div>
               </div>
@@ -277,7 +277,7 @@ export default function InspectionsScreen({
                       className={`px-4 py-3 rounded-full font-semibold text-base transition-colors border-2 ${
                         formState.result === resultOption.value
                           ? `${resultOption.color} border-current`
-                          : `bg-alabaster text-onyx border-gray-300 hover:border-onyx`
+                          : `bg-glass text-onyx border-white/[0.10] hover:border-accent-violet`
                       }`}
                     >
                       {resultOption.label}
@@ -296,7 +296,7 @@ export default function InspectionsScreen({
                   onChange={(e) => handleFormChange("notes", e.target.value)}
                   placeholder="Enter any notes from the inspection..."
                   rows={4}
-                  className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-onyx resize-none"
+                  className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet resize-none bg-glass"
                 />
               </div>
 
@@ -314,7 +314,7 @@ export default function InspectionsScreen({
                     }
                     placeholder="Enter items that need follow-up..."
                     rows={4}
-                    className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-onyx resize-none"
+                    className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet resize-none bg-glass"
                   />
                 </div>
               )}
@@ -323,7 +323,7 @@ export default function InspectionsScreen({
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={handleAddInspection}
-                  className="flex-1 px-6 py-4 min-h-14 bg-onyx text-alabaster rounded-xl font-semibold text-lg hover:bg-gray-900 transition-colors"
+                  className="flex-1 px-6 py-4 min-h-14 bg-accent-violet text-white rounded-xl font-semibold text-lg hover:bg-accent-violet/80 transition-colors"
                 >
                   Add
                 </button>
@@ -332,7 +332,7 @@ export default function InspectionsScreen({
                     setShowModal(false);
                     setFormState(INITIAL_FORM_STATE);
                   }}
-                  className="flex-1 px-6 py-4 min-h-14 bg-gray-100 text-onyx rounded-xl font-semibold text-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 px-6 py-4 min-h-14 bg-glass-medium text-onyx rounded-xl font-semibold text-lg hover:bg-glass-heavy transition-colors"
                 >
                   Cancel
                 </button>

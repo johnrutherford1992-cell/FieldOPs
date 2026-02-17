@@ -278,10 +278,10 @@ export default function NoticeLogPage() {
           {overdue.length > 0 && (
             <button
               onClick={() => setActiveFilter("Response Due")}
-              className="w-full mb-4 bg-red-50 border border-red-200 rounded-xl p-3 text-left hover:bg-red-100 transition-colors active:scale-[0.98]"
+              className="w-full mb-4 bg-accent-red/10 border border-accent-red/30 rounded-xl p-3 text-left hover:bg-accent-red/15 transition-colors active:scale-[0.98]"
             >
               <div className="flex items-start gap-3">
-                <AlertTriangle size={18} className="text-red-600 flex-shrink-0 mt-0.5" />
+                <AlertTriangle size={18} className="text-accent-red flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <p className="font-medium text-red-900 text-sm">
                     {overdue.length} notice{overdue.length !== 1 ? "s" : ""} have
@@ -303,8 +303,8 @@ export default function NoticeLogPage() {
                   onClick={() => setActiveFilter(filterKey)}
                   className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors active:scale-[0.98] ${
                     activeFilter === filterKey
-                      ? "bg-onyx text-white"
-                      : "bg-alabaster text-onyx"
+                      ? "bg-accent-violet text-white"
+                      : "bg-glass text-onyx"
                   }`}
                 >
                   {filter}
@@ -315,8 +315,8 @@ export default function NoticeLogPage() {
               onClick={() => setActiveFilter("Response Due")}
               className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors active:scale-[0.98] flex items-center gap-2 ${
                 activeFilter === "Response Due"
-                  ? "bg-onyx text-white"
-                  : "bg-alabaster text-onyx"
+                  ? "bg-accent-violet text-white"
+                  : "bg-glass text-onyx"
               }`}
             >
               <Clock size={16} />
@@ -364,7 +364,7 @@ export default function NoticeLogPage() {
                     onClick={() =>
                       setExpandedNoticeId(isExpanded ? null : notice.id)
                     }
-                    className="w-full text-left bg-white border border-gray-100 rounded-xl shadow-card hover:shadow-card-hover transition-all active:scale-[0.98]"
+                    className="w-full text-left bg-glass border border-white/[0.06] rounded-xl shadow-glass-card hover:shadow-lg transition-all active:scale-[0.98]"
                   >
                     <div className="p-4">
                       {/* Row 1: Type badge + Date + Delivery */}
@@ -483,7 +483,7 @@ export default function NoticeLogPage() {
 
                     {/* Expanded content */}
                     {isExpanded && (
-                      <div className="border-t border-gray-100 p-4 bg-gray-50">
+                      <div className="border-t border-white/[0.06] p-4 bg-glass-light">
                         {notice.content && (
                           <div className="mb-4">
                             <p className="text-xs font-medium text-warm-gray mb-2 uppercase">
@@ -572,7 +572,7 @@ export default function NoticeLogPage() {
         {/* Create Modal */}
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-end">
-            <div className="w-full bg-white rounded-t-2xl p-5 max-h-[90vh] overflow-y-auto">
+            <div className="w-full bg-obsidian/90 rounded-t-2xl p-5 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-heading text-xl font-medium">New Notice</h2>
                 <button
@@ -768,7 +768,7 @@ export default function NoticeLogPage() {
         {/* FAB (Floating Action Button) */}
         <button
           onClick={() => setShowCreateModal(true)}
-          className="fixed bottom-24 right-5 z-40 w-14 h-14 bg-onyx text-white rounded-full shadow-lg flex items-center justify-center active:scale-[0.95] transition-transform"
+          className="fixed bottom-24 right-5 z-40 w-14 h-14 bg-accent-violet text-white rounded-full shadow-lg flex items-center justify-center active:scale-[0.95] transition-transform"
         >
           <Plus size={28} />
         </button>

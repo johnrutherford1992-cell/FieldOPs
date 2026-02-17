@@ -233,16 +233,16 @@ function RFISubmittalScreen({
   );
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-alabaster">
       {/* Tab navigation */}
-      <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 z-10">
+      <div className="sticky top-0 bg-glass border-b border-white/[0.06] px-4 py-3 z-10">
         <div className="flex gap-2">
           <button
             onClick={() => setActiveTab("rfis")}
             className={`px-6 py-3 rounded-full text-field-base font-semibold transition-all min-h-[56px] flex items-center ${
               activeTab === "rfis"
-                ? "bg-onyx text-white"
-                : "bg-alabaster text-onyx hover:bg-opacity-80"
+                ? "bg-accent-violet text-white"
+                : "bg-glass text-onyx hover:bg-glass-light"
             }`}
           >
             RFIs
@@ -251,8 +251,8 @@ function RFISubmittalScreen({
             onClick={() => setActiveTab("submittals")}
             className={`px-6 py-3 rounded-full text-field-base font-semibold transition-all min-h-[56px] flex items-center ${
               activeTab === "submittals"
-                ? "bg-onyx text-white"
-                : "bg-alabaster text-onyx hover:bg-opacity-80"
+                ? "bg-accent-violet text-white"
+                : "bg-glass text-onyx hover:bg-glass-light"
             }`}
           >
             Submittals
@@ -265,7 +265,7 @@ function RFISubmittalScreen({
         <div className="flex flex-col h-full">
           {/* Summary */}
           {rfis.length > 0 && (
-            <div className="bg-alabaster px-4 py-3 border-b border-gray-200">
+            <div className="bg-glass px-4 py-3 border-b border-white/[0.06]">
               <div className="text-field-sm font-medium text-onyx">
                 {rfiStats.open} open · {rfiStats.overdue} overdue
               </div>
@@ -276,7 +276,7 @@ function RFISubmittalScreen({
           <div className="px-4 py-4">
             <button
               onClick={() => setShowRFIForm(true)}
-              className="w-full min-h-[56px] bg-onyx text-white rounded-xl px-4 py-3 flex items-center justify-center gap-2 font-semibold text-field-base hover:bg-opacity-90 transition-all"
+              className="w-full min-h-[56px] bg-accent-violet text-white rounded-xl px-4 py-3 flex items-center justify-center gap-2 font-semibold text-field-base hover:bg-accent-violet/80 transition-all"
             >
               <Plus className="w-5 h-5" />
               Add RFI
@@ -300,12 +300,12 @@ function RFISubmittalScreen({
                 {rfis.map((rfi) => (
                   <div
                     key={rfi.rfiNumber}
-                    className="bg-alabaster rounded-xl p-4 border border-gray-200"
+                    className="bg-glass rounded-xl p-4 border border-white/[0.06]"
                   >
                     {/* Header with badge and remove button */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="bg-onyx text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-field-sm">
+                        <div className="bg-accent-violet text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-field-sm">
                           {rfi.rfiNumber.slice(-2)}
                         </div>
                         <div className="flex-1">
@@ -349,7 +349,7 @@ function RFISubmittalScreen({
 
                     {/* Notes if present */}
                     {rfi.notes && (
-                      <p className="text-field-sm text-onyx bg-white rounded-lg p-2 border border-gray-200">
+                      <p className="text-field-sm text-onyx bg-glass rounded-lg p-2 border border-white/[0.06]">
                         {rfi.notes}
                       </p>
                     )}
@@ -366,7 +366,7 @@ function RFISubmittalScreen({
         <div className="flex flex-col h-full">
           {/* Summary */}
           {submittals.length > 0 && (
-            <div className="bg-alabaster px-4 py-3 border-b border-gray-200">
+            <div className="bg-glass px-4 py-3 border-b border-white/[0.06]">
               <div className="text-field-sm font-medium text-onyx">
                 {submittalStats.pending} pending · {submittalStats.needsAction}{" "}
                 needs action
@@ -378,7 +378,7 @@ function RFISubmittalScreen({
           <div className="px-4 py-4">
             <button
               onClick={() => setShowSubmittalForm(true)}
-              className="w-full min-h-[56px] bg-onyx text-white rounded-xl px-4 py-3 flex items-center justify-center gap-2 font-semibold text-field-base hover:bg-opacity-90 transition-all"
+              className="w-full min-h-[56px] bg-accent-violet text-white rounded-xl px-4 py-3 flex items-center justify-center gap-2 font-semibold text-field-base hover:bg-accent-violet/80 transition-all"
             >
               <Plus className="w-5 h-5" />
               Add Submittal
@@ -402,12 +402,12 @@ function RFISubmittalScreen({
                 {submittals.map((submittal) => (
                   <div
                     key={submittal.submittalNumber}
-                    className="bg-alabaster rounded-xl p-4 border border-gray-200"
+                    className="bg-glass rounded-xl p-4 border border-white/[0.06]"
                   >
                     {/* Header with badge and remove button */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="bg-onyx text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-field-sm">
+                        <div className="bg-accent-violet text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-field-sm">
                           {submittal.submittalNumber.slice(-2)}
                         </div>
                         <div className="flex-1">
@@ -449,7 +449,7 @@ function RFISubmittalScreen({
 
                     {/* Notes if present */}
                     {submittal.notes && (
-                      <p className="text-field-sm text-onyx bg-white rounded-lg p-2 border border-gray-200">
+                      <p className="text-field-sm text-onyx bg-glass rounded-lg p-2 border border-white/[0.06]">
                         {submittal.notes}
                       </p>
                     )}
@@ -464,7 +464,7 @@ function RFISubmittalScreen({
       {/* RFI Modal Form */}
       {showRFIForm && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-end z-50">
-          <div className="w-full bg-white rounded-t-2xl p-6 max-h-[90vh] overflow-y-auto">
+          <div className="w-full bg-alabaster rounded-t-2xl p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-field-2xl font-bold text-onyx">Add RFI</h2>
               <button
@@ -660,7 +660,7 @@ function RFISubmittalScreen({
       {/* Submittal Modal Form */}
       {showSubmittalForm && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-end z-50">
-          <div className="w-full bg-white rounded-t-2xl p-6 max-h-[90vh] overflow-y-auto">
+          <div className="w-full bg-alabaster rounded-t-2xl p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-field-2xl font-bold text-onyx">
                 Add Submittal
@@ -856,7 +856,7 @@ function RFISubmittalScreen({
       )}
 
       {/* Bottom note */}
-      <div className="bg-alabaster border-t border-gray-200 px-4 py-4 text-center text-field-sm text-warm-gray">
+      <div className="bg-glass border-t border-white/[0.06] px-4 py-4 text-center text-field-sm text-warm-gray">
         Procore integration coming soon — entries are manual for now
       </div>
     </div>
