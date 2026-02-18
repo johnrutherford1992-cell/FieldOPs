@@ -69,47 +69,26 @@ const TABLE_MAP: Record<string, string> = {
 
 // ---- Generic table proxy for db.tableName.method() pattern ----
 
-interface WhereEqualsChain<T> {
+interface TableProxy<T extends object> {
   toArray(): Promise<T[]>;
-  first(): Promise<T | undefined>;
-  count(): Promise<number>;
-  filter(fn: (item: T) => boolean): WhereFilterChain<T>;
-  reverse(): { sortBy(field: string): Promise<T[]> };
-  delete(): Promise<void>;
-}
-
-interface WhereFilterChain<T> {
-  toArray(): Promise<T[]>;
-  first(): Promise<T | undefined>;
-  reverse(): { sortBy(field: string): Promise<T[]> };
-  delete(): Promise<void>;
-}
-
-interface WhereCompoundChain<T> {
-  toArray(): Promise<T[]>;
-  first(): Promise<T | undefined>;
-  filter(fn: (item: T) => boolean): { toArray(): Promise<T[]>; first(): Promise<T | undefined> };
-}
-
-interface TableProxy<T> {
-  toArray(): Promise<T[]>;
-  put(record: Partial<T> & { id: string }): Promise<void>;
-  add(record: Partial<T> & { id: string }): Promise<void>;
-  bulkPut(records: (Partial<T> & { id: string })[]): Promise<void>;
-  bulkAdd(records: (Partial<T> & { id: string })[]): Promise<void>;
+  put(record: T): Promise<void>;
+  add(record: T): Promise<void>;
+  bulkPut(records: T[]): Promise<void>;
+  bulkAdd(records: T[]): Promise<void>;
   get(id: string): Promise<T | undefined>;
   update(id: string, changes: Partial<T>): Promise<void>;
   delete(id: string): Promise<void>;
   count(filters?: Record<string, unknown>): Promise<number>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   select(columns?: string): any;
-  where(columnOrFilter: string | Record<string, unknown>): { equals(value: unknown): WhereEqualsChain<T> } & WhereCompoundChain<T>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  where(columnOrFilter: string | Record<string, unknown>): any;
   orderBy(column: string): { last(): Promise<T | undefined> };
   filter(fn: (item: T) => boolean): { toArray(): Promise<T[]> };
   transaction(mode: string, tables: unknown[], fn: () => Promise<void>): Promise<void>;
 }
 
-function createTableProxy<T>(tableName: string): TableProxy<T> {
+function createTableProxy<T extends object>(tableName: string): TableProxy<T> {
   const pgTable: string = TABLE_MAP[tableName] ?? tableName;
 
   return {
@@ -232,9 +211,11 @@ function createTableProxy<T>(tableName: string): TableProxy<T> {
                         const { data, error } = await getSupabase().from(pgTable).select("*").eq(snakeCol, value);
                         if (error) return [];
                         const camelData = rowsToCamel<T>(data || []).filter(fn);
-                        camelData.sort((a: Record<string, unknown>, b: Record<string, unknown>) => {
-                          if (a[field] < b[field]) return 1;
-                          if (a[field] > b[field]) return -1;
+                        camelData.sort((a, b) => {
+                          const aVal = (a as Record<string, unknown>)[field];
+                          const bVal = (b as Record<string, unknown>)[field];
+                          if (String(aVal) < String(bVal)) return 1;
+                          if (String(aVal) > String(bVal)) return -1;
                           return 0;
                         });
                         return camelData;
@@ -489,7 +470,7 @@ export async function getActiveBaseline(
     .limit(1)
     .maybeSingle();
   if (error) { console.error("getActiveBaseline:", error); return undefined; }
-  return data ? (toCamelCase(data as Record<string, unknown>) as ProductivityBaseline) : undefined;
+  return data ? (toCamelCase(data as Record<string, unknown>) as unknown as ProductivityBaseline) : undefined;
 }
 
 // ── Phase 7: Time Tracking helpers ──
@@ -546,7 +527,7 @@ export async function getActiveTimePolicy(
     .limit(1)
     .maybeSingle();
   if (error) { console.error("getActiveTimePolicy:", error); return undefined; }
-  return data ? (toCamelCase(data as Record<string, unknown>) as TimePolicy) : undefined;
+  return data ? (toCamelCase(data as Record<string, unknown>) as unknown as TimePolicy) : undefined;
 }
 
 export async function getActiveADPConfig(
@@ -560,7 +541,7 @@ export async function getActiveADPConfig(
     .limit(1)
     .maybeSingle();
   if (error) { console.error("getActiveADPConfig:", error); return undefined; }
-  return data ? (toCamelCase(data as Record<string, unknown>) as ADPSyncConfig) : undefined;
+  return data ? (toCamelCase(data as Record<string, unknown>) as unknown as ADPSyncConfig) : undefined;
 }
 
 export async function computeTimeSummary(
@@ -604,5 +585,5 @@ export async function getLatestAnalytics(
     .limit(1)
     .maybeSingle();
   if (error) { console.error("getLatestAnalytics:", error); return undefined; }
-  return data ? (toCamelCase(data as Record<string, unknown>) as ProductivityAnalytics) : undefined;
+  return data ? (toCamelCase(data as Record<string, unknown>) as unknown as ProductivityAnalytics) : undefined;
 }

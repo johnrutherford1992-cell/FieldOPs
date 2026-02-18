@@ -95,7 +95,7 @@ export default function TimeTrackingPage() {
     }
 
     // Derive productivity for each unique date
-    const dates = [...new Set(pendingEntries.map((e) => e.date))];
+    const dates = Array.from(new Set(pendingEntries.map((e) => e.date)));
     for (const date of dates) {
       await deriveProductivityFromTimeEntries(activeProject.id, date);
     }
@@ -305,7 +305,7 @@ export default function TimeTrackingPage() {
                 </div>
                 <p className="text-field-xs text-warm-gray">
                   {exportableEntries.reduce((s, e) => s + e.totalHours, 0).toFixed(1)} total hours ·{" "}
-                  {[...new Set(exportableEntries.map((e) => e.date))].length} days
+                  {Array.from(new Set(exportableEntries.map((e) => e.date))).length} days
                 </p>
               </div>
 
