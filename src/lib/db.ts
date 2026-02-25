@@ -90,7 +90,7 @@ interface TableProxy<T> {
   transaction(mode: string, tables: unknown[], fn: () => Promise<void>): Promise<void>;
 }
 
-function createTableProxy<T>(tableName: string): TableProxy<T> {
+function createTableProxy<T extends object>(tableName: string): TableProxy<T> {
   const pgTable: string = TABLE_MAP[tableName] ?? tableName;
 
   return {
@@ -216,10 +216,8 @@ function createTableProxy<T>(tableName: string): TableProxy<T> {
                         camelData.sort((a, b) => {
                           const aVal = (a as Record<string, unknown>)[field];
                           const bVal = (b as Record<string, unknown>)[field];
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          if ((aVal as any) < (bVal as any)) return 1;
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          if ((aVal as any) > (bVal as any)) return -1;
+                          if (String(aVal) < String(bVal)) return 1;
+                          if (String(aVal) > String(bVal)) return -1;
                           return 0;
                         });
                         return camelData;
