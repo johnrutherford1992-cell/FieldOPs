@@ -40,6 +40,7 @@ describe("POST /api/jha", () => {
       siteNotes: "",
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await POST(request as any);
     const data = await response.json();
 
@@ -77,6 +78,7 @@ describe("POST /api/jha", () => {
       siteNotes: "Test notes",
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await POST(request as any);
     const data = await response.json();
 

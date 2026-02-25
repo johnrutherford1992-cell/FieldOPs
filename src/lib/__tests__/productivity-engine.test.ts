@@ -46,7 +46,8 @@ describe("deriveProductivityEntries", () => {
     });
 
     // DB returns the matching cost code
-    mockFilter.mockImplementation((table: string, filterFn: (item: unknown) => boolean) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    mockFilter.mockImplementation((table: string, _filterFn: (item: unknown) => boolean) => {
       if (table === "costCodes") return [costCode];
       return [];
     });

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createMockCostCode, createMockProductivityEntry } from "./fixtures";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { CostCode, ProductivityEntry } from "@/lib/types";
 
 // ── Mock the database module ──
