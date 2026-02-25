@@ -8,19 +8,26 @@ import crypto from "crypto";
 
 const KINETIC_API_URL = process.env.KINETIC_API_URL || "https://api.kinetic.craft/v1";
 const KINETIC_API_KEY = process.env.KINETIC_API_KEY || "";
-const KINETIC_WEBHOOK_SECRET = process.env.KINETIC_WEBHOOK_SECRET || "dev-secret";
+const KINETIC_WEBHOOK_SECRET = process.env.KINETIC_WEBHOOK_SECRET || "";
 
 // ── POST: Submit resource request to Kinetic Craft ──
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    if (!body || typeof body !== "object") {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+
     const { action, ...payload } = body;
+    if (typeof action !== "string") {
+      return NextResponse.json({ error: "Missing action" }, { status: 400 });
+    }
 
     if (action === "request") {
       return handleResourceRequest(payload);
     } else if (action === "webhook") {
-      return handleIncomingWebhook(request, payload);
+      return handleIncomingWebhook(payload);
     } else if (action === "cancel") {
       return handleCancelRequest(payload);
     }
@@ -127,7 +134,6 @@ async function handleCancelRequest(payload: {
 // ── Handle incoming webhook from Kinetic Craft ──
 
 async function handleIncomingWebhook(
-  request: NextRequest,
   payload: {
     event: string;
     timestamp: string;
@@ -137,13 +143,37 @@ async function handleIncomingWebhook(
     signature: string;
   }
 ) {
+  if (!KINETIC_WEBHOOK_SECRET) {
+    return NextResponse.json(
+      { error: "Webhook secret is not configured" },
+      { status: 503 }
+    );
+  }
+
+  if (!payload.signature || typeof payload.signature !== "string") {
+    return NextResponse.json({ error: "Missing webhook signature" }, { status: 400 });
+  }
+
   // Verify HMAC signature
+  const payloadForSignature = {
+    event: payload.event,
+    timestamp: payload.timestamp,
+    fieldOpsRequestId: payload.fieldOpsRequestId,
+    kineticRequestId: payload.kineticRequestId,
+    data: payload.data,
+  };
   const expectedSignature = crypto
     .createHmac("sha256", KINETIC_WEBHOOK_SECRET)
-    .update(JSON.stringify({ ...payload, signature: undefined }))
+    .update(JSON.stringify(payloadForSignature))
     .digest("hex");
 
-  if (payload.signature !== expectedSignature) {
+  const providedSignatureBuffer = Buffer.from(payload.signature, "hex");
+  const expectedSignatureBuffer = Buffer.from(expectedSignature, "hex");
+  const isSignatureValid =
+    providedSignatureBuffer.length === expectedSignatureBuffer.length &&
+    crypto.timingSafeEqual(providedSignatureBuffer, expectedSignatureBuffer);
+
+  if (!isSignatureValid) {
     return NextResponse.json(
       { error: "Invalid webhook signature" },
       { status: 401 }
