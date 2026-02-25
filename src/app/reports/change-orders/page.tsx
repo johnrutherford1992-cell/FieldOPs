@@ -7,7 +7,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import { useAppStore } from "@/lib/store";
 import { db, generateId } from "@/lib/db";
 import { generateMockChangeOrder } from "@/lib/report-prompts";
-import type { ChangeEntry, ChangeOrder, Project, Subcontractor } from "@/lib/types";
+import type { ChangeEntry, ChangeOrder, DailyLog, Project, Subcontractor } from "@/lib/types";
 import {
   AlertTriangle,
   FileText,
@@ -47,7 +47,7 @@ export default function ChangeOrdersPage() {
         .where("projectId")
         .equals(activeProject.id)
         .toArray();
-      const logsWithChanges = allLogs.filter((l) => l.changes.length > 0);
+      const logsWithChanges = allLogs.filter((l: DailyLog) => l.changes.length > 0);
 
       // Get existing change orders
       const existingCOs = await db.changeOrders
@@ -62,7 +62,7 @@ export default function ChangeOrdersPage() {
           const change = log.changes[i];
           // Find CO that references this log and change index
           const matchingCO = existingCOs.find(
-            (co) =>
+            (co: ChangeOrder) =>
               co.dailyLogRef === log.id &&
               co.description === change.description
           );

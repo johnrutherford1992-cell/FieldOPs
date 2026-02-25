@@ -25,6 +25,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { db } from "@/lib/db";
+import type { DailyLog } from "@/lib/types";
 // Types used by db queries below
 
 export default function HomePage() {
@@ -88,7 +89,7 @@ export default function HomePage() {
         const logs = await db.dailyLogs
           .where("projectId")
           .equals(activeProject.id)
-          .filter((log) => log.date >= weekStartStr && log.date <= weekEndStr)
+          .filter((log: DailyLog) => log.date >= weekStartStr && log.date <= weekEndStr)
           .toArray();
 
         if (logs.length === 0) {
@@ -100,9 +101,9 @@ export default function HomePage() {
         let workItems = 0;
         let issuesTracked = 0;
 
-        logs.forEach((log) => {
+        logs.forEach((log: DailyLog) => {
           // Sum manpower
-          log.manpower.forEach((entry) => {
+          log.manpower.forEach((entry: { journeymanCount: number; apprenticeCount: number; foremanCount: number }) => {
             totalWorkers += entry.journeymanCount + entry.apprenticeCount + entry.foremanCount;
           });
           // Count work performed entries

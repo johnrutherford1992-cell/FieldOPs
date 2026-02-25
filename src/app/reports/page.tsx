@@ -38,7 +38,7 @@ export default function ReportsPage() {
       const logs = await db.dailyLogs
         .where("projectId")
         .equals(activeProject.id)
-        .filter((log) => log.date >= weekStart && log.date <= currentDate)
+        .filter((log: DailyLog) => log.date >= weekStart && log.date <= currentDate)
         .toArray();
       setWeekLogs(logs);
     }

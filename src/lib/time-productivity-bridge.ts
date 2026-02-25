@@ -22,7 +22,7 @@ export async function deriveProductivityFromTimeEntries(
   // Get all approved time entries for this date
   const timeEntries = await db.timeEntries
     .where({ projectId, date })
-    .filter((e) => e.approvalStatus === "approved" || e.approvalStatus === "exported")
+    .filter((e: TimeEntry) => e.approvalStatus === "approved" || e.approvalStatus === "exported")
     .toArray();
 
   if (timeEntries.length === 0) return;
@@ -48,7 +48,7 @@ export async function deriveProductivityFromTimeEntries(
     const existing = await db.productivityEntries
       .where({ projectId })
       .filter(
-        (pe) => pe.date === date && pe.costCodeId === costCodeId
+        (pe: ProductivityEntry) => pe.date === date && pe.costCodeId === costCodeId
       )
       .first();
 
@@ -126,7 +126,7 @@ export async function computeWeeklyTimeSummary(
   const entries = await db.timeEntries
     .where("projectId")
     .equals(projectId)
-    .filter((e) => e.date >= weekStartDate && e.date <= weekEndDate)
+    .filter((e: TimeEntry) => e.date >= weekStartDate && e.date <= weekEndDate)
     .toArray();
 
   const byWorker: Record<string, {
@@ -179,11 +179,11 @@ export async function computeWeeklyTimeSummary(
       overtimeHours: workerValues.reduce((s, w) => s + w.overtimeHours, 0),
       doubleTimeHours: workerValues.reduce((s, w) => s + w.doubleTimeHours, 0),
       totalHours: workerValues.reduce((s, w) => s + w.totalHours, 0),
-      pendingApproval: entries.filter((e) => e.approvalStatus === "pending").length,
+      pendingApproval: entries.filter((e: TimeEntry) => e.approvalStatus === "pending").length,
       readyForExport: entries.filter(
-        (e) => e.approvalStatus === "approved" && !e.adpExported
+        (e: TimeEntry) => e.approvalStatus === "approved" && !e.adpExported
       ).length,
-      exported: entries.filter((e) => e.adpExported).length,
+      exported: entries.filter((e: TimeEntry) => e.adpExported).length,
     },
   };
 }

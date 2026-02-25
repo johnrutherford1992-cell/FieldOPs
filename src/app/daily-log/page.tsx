@@ -167,7 +167,7 @@ export default function DailyLogPage() {
         .equals(activeProject.id)
         .toArray()
         .then(setChecklistTemplates)
-        .catch((err) => console.error("Failed to load checklist templates:", err));
+        .catch((err: unknown) => console.error("Failed to load checklist templates:", err));
     }
   }, [activeProject]);
 

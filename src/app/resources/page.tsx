@@ -80,7 +80,7 @@ export default function ResourcesPage() {
     const [reqs, sched, conf] = await Promise.all([
       db.resourceRequests.where("projectId").equals(activeProject.id).reverse().sortBy("createdAt"),
       db.scheduleEntries.where({ projectId: activeProject.id, date: currentDate }).toArray(),
-      db.resourceConflicts.where("projectId").equals(activeProject.id).filter((c) => !c.resolved).toArray(),
+      db.resourceConflicts.where("projectId").equals(activeProject.id).filter((c: ResourceConflict) => !c.resolved).toArray(),
     ]);
     setRequests(reqs);
     setSchedule(sched);
