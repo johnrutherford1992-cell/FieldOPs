@@ -68,7 +68,7 @@ export default function ToolboxTalkDisplay({
 
       {/* Rendered Toolbox Talk content */}
       <div
-        className="toolbox-rendered-content bg-glass border border-white/[0.06] rounded-xl p-5 overflow-x-auto"
+        className="toolbox-rendered-content bg-glass border border-gray-100 rounded-xl p-5 overflow-x-auto"
         dangerouslySetInnerHTML={{ __html: htmlContent }}
       />
     </div>

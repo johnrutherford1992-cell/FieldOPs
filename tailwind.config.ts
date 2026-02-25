@@ -6,63 +6,57 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        // ═══════════════════════════════════════════════════
-        //  OBSIDIAN GLASS — FieldOps Dark Theme
-        //  Inspired by Linear, Arc, Bloomberg Terminal
-        // ═══════════════════════════════════════════════════
+        // Blackstone Construction Brand Palette
+        onyx: "#000000",
+        alabaster: "#f2f0e6",
+        slate: "#2d2d2f",
+        "warm-gray": "#8c8c8c",
 
-        // Background layers (darkest → lightest)
-        obsidian: {
-          DEFAULT: "#1a1a2e",
-          deep: "#0f1525",
-          light: "#16213e",
-        },
+        // Functional accents
+        "accent-green": "#2d8a4e",
+        "accent-amber": "#d4a017",
+        "accent-red": "#c0392b",
 
-        // Glass surface system
+        // Surface variations
+        "surface-primary": "#ffffff",
+        "surface-secondary": "#f2f0e6",
+        "surface-dark": "#000000",
+        "surface-elevated": "#fafaf7",
+
+        // Compat aliases for glass system (map to solid light surfaces)
         glass: {
-          DEFAULT: "rgba(255,255,255,0.04)",
-          light: "rgba(255,255,255,0.06)",
-          medium: "rgba(255,255,255,0.08)",
-          heavy: "rgba(255,255,255,0.12)",
+          DEFAULT: "#ffffff",
+          light: "#fafaf7",
+          medium: "#f3f4f6",
+          heavy: "#e5e7eb",
+        },
+        "glass-border": "#e5e7eb",
+
+        // Compat aliases for obsidian system (map to light backgrounds)
+        obsidian: {
+          DEFAULT: "#ffffff",
+          deep: "#f2f0e6",
+          light: "#fafaf7",
         },
 
-        // Text hierarchy (remapped for dark backgrounds)
-        onyx: "#e2e8f0",           // primary text (was #000000)
-        slate: "#94a3b8",          // body / secondary text (was #2d2d2f)
-        "warm-gray": "#64748b",    // muted / tertiary text (was #8c8c8c)
-
-        // Functional accents — Obsidian Glass palette
-        "accent-violet": "#8b5cf6",   // primary action / CTA
-        "accent-teal": "#14b8a6",     // success / positive
-        "accent-green": "#14b8a6",    // alias for teal (success)
-        "accent-amber": "#eab308",    // warning
-        "accent-red": "#ec4899",      // alert / danger (pink)
-
-        // Surface semantic tokens
-        "surface-primary": "#1a1a2e",
-        "surface-secondary": "#16213e",
-        "surface-dark": "#0f1525",
-        "surface-elevated": "rgba(255,255,255,0.06)",
-
-        // Glass border
-        "glass-border": "rgba(255,255,255,0.06)",
-
-        // Legacy aliases (for backward compat)
-        alabaster: "rgba(255,255,255,0.04)",
+        // Accent aliases (violet → onyx for Blackstone branding)
+        "accent-violet": "#000000",
+        "accent-teal": "#2d8a4e",
       },
       fontFamily: {
         heading: [
-          "Inter",
           "Avenir",
+          "Avenir Medium",
           "Arial",
           "Helvetica Neue",
           "sans-serif",
         ],
         body: [
-          "Inter",
+          "Avenir Next LT Pro",
           "Avenir Next",
           "Calibri",
           "Helvetica Neue",
@@ -70,7 +64,6 @@ const config: Config = {
         ],
       },
       fontSize: {
-        // Mobile-optimized scale (18px minimum for field use)
         "field-xs": ["14px", { lineHeight: "1.4" }],
         "field-sm": ["16px", { lineHeight: "1.4" }],
         "field-base": ["18px", { lineHeight: "1.5" }],
@@ -80,7 +73,6 @@ const config: Config = {
         "field-3xl": ["32px", { lineHeight: "1.15" }],
       },
       spacing: {
-        // Touch target minimums (Apple HIG: 44pt minimum, we use 56px+)
         "touch-min": "44px",
         "touch-target": "56px",
         "touch-large": "72px",
@@ -91,23 +83,23 @@ const config: Config = {
         button: "10px",
       },
       boxShadow: {
-        card: "0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)",
+        card: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
         "card-hover":
-          "0 4px 12px rgba(139,92,246,0.15), 0 2px 4px rgba(0,0,0,0.3)",
-        "card-active": "0 0 0 2px rgba(139,92,246,0.3)",
-        nav: "0 -1px 6px rgba(0,0,0,0.4)",
-        "glass-glow": "0 4px 16px rgba(139,92,246,0.12), 0 0 1px rgba(255,255,255,0.06)",
-        "glass-inner": "inset 0 1px 0 rgba(255,255,255,0.05)",
-        "glass-card": "0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)",
-        "violet-glow": "0 0 20px rgba(139,92,246,0.15)",
-        "teal-glow": "0 0 20px rgba(20,184,166,0.15)",
+          "0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06)",
+        "card-active": "0 0 0 2px rgba(0,0,0,0.15)",
+        nav: "0 -1px 3px rgba(0,0,0,0.1)",
+        "glass-glow":
+          "0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06)",
+        "glass-card":
+          "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
+        "glass-inner": "none",
+        "violet-glow": "0 2px 4px rgba(0,0,0,0.1)",
+        "teal-glow": "0 2px 4px rgba(45,138,78,0.15)",
       },
       animation: {
         press: "press 0.15s ease-out",
-        "fade-in": "fadeIn 0.3s ease-out",
-        "slide-up": "slideUp 0.3s ease-out",
-        "glow-pulse": "glowPulse 3s ease-in-out infinite",
-        "border-shimmer": "borderShimmer 3s linear infinite",
+        "fade-in": "fadeIn 0.2s ease-out",
+        "slide-up": "slideUp 0.25s ease-out",
       },
       keyframes: {
         press: {
@@ -123,20 +115,15 @@ const config: Config = {
           "0%": { opacity: "0", transform: "translateY(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        glowPulse: {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(139,92,246,0.1)" },
-          "50%": { boxShadow: "0 0 30px rgba(139,92,246,0.2)" },
-        },
-        borderShimmer: {
-          "0%": { backgroundPosition: "0% 50%" },
-          "100%": { backgroundPosition: "200% 50%" },
-        },
       },
       backgroundImage: {
-        "gradient-obsidian": "linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)",
-        "gradient-violet": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
-        "gradient-teal": "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
-        "gradient-divider": "linear-gradient(90deg, transparent, rgba(139,92,246,0.3), rgba(20,184,166,0.3), transparent)",
+        "gradient-obsidian": "none",
+        "gradient-violet":
+          "linear-gradient(135deg, #000000 0%, #2d2d2f 100%)",
+        "gradient-teal":
+          "linear-gradient(135deg, #2d8a4e 0%, #1e6b3a 100%)",
+        "gradient-divider":
+          "linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent)",
       },
     },
   },

@@ -73,7 +73,7 @@ export default function EquipmentSelector({
           ${
             selected
               ? "bg-accent-green/10 border-l-accent-green"
-              : "bg-glass border-l-transparent border border-white/[0.06]"
+              : "bg-glass border-l-transparent border border-gray-100"
           }
         `}
       >

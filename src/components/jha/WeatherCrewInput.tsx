@@ -121,7 +121,7 @@ export default function WeatherCrewInput({
             value={weather.temperature}
             onChange={(e) => handleTemperatureChange(e.target.value)}
             className="
-              flex-1 px-4 py-3 rounded-card border border-white/[0.06]
+              flex-1 px-4 py-3 rounded-card border border-gray-100
               text-field-base font-body text-onyx
               focus:outline-none focus:ring-2 focus:ring-accent-violet focus:border-transparent
               placeholder-warm-gray
@@ -159,7 +159,7 @@ export default function WeatherCrewInput({
             value={crewSize}
             onChange={(e) => handleCrewSizeChange(e.target.value)}
             className="
-              flex-1 px-4 py-3 rounded-card border border-white/[0.06]
+              flex-1 px-4 py-3 rounded-card border border-gray-100
               text-field-xl font-semibold font-body text-onyx text-center
               focus:outline-none focus:ring-2 focus:ring-accent-violet focus:border-transparent
             "
@@ -191,7 +191,7 @@ export default function WeatherCrewInput({
           onChange={(e) => onSiteNotesChange(e.target.value)}
           placeholder="Any site-specific notes (crane on-site, occupied building, etc.)"
           className="
-            w-full px-4 py-3 rounded-card border border-white/[0.06]
+            w-full px-4 py-3 rounded-card border border-gray-100
             text-field-base font-body text-onyx
             focus:outline-none focus:ring-2 focus:ring-accent-violet focus:border-transparent
             placeholder-warm-gray

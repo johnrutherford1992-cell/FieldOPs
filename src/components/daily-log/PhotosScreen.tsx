@@ -210,7 +210,7 @@ export default function PhotosScreen({
             return (
               <div key={photo.id} className="flex flex-col">
                 {/* Photo Container */}
-                <div className="relative rounded-xl overflow-hidden mb-2 bg-glass border border-white/[0.08]">
+                <div className="relative rounded-xl overflow-hidden mb-2 bg-glass border border-gray-200">
                   <img
                     src={photo.file}
                     alt={photo.caption || "Photo"}
@@ -320,7 +320,7 @@ export default function PhotosScreen({
                 <img
                   src={pendingPhoto.file}
                   alt="Preview"
-                  className="max-h-[200px] rounded-xl border border-white/[0.08] object-contain"
+                  className="max-h-[200px] rounded-xl border border-gray-200 object-contain"
                 />
               </div>
 

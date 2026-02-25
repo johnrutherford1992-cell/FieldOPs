@@ -164,7 +164,7 @@ export default function InspectionsScreen({
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-alabaster rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-glass border-b border-white/[0.06] p-6 flex items-center justify-between">
+            <div className="sticky top-0 bg-glass border-b border-gray-100 p-6 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-onyx">
                 Add Inspection / Visit
               </h2>
@@ -195,7 +195,7 @@ export default function InspectionsScreen({
                       className={`px-4 py-3 rounded-full font-semibold text-base transition-colors border-2 ${
                         formState.type === typeOption.value
                           ? "bg-accent-violet text-white border-accent-violet"
-                          : "bg-glass text-onyx border-white/[0.10] hover:border-accent-violet"
+                          : "bg-glass text-onyx border-gray-200 hover:border-accent-violet"
                       }`}
                     >
                       {typeOption.label}
@@ -216,7 +216,7 @@ export default function InspectionsScreen({
                     handleFormChange("inspectorName", e.target.value)
                   }
                   placeholder="Enter name"
-                  className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
+                  className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
                 />
               </div>
 
@@ -230,7 +230,7 @@ export default function InspectionsScreen({
                   value={formState.company}
                   onChange={(e) => handleFormChange("company", e.target.value)}
                   placeholder="Enter company name"
-                  className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
+                  className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
                 />
               </div>
 
@@ -244,7 +244,7 @@ export default function InspectionsScreen({
                     type="time"
                     value={formState.timeIn}
                     onChange={(e) => handleFormChange("timeIn", e.target.value)}
-                    className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
+                    className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
                   />
                 </div>
                 <div>
@@ -257,7 +257,7 @@ export default function InspectionsScreen({
                     onChange={(e) =>
                       handleFormChange("timeOut", e.target.value)
                     }
-                    className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
+                    className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-accent-violet bg-glass"
                   />
                 </div>
               </div>
@@ -277,7 +277,7 @@ export default function InspectionsScreen({
                       className={`px-4 py-3 rounded-full font-semibold text-base transition-colors border-2 ${
                         formState.result === resultOption.value
                           ? `${resultOption.color} border-current`
-                          : `bg-glass text-onyx border-white/[0.10] hover:border-accent-violet`
+                          : `bg-glass text-onyx border-gray-200 hover:border-accent-violet`
                       }`}
                     >
                       {resultOption.label}
@@ -296,7 +296,7 @@ export default function InspectionsScreen({
                   onChange={(e) => handleFormChange("notes", e.target.value)}
                   placeholder="Enter any notes from the inspection..."
                   rows={4}
-                  className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet resize-none bg-glass"
+                  className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-accent-violet resize-none bg-glass"
                 />
               </div>
 
@@ -314,7 +314,7 @@ export default function InspectionsScreen({
                     }
                     placeholder="Enter items that need follow-up..."
                     rows={4}
-                    className="w-full px-4 py-3 text-base border-2 border-white/[0.10] rounded-lg focus:outline-none focus:border-accent-violet resize-none bg-glass"
+                    className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-accent-violet resize-none bg-glass"
                   />
                 </div>
               )}

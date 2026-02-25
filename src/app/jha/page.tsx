@@ -431,7 +431,7 @@ export default function JHAPage() {
 
         {/* Bottom action bar */}
         {currentStep !== "generate" && (
-          <div className="fixed bottom-[72px] left-0 right-0 z-30 bg-glass border-t border-white/[0.06] px-5 py-3 safe-bottom">
+          <div className="fixed bottom-[72px] left-0 right-0 z-30 bg-glass border-t border-gray-100 px-5 py-3 safe-bottom">
             {currentStep === "review" ? (
               <button
                 onClick={handleSave}

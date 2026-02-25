@@ -195,7 +195,7 @@ export default function TimeTrackingPage() {
           {viewMode === "daily" && (
             <>
               {/* Summary card */}
-              <div className="bg-glass rounded-card p-4 shadow-glass-card border border-white/[0.06]">
+              <div className="bg-glass rounded-card p-4 shadow-glass-card border border-gray-100">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <Timer size={20} className="text-accent-violet" />
@@ -277,7 +277,7 @@ export default function TimeTrackingPage() {
           {viewMode === "export" && (
             <>
               {/* ADP Connection Status */}
-              <div className="bg-glass rounded-card p-4 shadow-glass-card border border-white/[0.06]">
+              <div className="bg-glass rounded-card p-4 shadow-glass-card border border-gray-100">
                 <div className="flex items-center gap-3">
                   <Shield size={20} className={adpConfig ? "text-accent-teal" : "text-accent-amber"} />
                   <div>
@@ -294,7 +294,7 @@ export default function TimeTrackingPage() {
               </div>
 
               {/* Export Summary */}
-              <div className="bg-glass rounded-card p-4 shadow-glass-card border border-white/[0.06]">
+              <div className="bg-glass rounded-card p-4 shadow-glass-card border border-gray-100">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-field-base font-semibold text-onyx">
                     Ready for Export
@@ -413,7 +413,7 @@ function TimeEntryCard({
       : "text-accent-amber";
 
   return (
-    <div className="bg-glass rounded-xl shadow-glass-card border border-white/[0.06] overflow-hidden">
+    <div className="bg-glass rounded-xl shadow-glass-card border border-gray-100 overflow-hidden">
       <button
         onClick={onToggle}
         className="w-full flex items-center gap-3 px-4 py-3 text-left transition-all active:scale-[0.99]"
@@ -454,7 +454,7 @@ function TimeEntryCard({
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 pt-2 border-t border-white/[0.06] space-y-3 animate-fade-in">
+        <div className="px-4 pb-4 pt-2 border-t border-gray-100 space-y-3 animate-fade-in">
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-glass-medium rounded-button p-2">
               <p className="text-field-xs text-warm-gray">Regular</p>

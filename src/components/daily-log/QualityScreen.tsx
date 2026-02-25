@@ -220,7 +220,7 @@ export default function QualityScreen({
             {checklists.map((cl) => {
               const isExpanded = expandedId === cl.id;
               return (
-                <div key={cl.id} className="bg-glass rounded-xl shadow-glass-card border border-white/[0.06] overflow-hidden">
+                <div key={cl.id} className="bg-glass rounded-xl shadow-glass-card border border-gray-100 overflow-hidden">
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : cl.id)}
                     className="w-full flex items-center gap-3 px-4 py-3 text-left transition-all active:scale-[0.99]"
@@ -241,7 +241,7 @@ export default function QualityScreen({
                   </button>
 
                   {isExpanded && (
-                    <div className="px-4 pb-4 pt-2 border-t border-white/[0.06] space-y-2 animate-fade-in">
+                    <div className="px-4 pb-4 pt-2 border-t border-gray-100 space-y-2 animate-fade-in">
                       {cl.responses.map((resp) => (
                         <div key={resp.itemId} className="flex items-center gap-3 bg-glass-medium rounded-button px-3 py-2">
                           <button
@@ -294,7 +294,7 @@ export default function QualityScreen({
                     <button
                       key={t.id}
                       onClick={() => handleStartChecklist(t)}
-                      className="w-full text-left px-4 py-3 rounded-card bg-glass hover:bg-glass-light active:bg-glass-medium transition-all border border-white/[0.06]"
+                      className="w-full text-left px-4 py-3 rounded-card bg-glass hover:bg-glass-light active:bg-glass-medium transition-all border border-gray-100"
                     >
                       <p className="text-field-base font-semibold text-onyx">{t.name}</p>
                       <p className="text-field-xs text-warm-gray">
@@ -312,7 +312,7 @@ export default function QualityScreen({
         {activeTab === "deficiencies" && (
           <>
             {deficiencies.map((def) => (
-              <div key={def.id} className="bg-glass rounded-xl p-4 border border-white/[0.06]">
+              <div key={def.id} className="bg-glass rounded-xl p-4 border border-gray-100">
                 <div className="flex items-start gap-3">
                   <AlertTriangle size={18} className={def.severity === "minor" ? "text-accent-amber" : "text-accent-red"} />
                   <div className="flex-1">
@@ -349,13 +349,13 @@ export default function QualityScreen({
 
                 <textarea value={defDesc} onChange={(e) => setDefDesc(e.target.value)}
                   placeholder="Describe the deficiency..." rows={3}
-                  className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx placeholder-warm-gray resize-none" />
+                  className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx placeholder-warm-gray resize-none" />
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-field-xs text-warm-gray mb-1">Severity</label>
                     <select value={defSeverity} onChange={(e) => setDefSeverity(e.target.value as DeficiencySeverity)}
-                      className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx">
+                      className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx">
                       <option value="minor">Minor</option>
                       <option value="major">Major</option>
                       <option value="critical">Critical</option>
@@ -365,7 +365,7 @@ export default function QualityScreen({
                   <div>
                     <label className="block text-field-xs text-warm-gray mb-1">Zone</label>
                     <select value={defZone} onChange={(e) => setDefZone(e.target.value)}
-                      className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx">
+                      className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx">
                       <option value="">No zone</option>
                       {taktZones.map((tz) => <option key={tz.id} value={tz.zoneCode}>{tz.zoneCode}</option>)}
                     </select>
@@ -373,7 +373,7 @@ export default function QualityScreen({
                 </div>
 
                 <input type="text" value={defParty} onChange={(e) => setDefParty(e.target.value)}
-                  placeholder="Responsible party" className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx placeholder-warm-gray" />
+                  placeholder="Responsible party" className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx placeholder-warm-gray" />
 
                 <button onClick={handleAddDeficiency} disabled={!defDesc}
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-button bg-accent-red text-white font-semibold text-field-sm transition-all active:scale-[0.98] disabled:opacity-50">
@@ -386,7 +386,7 @@ export default function QualityScreen({
       </div>
 
       {/* Bottom Action */}
-      <div className="px-4 py-4 border-t border-white/[0.06] bg-alabaster">
+      <div className="px-4 py-4 border-t border-gray-100 bg-alabaster">
         {activeTab === "inspections" ? (
           <button onClick={() => setShowTemplateSelector(true)}
             className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-button bg-accent-violet text-white text-field-base font-semibold font-body transition-all active:scale-[0.98]">

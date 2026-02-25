@@ -364,7 +364,7 @@ export default function NoticeLogPage() {
                     onClick={() =>
                       setExpandedNoticeId(isExpanded ? null : notice.id)
                     }
-                    className="w-full text-left bg-glass border border-white/[0.06] rounded-xl shadow-glass-card hover:shadow-lg transition-all active:scale-[0.98]"
+                    className="w-full text-left bg-glass border border-gray-100 rounded-xl shadow-glass-card hover:shadow-lg transition-all active:scale-[0.98]"
                   >
                     <div className="p-4">
                       {/* Row 1: Type badge + Date + Delivery */}
@@ -483,7 +483,7 @@ export default function NoticeLogPage() {
 
                     {/* Expanded content */}
                     {isExpanded && (
-                      <div className="border-t border-white/[0.06] p-4 bg-glass-light">
+                      <div className="border-t border-gray-100 p-4 bg-glass-light">
                         {notice.content && (
                           <div className="mb-4">
                             <p className="text-xs font-medium text-warm-gray mb-2 uppercase">

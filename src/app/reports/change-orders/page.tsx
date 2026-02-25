@@ -209,7 +209,7 @@ export default function ChangeOrdersPage() {
           </div>
 
           {/* Action buttons */}
-          <div className="sticky bottom-0 bg-glass border-t border-white/[0.06] p-4 flex gap-3 safe-area-inset-bottom">
+          <div className="sticky bottom-0 bg-glass border-t border-gray-100 p-4 flex gap-3 safe-area-inset-bottom">
             <button
               onClick={() => {
                 setDraftHTML("");
@@ -317,7 +317,7 @@ function ChangeItemCard({
     change.change.initiatedBy.slice(1).replace("_", " ");
 
   return (
-    <div className="border border-white/[0.06] rounded-lg bg-glass p-4">
+    <div className="border border-gray-100 rounded-lg bg-glass p-4">
       {/* Header row with date and status */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">

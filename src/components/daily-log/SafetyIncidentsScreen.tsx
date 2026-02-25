@@ -229,7 +229,7 @@ export default function SafetyIncidentsScreen({
               className={`rounded-lg p-4 transition ${
                 isOshaReportable
                   ? "bg-accent-red/10 border-2 border-accent-red"
-                  : "bg-glass border border-white/[0.08]"
+                  : "bg-glass border border-gray-200"
               }`}
             >
               {/* OSHA Banner */}
@@ -276,7 +276,7 @@ export default function SafetyIncidentsScreen({
 
               {/* Expanded Details */}
               {isExpanded && (
-                <div className="mt-4 pt-4 border-t border-white/[0.10] space-y-3">
+                <div className="mt-4 pt-4 border-t border-gray-200 space-y-3">
                   {incident.location && (
                     <div>
                       <p className="text-xs font-semibold text-warm-gray uppercase">
@@ -411,7 +411,7 @@ export default function SafetyIncidentsScreen({
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-obsidian rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-obsidian border-b border-white/[0.08] p-4 flex justify-between items-center">
+            <div className="sticky top-0 bg-obsidian border-b border-gray-200 p-4 flex justify-between items-center">
               <h3 className="text-lg font-semibold text-onyx">
                 Report Safety Incident
               </h3>

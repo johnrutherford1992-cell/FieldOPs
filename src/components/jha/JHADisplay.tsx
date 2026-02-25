@@ -68,7 +68,7 @@ export default function JHADisplay({
 
       {/* Rendered JHA content */}
       <div
-        className="jha-rendered-content bg-glass border border-white/[0.06] rounded-xl p-5 overflow-x-auto"
+        className="jha-rendered-content bg-glass border border-gray-100 rounded-xl p-5 overflow-x-auto"
         dangerouslySetInnerHTML={{ __html: htmlContent }}
       />
     </div>

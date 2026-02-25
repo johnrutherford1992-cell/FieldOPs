@@ -389,7 +389,7 @@ export default function ProductivityPage() {
                     </div>
 
                     {/* Productivity Index - Large Red Text */}
-                    <div className="mb-3 pb-3 border-b border-white/[0.06]">
+                    <div className="mb-3 pb-3 border-b border-gray-100">
                       <p className={`text-field-2xl font-bold ${colors.text}`}>
                         {summary.productivityIndex === null
                           ? "—"
@@ -489,10 +489,10 @@ export default function ProductivityPage() {
                 return (
                   <div
                     key={summary.costCode.id}
-                    className="bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card"
+                    className="bg-glass border border-gray-100 rounded-xl p-4 shadow-glass-card"
                   >
                     {/* Header: Cost Code & Activity */}
-                    <div className="flex items-start justify-between mb-3 pb-3 border-b border-white/[0.06]">
+                    <div className="flex items-start justify-between mb-3 pb-3 border-b border-gray-100">
                       <div className="flex-1 min-w-0">
                         <p className="text-field-sm font-bold text-onyx truncate">
                           {summary.costCode.code}
@@ -527,7 +527,7 @@ export default function ProductivityPage() {
                     </div>
 
                     {/* Unit Rate Details */}
-                    <div className="space-y-2 mb-3 pb-3 border-b border-white/[0.06]">
+                    <div className="space-y-2 mb-3 pb-3 border-b border-gray-100">
                       <div className="flex items-baseline justify-between">
                         <p className="text-field-xs text-warm-gray">Current Rate</p>
                         <p className="text-field-sm font-semibold text-onyx">

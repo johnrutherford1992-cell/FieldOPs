@@ -197,7 +197,7 @@ export default function ConflictsScreen({
   return (
     <div className="flex flex-col h-full bg-obsidian">
       {/* Header and Add Button */}
-      <div className="sticky top-0 bg-glass border-b border-white/[0.08] p-6">
+      <div className="sticky top-0 bg-glass border-b border-gray-200 p-6">
         <div className="flex items-center gap-3 mb-4">
           <ShieldAlert className="w-8 h-8 text-onyx" />
           <h1 className="text-3xl font-bold text-onyx">Conflicts & Issues</h1>

@@ -457,7 +457,7 @@ export default function AnalyticsPage(): JSX.Element {
         {/* ════════════════════════════════════════════════════════════ */}
         {/* 1. PROJECT HEALTH SCORE */}
         {/* ════════════════════════════════════════════════════════════ */}
-        <div className="bg-glass border border-white/[0.06] rounded-xl p-6 shadow-glass-card">
+        <div className="bg-glass border border-gray-100 rounded-xl p-6 shadow-glass-card">
           <div className="flex items-center gap-4">
             {/* Circular Score */}
             <div className="flex-shrink-0 flex flex-col items-center">
@@ -493,7 +493,7 @@ export default function AnalyticsPage(): JSX.Element {
         <div className="space-y-3">
           {/* Cost Variance */}
           <div
-            className={`bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card flex items-start justify-between ${
+            className={`bg-glass border border-gray-100 rounded-xl p-4 shadow-glass-card flex items-start justify-between ${
               costVariance > 0 ? "bg-accent-green/10 border-accent-green/30" : "bg-accent-red/10 border-accent-red/30"
             }`}
           >
@@ -516,7 +516,7 @@ export default function AnalyticsPage(): JSX.Element {
 
           {/* Schedule Variance */}
           <div
-            className={`bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card flex items-start justify-between ${
+            className={`bg-glass border border-gray-100 rounded-xl p-4 shadow-glass-card flex items-start justify-between ${
               scheduleVariance < 0 ? "bg-accent-green/10 border-accent-green/30" : "bg-accent-red/10 border-accent-red/30"
             }`}
           >
@@ -539,7 +539,7 @@ export default function AnalyticsPage(): JSX.Element {
 
           {/* Productivity Index */}
           <div
-            className={`bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card flex items-start justify-between ${
+            className={`bg-glass border border-gray-100 rounded-xl p-4 shadow-glass-card flex items-start justify-between ${
               productivityIndex >= 1.0 ? "bg-accent-green/10 border-accent-green/30" : "bg-accent-amber/10 border-accent-amber/30"
             }`}
           >
@@ -577,7 +577,7 @@ export default function AnalyticsPage(): JSX.Element {
             const varianceColor = variancePercent > 0 ? "text-red-600" : "text-green-600";
 
             return (
-              <div key={summary.costCode.id} className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card overflow-hidden">
+              <div key={summary.costCode.id} className="bg-glass border border-gray-100 rounded-xl shadow-glass-card overflow-hidden">
                 {/* Header - Always Visible */}
                 <button
                   onClick={() => toggleExpanded(summary.costCode.id)}
@@ -630,7 +630,7 @@ export default function AnalyticsPage(): JSX.Element {
 
                 {/* Expanded Content */}
                 {isExpanded && (
-                  <div className="border-t border-white/[0.06] p-4 space-y-4 bg-glass-light">
+                  <div className="border-t border-gray-100 p-4 space-y-4 bg-glass-light">
                     {latestAnalytics ? (
                       <>
                         {/* Unit Rate Stats */}
@@ -656,7 +656,7 @@ export default function AnalyticsPage(): JSX.Element {
                         </div>
 
                         {/* Standard Deviation */}
-                        <div className="bg-glass rounded-lg p-3 border border-white/[0.06]">
+                        <div className="bg-glass rounded-lg p-3 border border-gray-100">
                           <p className="text-field-xs text-warm-gray mb-1">Standard Deviation</p>
                           <p className="text-field-base font-semibold text-onyx">
                             {formatDecimal(latestAnalytics.standardDeviation)}
@@ -684,7 +684,7 @@ export default function AnalyticsPage(): JSX.Element {
                         </div>
 
                         {/* Labor Hours */}
-                        <div className="bg-glass rounded-lg p-3 border border-white/[0.06]">
+                        <div className="bg-glass rounded-lg p-3 border border-gray-100">
                           <p className="text-field-xs text-warm-gray mb-1">Total Labor Hours</p>
                           <p className="text-field-base font-semibold text-onyx">
                             {Math.round(latestAnalytics.totalLaborHours)} hrs
@@ -709,7 +709,7 @@ export default function AnalyticsPage(): JSX.Element {
             <h2 className="text-field-lg font-semibold text-onyx px-1">Top Variances</h2>
 
             {topVariances.map((variance, idx) => (
-              <div key={variance.costCodeId} className="bg-glass border border-white/[0.06] rounded-xl p-4 shadow-glass-card">
+              <div key={variance.costCodeId} className="bg-glass border border-gray-100 rounded-xl p-4 shadow-glass-card">
                 {/* Rank & Code */}
                 <div className="flex items-start justify-between mb-3">
                   <div>

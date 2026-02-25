@@ -4,10 +4,13 @@ import { useState } from "react";
 import AppShell from "@/components/layout/AppShell";
 import Header from "@/components/layout/Header";
 import { useAppStore } from "@/lib/store";
+import { useTheme } from "@/components/layout/ThemeProvider";
+import { Moon, Sun } from "lucide-react";
 
 export default function SettingsPage() {
   const { claudeApiKey, setClaudeApiKey } = useAppStore();
   const [apiKeyInput, setApiKeyInput] = useState(claudeApiKey);
+  const { theme, toggleTheme } = useTheme();
 
   const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -20,6 +23,48 @@ export default function SettingsPage() {
       <div className="screen">
         <Header title="Settings" backHref="/" />
 
+        {/* Appearance Section */}
+        <div className="px-5 pt-6">
+          <h3 className="font-heading text-sm font-semibold text-onyx mb-3">
+            Appearance
+          </h3>
+
+          <div className="bg-alabaster border border-gray-100 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {theme === "dark" ? (
+                  <Moon className="w-5 h-5 text-onyx" />
+                ) : (
+                  <Sun className="w-5 h-5 text-onyx" />
+                )}
+                <div>
+                  <p className="font-heading text-sm font-semibold text-onyx">
+                    Dark Mode
+                  </p>
+                  <p className="text-xs text-warm-gray">
+                    {theme === "dark" ? "On" : "Off"}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={toggleTheme}
+                className={`
+                  relative w-12 h-7 rounded-full transition-colors duration-200 cursor-pointer
+                  ${theme === "dark" ? "bg-onyx" : "bg-gray-300"}
+                `}
+                aria-label="Toggle dark mode"
+              >
+                <span
+                  className={`
+                    absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-200
+                    ${theme === "dark" ? "translate-x-5" : "translate-x-0"}
+                  `}
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Claude API Key Section */}
         <div className="px-5 pt-6">
           <h3 className="font-heading text-sm font-semibold text-onyx mb-3">
@@ -31,7 +76,7 @@ export default function SettingsPage() {
             value={apiKeyInput}
             onChange={handleApiKeyChange}
             placeholder="sk-ant-..."
-            className="field-input w-full px-4 py-3 rounded-lg border border-white/[0.06] bg-glass font-body text-field-sm placeholder-warm-gray focus:outline-none focus:border-accent-violet focus:ring-1 focus:ring-accent-violet transition-colors"
+            className="field-input w-full px-4 py-3 rounded-lg border border-gray-100 bg-white font-body text-field-sm placeholder-warm-gray focus:outline-none focus:border-onyx focus:ring-1 focus:ring-onyx transition-colors"
           />
 
           <p className="text-warm-gray text-field-sm font-body mt-2">
@@ -40,7 +85,7 @@ export default function SettingsPage() {
               href="https://console.anthropic.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent-violet underline hover:text-onyx"
+              className="text-onyx underline hover:text-slate"
             >
               console.anthropic.com
             </a>
@@ -53,9 +98,9 @@ export default function SettingsPage() {
             User Profile
           </h3>
 
-          <div className="bg-glass border border-white/[0.06] rounded-lg p-4">
+          <div className="bg-alabaster border border-gray-100 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <div className="flex-shrink-0 w-10 h-10 bg-accent-violet rounded-full flex items-center justify-center text-white font-heading font-semibold">
+              <div className="flex-shrink-0 w-10 h-10 bg-onyx rounded-full flex items-center justify-center text-white font-heading font-semibold">
                 JR
               </div>
               <div className="flex-1 min-w-0">
@@ -63,7 +108,7 @@ export default function SettingsPage() {
                   John Rutherford
                 </h4>
                 <p className="text-field-sm text-warm-gray font-body">
-                  PM • john@blackstone.build
+                  PM &bull; john@blackstone.build
                 </p>
               </div>
             </div>

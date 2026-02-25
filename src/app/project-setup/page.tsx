@@ -46,7 +46,7 @@ export default function ProjectSetupPage() {
       />
 
       {/* Tab Navigation */}
-      <div className="sticky top-[56px] z-30 bg-glass border-b border-white/[0.06] px-4 pt-3 pb-0 overflow-x-auto">
+      <div className="sticky top-[56px] z-30 bg-glass border-b border-gray-100 px-4 pt-3 pb-0 overflow-x-auto">
         <div className="flex gap-2 min-w-min pb-3">
           <TabButton
             label="Details"
@@ -163,7 +163,7 @@ function TabProjectDetails({ project }: TabProjectDetailsProps) {
 
   return (
     <div className="px-4 py-6 space-y-6">
-      <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-6 space-y-6">
+      <div className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-6 space-y-6">
         {/* Project Name */}
         <DetailRow
           label="Project Name"
@@ -281,7 +281,7 @@ function TabTaktZones({ project }: TabTaktZonesProps) {
               {zones.map((zone) => (
                 <div
                   key={zone.id}
-                  className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4"
+                  className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-4"
                 >
                   <p className="text-field-base font-semibold text-onyx">
                     {zone.zoneCode}
@@ -357,7 +357,7 @@ function SubcontractorCard({ sub }: SubcontractorCardProps) {
   };
 
   return (
-    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4">
+    <div className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-4">
       {/* Header with Company and Status */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <h3 className="text-lg font-semibold text-onyx flex-1">{sub.company}</h3>
@@ -374,7 +374,7 @@ function SubcontractorCard({ sub }: SubcontractorCardProps) {
       </p>
 
       {/* Primary Contact */}
-      <div className="space-y-2 border-t border-white/[0.06] pt-4">
+      <div className="space-y-2 border-t border-gray-100 pt-4">
         <p className="text-field-sm font-semibold text-onyx">
           {sub.primaryContact.name}
         </p>
@@ -474,7 +474,7 @@ function EquipmentItemCard({ item }: EquipmentItemCardProps) {
   };
 
   return (
-    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4 flex items-center justify-between gap-3">
+    <div className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-4 flex items-center justify-between gap-3">
       <div className="flex-1 min-w-0">
         <p className="text-field-base font-semibold text-onyx">{item.name}</p>
         <div className="flex items-center gap-2 mt-2">
@@ -513,7 +513,7 @@ function TabContracts({ project }: TabContractsProps) {
       <div>
         <h3 className="text-lg font-semibold text-onyx mb-3">Owner Contract</h3>
         {project.contracts.ownerContract ? (
-          <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4 flex items-center gap-3">
+          <div className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-4 flex items-center gap-3">
             <FileText size={24} className="text-onyx flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-field-base font-semibold text-onyx truncate">
@@ -542,7 +542,7 @@ function TabContracts({ project }: TabContractsProps) {
           Standard Subcontract
         </h3>
         {project.contracts.standardSubcontract ? (
-          <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4 flex items-center gap-3">
+          <div className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-4 flex items-center gap-3">
             <FileText size={24} className="text-onyx flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-field-base font-semibold text-onyx truncate">
@@ -575,7 +575,7 @@ function TabContracts({ project }: TabContractsProps) {
             {project.contracts.subAgreements.map((agreement) => (
               <div
                 key={agreement.subId}
-                className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4 flex items-center gap-3"
+                className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-4 flex items-center gap-3"
               >
                 <FileText size={24} className="text-onyx flex-shrink-0" />
                 <div className="flex-1 min-w-0">
@@ -609,7 +609,7 @@ function TabContracts({ project }: TabContractsProps) {
 
 function ContractPlaceholder() {
   return (
-    <div className="border-2 border-dashed border-white/[0.1] rounded-xl p-8 flex flex-col items-center justify-center gap-3">
+    <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center gap-3">
       <Upload size={32} className="text-warm-gray" />
       <p className="text-field-sm text-warm-gray text-center">
         Upload PDF or Word

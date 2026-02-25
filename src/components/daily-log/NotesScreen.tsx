@@ -50,7 +50,7 @@ export default function NotesScreen({
   return (
     <div className="min-h-screen bg-alabaster">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-glass border-b border-white/[0.08] px-6 py-4">
+      <div className="sticky top-0 z-10 bg-glass border-b border-gray-200 px-6 py-4">
         <h1 className="text-2xl font-bold text-onyx">Daily Log</h1>
       </div>
 
@@ -68,7 +68,7 @@ export default function NotesScreen({
               value={notes}
               onChange={(e) => onNotesChange(e.target.value)}
               placeholder="General observations, coordination issues, key decisions made today..."
-              className="w-full min-h-[200px] p-4 bg-glass border border-white/[0.10] rounded-xl text-onyx text-lg font-normal placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet resize-none"
+              className="w-full min-h-[200px] p-4 bg-glass border border-gray-200 rounded-xl text-onyx text-lg font-normal placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet resize-none"
               aria-label="Daily notes"
             />
 
@@ -98,7 +98,7 @@ export default function NotesScreen({
             </button>
 
             {expandedSuggestions && (
-              <div className="bg-glass rounded-xl p-4 border border-white/[0.08] space-y-3">
+              <div className="bg-glass rounded-xl p-4 border border-gray-200 space-y-3">
                 <p className="text-sm text-warm-gray font-medium">Quick suggestions:</p>
                 <div className="flex flex-wrap gap-2">
                   {QUICK_ADD_SUGGESTIONS.map((suggestion) => (
@@ -122,7 +122,7 @@ export default function NotesScreen({
               {tomorrowPlan.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-3 bg-glass rounded-xl p-4 min-h-14 border border-white/[0.08]"
+                  className="flex items-center gap-3 bg-glass rounded-xl p-4 min-h-14 border border-gray-200"
                 >
                   <span className="text-lg font-bold text-onyx min-w-6">
                     {index + 1}.
@@ -148,7 +148,7 @@ export default function NotesScreen({
               ))}
             </div>
           ) : (
-            <div className="bg-glass rounded-xl p-8 text-center border border-white/[0.08]">
+            <div className="bg-glass rounded-xl p-8 text-center border border-gray-200">
               <p className="text-warm-gray font-medium text-lg">
                 What&apos;s the plan for tomorrow?
               </p>

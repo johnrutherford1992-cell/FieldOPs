@@ -328,7 +328,7 @@ export default function TimeTrackingScreen({
                 return (
                   <div
                     key={entry.id}
-                    className="bg-glass rounded-xl shadow-glass-card border border-white/[0.06] overflow-hidden"
+                    className="bg-glass rounded-xl shadow-glass-card border border-gray-100 overflow-hidden"
                   >
                     {/* Entry Header Row */}
                     <button
@@ -393,7 +393,7 @@ export default function TimeTrackingScreen({
 
                     {/* Expanded Detail Panel */}
                     {isExpanded && (
-                      <div className="px-4 pb-4 space-y-4 border-t border-white/[0.06] pt-4 animate-fade-in">
+                      <div className="px-4 pb-4 space-y-4 border-t border-gray-100 pt-4 animate-fade-in">
                         {/* Clock In/Out Controls */}
                         <div className="flex gap-2">
                           {!entry.clockOut && (
@@ -441,7 +441,7 @@ export default function TimeTrackingScreen({
                                   regularHours: parseFloat(e.target.value) || 0,
                                 })
                               }
-                              className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-base text-center font-semibold bg-glass text-onyx"
+                              className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-base text-center font-semibold bg-glass text-onyx"
                               min="0"
                               step="0.25"
                             />
@@ -456,7 +456,7 @@ export default function TimeTrackingScreen({
                                   overtimeHours: parseFloat(e.target.value) || 0,
                                 })
                               }
-                              className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-base text-center font-semibold bg-glass text-onyx"
+                              className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-base text-center font-semibold bg-glass text-onyx"
                               min="0"
                               step="0.25"
                             />
@@ -471,7 +471,7 @@ export default function TimeTrackingScreen({
                                   doubleTimeHours: parseFloat(e.target.value) || 0,
                                 })
                               }
-                              className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-base text-center font-semibold bg-glass text-onyx"
+                              className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-base text-center font-semibold bg-glass text-onyx"
                               min="0"
                               step="0.25"
                             />
@@ -490,7 +490,7 @@ export default function TimeTrackingScreen({
                                   breakMinutes: parseInt(e.target.value) || 0,
                                 })
                               }
-                              className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-base text-center font-semibold bg-glass text-onyx"
+                              className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-base text-center font-semibold bg-glass text-onyx"
                               min="0"
                               step="15"
                             />
@@ -505,7 +505,7 @@ export default function TimeTrackingScreen({
                                   csiDivision: costCodes.find((c) => c.id === e.target.value)?.csiDivision,
                                 })
                               }
-                              className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx"
+                              className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx"
                             >
                               <option value="">None</option>
                               {costCodes.map((cc) => (
@@ -526,7 +526,7 @@ export default function TimeTrackingScreen({
                               onChange={(e) =>
                                 updateEntry(entry.id, { taktZone: e.target.value || undefined })
                               }
-                              className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx"
+                              className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx"
                             >
                               <option value="">No zone</option>
                               {taktZones.map((tz) => (
@@ -546,7 +546,7 @@ export default function TimeTrackingScreen({
                             value={entry.notes || ""}
                             onChange={(e) => updateEntry(entry.id, { notes: e.target.value })}
                             placeholder="Optional notes..."
-                            className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx placeholder-warm-gray"
+                            className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx placeholder-warm-gray"
                           />
                         </div>
 
@@ -569,7 +569,7 @@ export default function TimeTrackingScreen({
       </div>
 
       {/* Bottom Add Button */}
-      <div className="px-4 py-4 border-t border-white/[0.06] bg-alabaster">
+      <div className="px-4 py-4 border-t border-gray-100 bg-alabaster">
         <button
           onClick={() => setShowAddModal(true)}
           className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-button bg-accent-violet text-white text-field-base font-semibold font-body transition-all active:scale-[0.98] hover:bg-accent-violet/80"
@@ -587,7 +587,7 @@ export default function TimeTrackingScreen({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-surface-primary px-4 py-4 border-b border-white/[0.06] flex items-center justify-between rounded-t-2xl">
+            <div className="sticky top-0 bg-surface-primary px-4 py-4 border-b border-gray-100 flex items-center justify-between rounded-t-2xl">
               <h2 className="text-field-lg font-heading font-semibold text-onyx">
                 Add Time Entry
               </h2>
@@ -602,7 +602,7 @@ export default function TimeTrackingScreen({
 
             {/* Bulk Add from Manpower */}
             {availableWorkers.length > 0 && (
-              <div className="px-4 py-3 border-b border-white/[0.06]">
+              <div className="px-4 py-3 border-b border-gray-100">
                 <button
                   onClick={handleBulkFromManpower}
                   className="w-full flex items-center justify-center gap-2 px-4 py-4 rounded-card bg-accent-violet/15 text-accent-violet font-semibold text-field-base transition-all active:scale-[0.98]"
@@ -633,7 +633,7 @@ export default function TimeTrackingScreen({
                   <button
                     key={worker.id}
                     onClick={() => handleAddEntry(worker)}
-                    className="w-full text-left px-4 py-4 rounded-card bg-glass hover:bg-glass-light active:bg-glass-medium transition-all active:scale-[0.98] border border-white/[0.06]"
+                    className="w-full text-left px-4 py-4 rounded-card bg-glass hover:bg-glass-light active:bg-glass-medium transition-all active:scale-[0.98] border border-gray-100"
                   >
                     <h3 className="text-field-base font-heading font-semibold text-onyx mb-1">
                       {worker.name}
@@ -647,7 +647,7 @@ export default function TimeTrackingScreen({
             </div>
 
             {/* Close Button */}
-            <div className="sticky bottom-0 px-4 py-4 bg-surface-primary border-t border-white/[0.06]">
+            <div className="sticky bottom-0 px-4 py-4 bg-surface-primary border-t border-gray-100">
               <button
                 onClick={() => setShowAddModal(false)}
                 className="w-full px-6 py-4 rounded-button bg-glass-medium text-onyx text-field-base font-semibold font-body transition-all active:scale-[0.98] hover:bg-glass-heavy"

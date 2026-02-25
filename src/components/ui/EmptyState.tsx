@@ -42,9 +42,9 @@ export default function EmptyState({
         <button
           onClick={action.onClick}
           className={`
-            px-6 py-3 rounded-button bg-accent-violet text-white text-field-base font-semibold
+            px-6 py-3 rounded-button bg-onyx text-white text-field-base font-semibold
             font-body transition-all duration-200 active:scale-[0.98]
-            hover:bg-accent-violet/80 cursor-pointer
+            hover:bg-slate cursor-pointer
           `}
         >
           {action.label}

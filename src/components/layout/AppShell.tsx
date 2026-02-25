@@ -60,13 +60,12 @@ export default function AppShell({ children }: AppShellProps) {
 
   if (!initialized) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-obsidian">
+      <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="flex flex-col items-center gap-4">
           <img
             src="/logos/blackstone-black.png"
             alt="Blackstone Construction"
             className="w-40 opacity-80"
-            style={{ filter: "brightness(0) invert(1)" }}
           />
           <div className="w-8 h-8 border-2 border-onyx border-t-transparent rounded-full animate-spin" />
           <p className="text-warm-gray text-sm">Loading FieldOps...</p>
@@ -76,7 +75,7 @@ export default function AppShell({ children }: AppShellProps) {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen bg-white">
       <main>{children}</main>
       <BottomNav />
     </div>

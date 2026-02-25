@@ -191,7 +191,7 @@ export default function WorkPerformedScreen({
   return (
     <div className="min-h-screen bg-white pb-safe-bottom">
       {/* Header with summary */}
-      <div className="sticky top-0 z-10 bg-glass border-b border-white/[0.06] px-4 py-4 sm:px-6">
+      <div className="sticky top-0 z-10 bg-glass border-b border-gray-100 px-4 py-4 sm:px-6">
         <h2 className="font-heading font-semibold text-field-xl text-onyx mb-3">
           Work Performed
         </h2>
@@ -230,7 +230,7 @@ export default function WorkPerformedScreen({
             entries.map((entry, index) => (
               <div
                 key={index}
-                className="rounded-card bg-glass border border-white/[0.06] p-4 animate-fade-in"
+                className="rounded-card bg-glass border border-gray-100 p-4 animate-fade-in"
               >
                 {/* Header row: Division badge, Activity, Zone code */}
                 <div className="flex items-start gap-3 mb-2">
@@ -521,7 +521,7 @@ export default function WorkPerformedScreen({
                         setModal({ ...modal, quantity: val });
                       }}
                       placeholder="Enter quantity"
-                      className="w-full px-4 py-3 rounded-card border border-white/[0.10] font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
+                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
                       min="0"
                       step="0.01"
                     />
@@ -569,7 +569,7 @@ export default function WorkPerformedScreen({
                         setModal({ ...modal, crewSize: val });
                       }}
                       placeholder="Number of workers"
-                      className="w-full px-4 py-3 rounded-card border border-white/[0.10] font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
+                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
                       min="0"
                     />
                   </div>
@@ -588,7 +588,7 @@ export default function WorkPerformedScreen({
                         setModal({ ...modal, crewHoursWorked: val });
                       }}
                       placeholder="Total crew hours"
-                      className="w-full px-4 py-3 rounded-card border border-white/[0.10] font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
+                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
                       min="0"
                       step="0.5"
                     />
@@ -608,7 +608,7 @@ export default function WorkPerformedScreen({
                         setModal({ ...modal, percentComplete: Math.max(0, Math.min(100, val ?? 0)) });
                       }}
                       placeholder="0-100"
-                      className="w-full px-4 py-3 rounded-card border border-white/[0.10] font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
+                      className="w-full px-4 py-3 rounded-card border border-gray-200 font-body text-field-base text-onyx placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass"
                       min="0"
                       max="100"
                     />

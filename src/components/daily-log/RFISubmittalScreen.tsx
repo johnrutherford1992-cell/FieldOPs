@@ -235,7 +235,7 @@ function RFISubmittalScreen({
   return (
     <div className="flex flex-col h-full bg-alabaster">
       {/* Tab navigation */}
-      <div className="sticky top-0 bg-glass border-b border-white/[0.06] px-4 py-3 z-10">
+      <div className="sticky top-0 bg-glass border-b border-gray-100 px-4 py-3 z-10">
         <div className="flex gap-2">
           <button
             onClick={() => setActiveTab("rfis")}
@@ -265,7 +265,7 @@ function RFISubmittalScreen({
         <div className="flex flex-col h-full">
           {/* Summary */}
           {rfis.length > 0 && (
-            <div className="bg-glass px-4 py-3 border-b border-white/[0.06]">
+            <div className="bg-glass px-4 py-3 border-b border-gray-100">
               <div className="text-field-sm font-medium text-onyx">
                 {rfiStats.open} open · {rfiStats.overdue} overdue
               </div>
@@ -300,7 +300,7 @@ function RFISubmittalScreen({
                 {rfis.map((rfi) => (
                   <div
                     key={rfi.rfiNumber}
-                    className="bg-glass rounded-xl p-4 border border-white/[0.06]"
+                    className="bg-glass rounded-xl p-4 border border-gray-100"
                   >
                     {/* Header with badge and remove button */}
                     <div className="flex items-start justify-between mb-3">
@@ -349,7 +349,7 @@ function RFISubmittalScreen({
 
                     {/* Notes if present */}
                     {rfi.notes && (
-                      <p className="text-field-sm text-onyx bg-glass rounded-lg p-2 border border-white/[0.06]">
+                      <p className="text-field-sm text-onyx bg-glass rounded-lg p-2 border border-gray-100">
                         {rfi.notes}
                       </p>
                     )}
@@ -366,7 +366,7 @@ function RFISubmittalScreen({
         <div className="flex flex-col h-full">
           {/* Summary */}
           {submittals.length > 0 && (
-            <div className="bg-glass px-4 py-3 border-b border-white/[0.06]">
+            <div className="bg-glass px-4 py-3 border-b border-gray-100">
               <div className="text-field-sm font-medium text-onyx">
                 {submittalStats.pending} pending · {submittalStats.needsAction}{" "}
                 needs action
@@ -402,7 +402,7 @@ function RFISubmittalScreen({
                 {submittals.map((submittal) => (
                   <div
                     key={submittal.submittalNumber}
-                    className="bg-glass rounded-xl p-4 border border-white/[0.06]"
+                    className="bg-glass rounded-xl p-4 border border-gray-100"
                   >
                     {/* Header with badge and remove button */}
                     <div className="flex items-start justify-between mb-3">
@@ -449,7 +449,7 @@ function RFISubmittalScreen({
 
                     {/* Notes if present */}
                     {submittal.notes && (
-                      <p className="text-field-sm text-onyx bg-glass rounded-lg p-2 border border-white/[0.06]">
+                      <p className="text-field-sm text-onyx bg-glass rounded-lg p-2 border border-gray-100">
                         {submittal.notes}
                       </p>
                     )}
@@ -856,7 +856,7 @@ function RFISubmittalScreen({
       )}
 
       {/* Bottom note */}
-      <div className="bg-glass border-t border-white/[0.06] px-4 py-4 text-center text-field-sm text-warm-gray">
+      <div className="bg-glass border-t border-gray-100 px-4 py-4 text-center text-field-sm text-warm-gray">
         Procore integration coming soon — entries are manual for now
       </div>
     </div>

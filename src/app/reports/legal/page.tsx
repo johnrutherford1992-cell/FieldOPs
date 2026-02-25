@@ -248,7 +248,7 @@ export default function LegalPage() {
           <Header title="Legal Correspondence" backHref="/reports" />
 
           {/* Tab buttons */}
-          <div className="flex gap-2 px-5 pt-5 border-b border-white/[0.06]">
+          <div className="flex gap-2 px-5 pt-5 border-b border-gray-100">
             <button
               onClick={() => setView("compose")}
               className="flex-1 pb-4 font-heading font-semibold text-field-base transition-colors text-onyx border-b-2 border-accent-violet"
@@ -310,7 +310,7 @@ export default function LegalPage() {
                       className={`flex items-start gap-4 p-4 rounded-lg border-2 transition-all text-left ${
                         selectedType === type.id
                           ? "border-accent-violet bg-glass"
-                          : "border-white/[0.06] bg-glass hover:border-white/[0.1]"
+                          : "border-gray-100 bg-glass hover:border-gray-200"
                       }`}
                     >
                       <div className="flex-shrink-0 mt-1">{type.icon}</div>
@@ -370,7 +370,7 @@ export default function LegalPage() {
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
                     placeholder="John Smith"
-                    className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-accent-violet outline-none transition-colors"
                   />
                 </div>
 
@@ -384,7 +384,7 @@ export default function LegalPage() {
                     value={recipientCompany}
                     onChange={(e) => setRecipientCompany(e.target.value)}
                     placeholder="ABC Plumbing, Inc."
-                    className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-accent-violet outline-none transition-colors"
                   />
                 </div>
 
@@ -421,7 +421,7 @@ export default function LegalPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the issue, delay, or matter that necessitates this correspondence..."
-                    className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors min-h-32 resize-none"
+                    className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-accent-violet outline-none transition-colors min-h-32 resize-none"
                   />
                 </div>
 
@@ -451,7 +451,7 @@ export default function LegalPage() {
                 </h3>
 
                 {/* New Reference Form */}
-                <div className="space-y-4 p-4 bg-glass rounded-lg border-2 border-white/[0.06]">
+                <div className="space-y-4 p-4 bg-glass rounded-lg border-2 border-gray-100">
                   <div className="space-y-2">
                     <label className="font-heading text-xs font-medium text-warm-gray tracking-widest uppercase">
                       Clause Number
@@ -461,7 +461,7 @@ export default function LegalPage() {
                       value={newRefClause}
                       onChange={(e) => setNewRefClause(e.target.value)}
                       placeholder="e.g., Section 3.2, Article 4"
-                      className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors bg-white"
+                      className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-accent-violet outline-none transition-colors bg-white"
                     />
                   </div>
 
@@ -473,7 +473,7 @@ export default function LegalPage() {
                       value={newRefQuote}
                       onChange={(e) => setNewRefQuote(e.target.value)}
                       placeholder="Paste the relevant contract language here..."
-                      className="w-full px-4 py-3 border-2 border-white/[0.06] rounded-lg font-body focus:border-accent-violet outline-none transition-colors bg-white min-h-20 resize-none"
+                      className="w-full px-4 py-3 border-2 border-gray-100 rounded-lg font-body focus:border-accent-violet outline-none transition-colors bg-white min-h-20 resize-none"
                     />
                   </div>
 
@@ -496,7 +496,7 @@ export default function LegalPage() {
                     {contractReferences.map((ref, idx) => (
                       <div
                         key={idx}
-                        className="p-4 border-2 border-white/[0.06] rounded-lg bg-white"
+                        className="p-4 border-2 border-gray-100 rounded-lg bg-white"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 min-w-0">
@@ -561,7 +561,7 @@ export default function LegalPage() {
         <Header title="Legal Correspondence" backHref="/reports" />
 
         {/* Tab buttons */}
-        <div className="flex gap-2 px-5 pt-5 border-b border-white/[0.06]">
+        <div className="flex gap-2 px-5 pt-5 border-b border-gray-100">
           <button
             onClick={() => setView("compose")}
             className="flex-1 pb-4 font-heading font-semibold text-field-base transition-colors text-warm-gray border-b-2 border-transparent"
