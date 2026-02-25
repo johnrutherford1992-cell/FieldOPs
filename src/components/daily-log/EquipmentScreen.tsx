@@ -125,7 +125,7 @@ function EquipmentScreen({
                     className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
                       isSelected
                         ? "bg-accent-green border-accent-green"
-                        : "border-white/[0.10] bg-glass"
+                        : "border-gray-200 bg-glass"
                     }`}
                   >
                     {isSelected && (
@@ -175,7 +175,7 @@ function EquipmentScreen({
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet min-h-[56px] text-base bg-glass"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet min-h-[56px] text-base bg-glass"
                       placeholder="0.0"
                     />
                   </div>
@@ -194,7 +194,7 @@ function EquipmentScreen({
     <div className="flex flex-col h-full bg-alabaster">
       {/* Summary bar */}
       {hasEquipment && (
-        <div className="sticky top-0 bg-glass px-4 py-3 border-b border-white/[0.06]">
+        <div className="sticky top-0 bg-glass px-4 py-3 border-b border-gray-100">
           <div className="text-sm font-medium text-onyx">
             {entries.length} item{entries.length !== 1 ? "s" : ""} selected ·{" "}
             {totalHours.toFixed(1)} hrs total

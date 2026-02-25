@@ -12,12 +12,12 @@ const getStatusStyles = (color: string): string => {
     case "green":
       return "bg-accent-green text-white";
     case "amber":
-      return "bg-accent-amber text-obsidian-deep";
+      return "bg-accent-amber text-onyx";
     case "red":
       return "bg-accent-red text-white";
     case "gray":
     default:
-      return "bg-glass-medium text-warm-gray";
+      return "bg-gray-200 text-onyx";
   }
 };
 

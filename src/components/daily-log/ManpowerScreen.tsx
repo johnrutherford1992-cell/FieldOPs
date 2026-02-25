@@ -279,7 +279,7 @@ export default function ManpowerScreen({
                       };
                       onEntriesChange(updated);
                     }}
-                    className="w-20 px-2 py-2 rounded-button border border-white/[0.06] text-field-base text-center font-semibold bg-glass"
+                    className="w-20 px-2 py-2 rounded-button border border-gray-100 text-field-base text-center font-semibold bg-glass"
                     min="0"
                     step="0.5"
                   />
@@ -301,7 +301,7 @@ export default function ManpowerScreen({
                       };
                       onEntriesChange(updated);
                     }}
-                    className="w-20 px-2 py-2 rounded-button border border-white/[0.06] text-field-base text-center font-semibold bg-glass"
+                    className="w-20 px-2 py-2 rounded-button border border-gray-100 text-field-base text-center font-semibold bg-glass"
                     min="0"
                     step="0.5"
                   />
@@ -353,7 +353,7 @@ export default function ManpowerScreen({
       </div>
 
       {/* Add Trade Button */}
-      <div className="px-4 py-4 border-t border-white/[0.06] bg-alabaster">
+      <div className="px-4 py-4 border-t border-gray-100 bg-alabaster">
         <button
           onClick={() => setShowAddModal(true)}
           className="
@@ -375,7 +375,7 @@ export default function ManpowerScreen({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-alabaster px-4 py-4 border-b border-white/[0.06] flex items-center justify-between rounded-t-2xl">
+            <div className="sticky top-0 bg-alabaster px-4 py-4 border-b border-gray-100 flex items-center justify-between rounded-t-2xl">
               <h2 className="text-field-lg font-heading font-semibold text-onyx">
                 Select a Trade
               </h2>
@@ -409,7 +409,7 @@ export default function ManpowerScreen({
                       w-full text-left px-4 py-4 rounded-card
                       bg-glass hover:bg-glass-light active:bg-glass-medium
                       transition-all active:scale-[0.98]
-                      border border-white/[0.06]
+                      border border-gray-100
                     "
                   >
                     <h3 className="text-field-base font-heading font-semibold text-onyx mb-1">
@@ -429,7 +429,7 @@ export default function ManpowerScreen({
             </div>
 
             {/* Modal Footer with Close Button */}
-            <div className="sticky bottom-0 px-4 py-4 bg-alabaster border-t border-white/[0.06]">
+            <div className="sticky bottom-0 px-4 py-4 bg-alabaster border-t border-gray-100">
               <button
                 onClick={() => setShowAddModal(false)}
                 className="

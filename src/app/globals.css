@@ -1,32 +1,42 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================================
-   FIELDOPS — OBSIDIAN GLASS Design System
-   Theme: Dark charcoal gradient + glass morphism + violet/teal accents
+   BLACKSTONE CONSTRUCTION — FieldOps Design System
+   Brand: Onyx #000000 / Alabaster #f2f0e6 / Slate #2d2d2f
    ============================================================ */
 
 @layer base {
   :root {
-    /* Brand tokens — Obsidian Glass */
-    --color-obsidian: #1a1a2e;
-    --color-obsidian-deep: #0f1525;
-    --color-obsidian-light: #16213e;
-    --color-accent-violet: #8b5cf6;
-    --color-accent-teal: #14b8a6;
-    --color-accent-amber: #eab308;
-    --color-accent-pink: #ec4899;
-    --color-text-primary: #e2e8f0;
-    --color-text-secondary: #94a3b8;
-    --color-text-muted: #64748b;
+    /* Brand tokens */
+    --color-onyx: #000000;
+    --color-alabaster: #f2f0e6;
+    --color-slate: #2d2d2f;
+    --color-warm-gray: #8c8c8c;
+    --color-accent-green: #2d8a4e;
+    --color-accent-amber: #d4a017;
+    --color-accent-red: #c0392b;
 
     /* Layout */
     --nav-height: 72px;
     --header-height: 56px;
     --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* ---- Dark Mode Overrides ---- */
+  .dark {
+    --color-onyx: #f4f4f5;
+    --color-alabaster: #27272a;
+    --color-slate: #a1a1aa;
+    --color-warm-gray: #71717a;
+    color-scheme: dark;
+  }
+
+  .dark body,
+  .dark {
+    background-color: #18181b;
+    color: #f4f4f5;
   }
 
   html {
@@ -35,75 +45,47 @@
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    color: #e2e8f0;
-    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-    background-attachment: fixed;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @apply font-body text-onyx bg-white antialiased;
     padding-bottom: var(--safe-area-bottom);
     overscroll-behavior: none;
   }
 
+  .dark body {
+    @apply bg-zinc-900;
+  }
+
   *:focus-visible {
-    @apply outline-2 outline-offset-2 outline-accent-violet;
+    @apply outline-2 outline-offset-2 outline-onyx;
   }
 
   * {
     -webkit-tap-highlight-color: transparent;
   }
-
-  /* Scrollbar styling for dark theme */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.1);
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255,255,255,0.2);
-  }
 }
 
 @layer components {
-  /* ---- Glass Card System ---- */
-  .glass-card {
-    @apply bg-glass border border-white/[0.06] rounded-xl shadow-glass-card backdrop-blur-sm;
-  }
-
-  .glass-card-hover {
-    @apply glass-card transition-all duration-300;
-  }
-  .glass-card-hover:hover {
-    @apply border-white/[0.12] shadow-glass-glow;
-  }
-
   /* ---- Big Button Card ---- */
   .big-button {
     @apply relative flex items-center w-full min-h-[72px] px-5 py-4
-           bg-glass border border-white/[0.06] rounded-xl shadow-glass-card
-           transition-all duration-200 ease-out backdrop-blur-sm
+           bg-white border border-gray-100 rounded-xl shadow-card
+           transition-all duration-150 ease-out
            active:scale-[0.98] active:shadow-none;
   }
 
   .big-button:hover {
-    @apply shadow-glass-glow border-white/[0.12];
+    @apply shadow-card-hover;
   }
 
   .big-button-dark {
     @apply relative flex items-center w-full min-h-[72px] px-5 py-4
-           bg-gradient-violet text-white border border-accent-violet/30 rounded-xl
-           shadow-violet-glow transition-all duration-200 ease-out
+           bg-onyx text-white border border-slate rounded-xl shadow-card
+           transition-all duration-150 ease-out
            active:scale-[0.98];
   }
 
   /* ---- Section Header ---- */
   .section-header {
-    @apply font-heading text-field-xs font-medium text-warm-gray tracking-[0.15em] uppercase;
+    @apply font-heading text-field-lg font-medium text-onyx tracking-wide uppercase;
   }
 
   /* ---- Status Badges ---- */
@@ -111,29 +93,29 @@
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
   }
   .badge-green {
-    @apply badge bg-accent-green/15 text-accent-green;
+    @apply badge bg-green-50 text-accent-green;
   }
   .badge-amber {
-    @apply badge bg-accent-amber/15 text-accent-amber;
+    @apply badge bg-amber-50 text-accent-amber;
   }
   .badge-red {
-    @apply badge bg-accent-red/15 text-accent-red;
+    @apply badge bg-red-50 text-accent-red;
   }
   .badge-gray {
-    @apply badge bg-glass-medium text-warm-gray;
+    @apply badge bg-gray-100 text-warm-gray;
   }
 
-  /* ---- Form inputs (field-optimized, dark theme) ---- */
+  /* ---- Form inputs (field-optimized) ---- */
   .field-input {
     @apply w-full min-h-[56px] px-4 py-3 text-field-base
-           bg-glass border border-white/[0.08] rounded-lg text-onyx
-           focus:border-accent-violet focus:ring-1 focus:ring-accent-violet
+           bg-white border border-gray-200 rounded-lg
+           focus:border-onyx focus:ring-1 focus:ring-onyx
            placeholder:text-warm-gray;
   }
 
   .field-select {
     @apply field-input appearance-none bg-no-repeat;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238c8c8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 12px center;
     background-size: 20px;
     padding-right: 40px;
@@ -150,65 +132,77 @@
   /* ---- Buttons ---- */
   .btn-primary {
     @apply flex items-center justify-center gap-2 w-full min-h-[56px]
-           px-6 py-3 bg-gradient-violet text-white text-field-base font-medium
-           rounded-lg transition-all duration-200 shadow-violet-glow
-           active:scale-[0.98] active:opacity-90
+           px-6 py-3 bg-onyx text-white text-field-base font-medium
+           rounded-lg transition-all duration-150
+           active:scale-[0.98] active:bg-slate
            disabled:opacity-40 disabled:pointer-events-none;
   }
 
   .btn-secondary {
     @apply flex items-center justify-center gap-2 w-full min-h-[56px]
-           px-6 py-3 bg-glass text-onyx text-field-base font-medium
-           border border-white/[0.08] rounded-lg transition-all duration-200
-           active:scale-[0.98] active:bg-glass-medium
+           px-6 py-3 bg-alabaster text-onyx text-field-base font-medium
+           border border-gray-200 rounded-lg transition-all duration-150
+           active:scale-[0.98] active:bg-gray-100
            disabled:opacity-40 disabled:pointer-events-none;
   }
 
   .btn-outline {
     @apply flex items-center justify-center gap-2 w-full min-h-[56px]
-           px-6 py-3 bg-transparent text-accent-violet text-field-base font-medium
-           border-2 border-accent-violet rounded-lg transition-all duration-200
-           active:scale-[0.98] active:bg-accent-violet active:text-white
+           px-6 py-3 bg-transparent text-onyx text-field-base font-medium
+           border-2 border-onyx rounded-lg transition-all duration-150
+           active:scale-[0.98] active:bg-onyx active:text-white
            disabled:opacity-40 disabled:pointer-events-none;
   }
 
   /* ---- Cards ---- */
   .card {
-    @apply bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-5 backdrop-blur-sm;
+    @apply bg-white border border-gray-100 rounded-xl shadow-card p-5;
   }
 
   .card-alabaster {
-    @apply bg-glass-light border border-white/[0.06] rounded-xl p-5 backdrop-blur-sm;
+    @apply bg-alabaster border border-gray-100 rounded-xl p-5;
+  }
+
+  /* ---- Glass card compat (maps to standard card) ---- */
+  .glass-card {
+    @apply bg-white border border-gray-100 rounded-xl shadow-card;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-200;
+  }
+  .glass-card-hover:hover {
+    @apply border-gray-200 shadow-card-hover;
   }
 
   /* ---- Bottom navigation ---- */
   .bottom-nav {
     @apply fixed bottom-0 left-0 right-0 z-50
            flex items-stretch justify-around
-           bg-obsidian-deep/95 backdrop-blur-md border-t border-white/[0.06] shadow-nav;
+           bg-white border-t border-gray-200 shadow-nav;
     height: var(--nav-height);
     padding-bottom: var(--safe-area-bottom);
   }
 
   .bottom-nav-item {
     @apply flex flex-col items-center justify-center gap-0.5
-           flex-1 py-2 text-warm-gray transition-colors duration-200
+           flex-1 py-2 text-warm-gray transition-colors duration-150
            no-underline;
   }
 
   .bottom-nav-item-active {
     @apply flex flex-col items-center justify-center gap-0.5
-           flex-1 py-2 text-accent-violet transition-colors duration-200
+           flex-1 py-2 text-onyx transition-colors duration-150
            no-underline;
   }
 
   /* ---- Progress bar ---- */
   .progress-track {
-    @apply w-full h-1.5 bg-glass-medium rounded-full overflow-hidden;
+    @apply w-full h-1.5 bg-gray-100 rounded-full overflow-hidden;
   }
 
   .progress-fill {
-    @apply h-full bg-gradient-violet rounded-full transition-all duration-500 ease-out;
+    @apply h-full bg-onyx rounded-full transition-all duration-500 ease-out;
   }
 
   /* ---- Screen container ---- */
@@ -218,8 +212,8 @@
   }
 
   .screen-header {
-    @apply sticky top-0 z-40 bg-obsidian/90 backdrop-blur-md
-           border-b border-white/[0.06] px-5 py-3;
+    @apply sticky top-0 z-40 bg-white/95 backdrop-blur-sm
+           border-b border-gray-100 px-5 py-3;
   }
 
   /* ---- Gradient dividers ---- */
@@ -229,13 +223,152 @@
 }
 
 /* ============================================================
+   Dark Mode Component Overrides
+   ============================================================ */
+
+.dark .big-button,
+.dark .card,
+.dark .glass-card,
+.dark .glass-card-hover {
+  @apply bg-zinc-800 border-zinc-700;
+}
+
+.dark .big-button:hover {
+  @apply shadow-none border-zinc-600;
+}
+
+.dark .big-button-dark {
+  @apply bg-zinc-100 text-zinc-900 border-zinc-200;
+}
+
+.dark .card-alabaster {
+  @apply bg-zinc-800 border-zinc-700;
+}
+
+.dark .field-input {
+  @apply bg-zinc-800 border-zinc-600 text-zinc-100 placeholder:text-zinc-500;
+}
+
+.dark .field-input:focus {
+  @apply border-zinc-400 ring-zinc-400;
+}
+
+.dark .btn-primary {
+  @apply bg-zinc-100 text-zinc-900;
+}
+
+.dark .btn-primary:active {
+  @apply bg-zinc-300;
+}
+
+.dark .btn-secondary {
+  @apply bg-zinc-800 text-zinc-100 border-zinc-600;
+}
+
+.dark .btn-secondary:active {
+  @apply bg-zinc-700;
+}
+
+.dark .btn-outline {
+  @apply text-zinc-100 border-zinc-400;
+}
+
+.dark .btn-outline:active {
+  @apply bg-zinc-100 text-zinc-900;
+}
+
+.dark .bottom-nav,
+.dark .bottom-nav {
+  @apply bg-zinc-900 border-zinc-700;
+}
+
+.dark .bottom-nav-item-active {
+  @apply text-zinc-100;
+}
+
+.dark .screen-header {
+  background-color: rgba(24, 24, 27, 0.95);
+  @apply border-zinc-700;
+}
+
+.dark .progress-track {
+  @apply bg-zinc-700;
+}
+
+.dark .progress-fill {
+  @apply bg-zinc-100;
+}
+
+.dark .badge-green {
+  @apply bg-green-900/30 text-green-400;
+}
+
+.dark .badge-amber {
+  @apply bg-amber-900/30 text-amber-400;
+}
+
+.dark .badge-red {
+  @apply bg-red-900/30 text-red-400;
+}
+
+.dark .badge-gray {
+  @apply bg-zinc-700 text-zinc-400;
+}
+
+/* Dark mode overrides for common inline patterns */
+.dark .bg-white {
+  background-color: #27272a !important;
+}
+
+.dark .bg-alabaster {
+  background-color: #1f1f23 !important;
+}
+
+.dark .border-gray-100 {
+  border-color: #3f3f46 !important;
+}
+
+.dark .border-gray-200 {
+  border-color: #3f3f46 !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #27272a !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #3f3f46 !important;
+}
+
+.dark .bg-gray-200 {
+  background-color: #52525b !important;
+}
+
+.dark .text-black {
+  color: #f4f4f5 !important;
+}
+
+.dark header {
+  background-color: rgba(24, 24, 27, 0.95) !important;
+  border-color: #3f3f46 !important;
+}
+
+.dark .bg-onyx {
+  background-color: #f4f4f5 !important;
+}
+
+.dark .bg-onyx .text-white,
+.dark .bg-onyx + * .text-white {
+  color: #18181b !important;
+}
+
+/* ============================================================
    JHA & Toolbox Talk Rendered Content Styles
-   Applied to AI-generated HTML output — dark theme
    ============================================================ */
 
 .jha-rendered-content h2,
 .toolbox-rendered-content h2 {
-  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-white/[0.06];
+  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-gray-100;
 }
 
 .jha-rendered-content h2:first-child,
@@ -261,7 +394,7 @@
 .jha-rendered-content ul li::before,
 .toolbox-rendered-content ul li::before {
   content: "";
-  @apply absolute left-0 top-[10px] w-2 h-2 bg-accent-violet rounded-full;
+  @apply absolute left-0 top-[10px] w-2 h-2 bg-onyx rounded-full;
 }
 
 .jha-rendered-content table.jha-table,
@@ -270,7 +403,7 @@
 }
 
 .jha-rendered-content table thead th {
-  @apply text-left text-sm font-medium text-white bg-accent-violet/80 px-4 py-3;
+  @apply text-left text-sm font-medium text-white bg-onyx px-4 py-3;
 }
 
 .jha-rendered-content table thead th:first-child {
@@ -282,11 +415,11 @@
 }
 
 .jha-rendered-content table tbody td {
-  @apply text-sm text-slate px-4 py-3 border-b border-white/[0.06] align-top;
+  @apply text-sm text-slate px-4 py-3 border-b border-gray-100 align-top;
 }
 
 .jha-rendered-content table tbody tr:nth-child(even) td {
-  @apply bg-glass;
+  @apply bg-alabaster;
 }
 
 .jha-rendered-content table tbody tr:last-child td {
@@ -305,7 +438,7 @@
 
 .jha-rendered-content .jha-note,
 .toolbox-rendered-content .toolbox-note {
-  @apply text-sm text-warm-gray italic mt-6 pt-4 border-t border-white/[0.06];
+  @apply text-sm text-warm-gray italic mt-6 pt-4 border-t border-gray-100;
 }
 
 .toolbox-rendered-content .toolbox-subtitle {
@@ -313,12 +446,11 @@
 }
 
 .toolbox-rendered-content .toolbox-focus {
-  @apply text-lg text-center py-4 px-6 bg-glass rounded-xl text-onyx;
+  @apply text-lg text-center py-4 px-6 bg-alabaster rounded-xl;
 }
 
 /* ============================================================
    Report Rendered Content Styles
-   Applied to AI-generated weekly report / CO / legal HTML
    ============================================================ */
 
 .report-rendered-content h1 {
@@ -326,7 +458,7 @@
 }
 
 .report-rendered-content h2 {
-  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-white/[0.06];
+  @apply font-heading text-lg font-medium text-onyx mt-6 mb-3 pb-2 border-b border-gray-100;
 }
 
 .report-rendered-content p {
@@ -338,15 +470,15 @@
 }
 
 .report-rendered-content table th {
-  @apply text-left font-medium text-white bg-accent-violet/80 px-3 py-2;
+  @apply text-left font-medium text-white bg-onyx px-3 py-2;
 }
 
 .report-rendered-content table td {
-  @apply px-3 py-2 border-b border-white/[0.06] align-top text-slate;
+  @apply px-3 py-2 border-b border-gray-100 align-top;
 }
 
 .report-rendered-content table tr:nth-child(even) td {
-  @apply bg-glass;
+  @apply bg-alabaster;
 }
 
 .report-rendered-content ul {
@@ -380,13 +512,12 @@
     display: none;
   }
 
-  /* Page transitions */
   .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.2s ease-out;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
+    animation: slideUp 0.25s ease-out;
   }
 
   @keyframes fadeIn {

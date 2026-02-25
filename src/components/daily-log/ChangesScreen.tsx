@@ -225,7 +225,7 @@ export default function ChangesScreen({
                     return (
                       <span
                         key={divCode}
-                        className="inline-block px-3 py-2 bg-glass text-onyx rounded-full text-field-sm font-medium border border-white/[0.08]"
+                        className="inline-block px-3 py-2 bg-glass text-onyx rounded-full text-field-sm font-medium border border-gray-200"
                       >
                         {divCode}
                         {division && ` - ${division.name}`}
@@ -247,7 +247,7 @@ export default function ChangesScreen({
       </div>
 
       {/* Add Button - Bottom Fixed */}
-      <div className="border-t border-white/[0.08] bg-glass p-4">
+      <div className="border-t border-gray-200 bg-glass p-4">
         <button
           onClick={() => setShowModal(true)}
           className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 min-h-[56px] bg-accent-violet text-alabaster rounded-xl font-semibold text-field-base hover:bg-accent-violet/90 transition-colors"
@@ -262,7 +262,7 @@ export default function ChangesScreen({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-obsidian rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="sticky top-0 bg-obsidian border-b border-white/[0.08] p-6 flex items-center justify-between">
+            <div className="sticky top-0 bg-obsidian border-b border-gray-200 p-6 flex items-center justify-between">
               <h2 className="text-field-lg font-heading font-bold text-onyx">
                 Log Change / Directive
               </h2>
@@ -291,7 +291,7 @@ export default function ChangesScreen({
                       className={`px-4 py-4 min-h-[56px] rounded-xl font-body text-field-base font-semibold transition-all border-2 ${
                         formState.initiatedBy === option.value
                           ? "bg-accent-violet text-white border-accent-violet"
-                          : "bg-glass text-onyx border-white/[0.10] hover:border-accent-violet"
+                          : "bg-glass text-onyx border-gray-200 hover:border-accent-violet"
                       }`}
                     >
                       {option.label}
@@ -319,7 +319,7 @@ export default function ChangesScreen({
                   Affected Divisions
                 </label>
                 <div
-                  className="border border-white/[0.10] rounded-card max-h-[240px] overflow-y-auto bg-glass-light"
+                  className="border border-gray-200 rounded-card max-h-[240px] overflow-y-auto bg-glass-light"
                 >
                   <div className="space-y-2 p-3">
                     {csiDivisions.length === 0 ? (
@@ -342,7 +342,7 @@ export default function ChangesScreen({
                               ${
                                 isSelected
                                   ? "bg-accent-violet text-white"
-                                  : "bg-glass border border-white/[0.08] text-onyx hover:border-white/[0.10]"
+                                  : "bg-glass border border-gray-200 text-onyx hover:border-gray-200"
                               }
                             `}
                           >
@@ -350,7 +350,7 @@ export default function ChangesScreen({
                               className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                                 isSelected
                                   ? "bg-accent-violet border-accent-violet"
-                                  : "border-white/[0.10] bg-glass-light"
+                                  : "border-gray-200 bg-glass-light"
                               }`}
                             >
                               {isSelected && (
@@ -384,7 +384,7 @@ export default function ChangesScreen({
                       className={`px-4 py-4 min-h-[56px] rounded-xl font-body text-field-base font-semibold transition-all border-2 flex flex-col items-center gap-2 ${
                         formState.impact === option.value
                           ? "bg-accent-violet text-white border-accent-violet"
-                          : "bg-glass text-onyx border-white/[0.10] hover:border-accent-violet"
+                          : "bg-glass text-onyx border-gray-200 hover:border-accent-violet"
                       }`}
                     >
                       <div
@@ -403,7 +403,7 @@ export default function ChangesScreen({
               </div>
 
               {/* Legal Details Section */}
-              <div className="border-t border-white/[0.08] pt-6">
+              <div className="border-t border-gray-200 pt-6">
                 <h3 className="text-field-base font-heading font-semibold text-onyx mb-4">
                   Legal Details (Optional)
                 </h3>

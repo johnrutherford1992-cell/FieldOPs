@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import ThemeProvider from "@/components/layout/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "FieldOps — Blackstone Construction",
@@ -27,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -40,7 +41,7 @@ export default function RootLayout({
         <link rel="apple-touch-startup-image" href="/icons/icon-512.png" />
       </head>
       <body className="font-body text-onyx bg-white antialiased">
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

@@ -169,7 +169,7 @@ export default function DelayEventsScreen({
 
       {/* Empty State */}
       {entries.length === 0 && !showModal && (
-        <div className="flex flex-col items-center justify-center py-12 bg-glass rounded-lg border border-white/[0.08]">
+        <div className="flex flex-col items-center justify-center py-12 bg-glass rounded-lg border border-gray-200">
           <Clock className="w-12 h-12 text-warm-gray mb-4" />
           <p className="text-warm-gray text-center mb-6">
             No delay events logged today. Tap + to document a delay.
@@ -183,7 +183,7 @@ export default function DelayEventsScreen({
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="bg-glass rounded-lg border border-white/[0.08] overflow-hidden"
+              className="bg-glass rounded-lg border border-gray-200 overflow-hidden"
             >
               {/* Card Header */}
               <button
@@ -227,7 +227,7 @@ export default function DelayEventsScreen({
 
               {/* Expanded Details */}
               {expandedId === entry.id && (
-                <div className="px-4 py-4 border-t border-white/[0.08] bg-glass-light space-y-4">
+                <div className="px-4 py-4 border-t border-gray-200 bg-glass-light space-y-4">
                   <div>
                     <h4 className="text-sm font-semibold text-onyx mb-2">
                       Responsible Party
@@ -327,7 +327,7 @@ export default function DelayEventsScreen({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
           <div className="w-full bg-obsidian rounded-t-xl max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="sticky top-0 flex items-center justify-between px-4 py-4 border-b border-white/[0.08] bg-obsidian">
+            <div className="sticky top-0 flex items-center justify-between px-4 py-4 border-b border-gray-200 bg-obsidian">
               <h3 className="text-xl font-bold text-onyx">Log Delay Event</h3>
               <button
                 onClick={() => setShowModal(false)}
@@ -349,7 +349,7 @@ export default function DelayEventsScreen({
                   onChange={(e) =>
                     setFormData({ ...formData, delayType: e.target.value as DelayType })
                   }
-                  className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass text-onyx"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass text-onyx"
                 >
                   {DELAY_TYPE_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -369,7 +369,7 @@ export default function DelayEventsScreen({
                   onChange={(e) =>
                     setFormData({ ...formData, causeCategory: e.target.value as DelayCause })
                   }
-                  className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass text-onyx"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass text-onyx"
                 >
                   {CAUSE_CATEGORY_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -391,7 +391,7 @@ export default function DelayEventsScreen({
                   }
                   placeholder="Describe the delay event in detail..."
                   rows={4}
-                  className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet resize-none bg-glass text-onyx"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet resize-none bg-glass text-onyx"
                 />
               </div>
 
@@ -408,7 +408,7 @@ export default function DelayEventsScreen({
                       setFormData({ ...formData, responsibleParty: e.target.value })
                     }
                     placeholder="Enter name or select from list"
-                    className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass text-onyx"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet bg-glass text-onyx"
                   />
                   {subcontractors.length > 0 && (
                     <select
@@ -418,7 +418,7 @@ export default function DelayEventsScreen({
                           e.target.value = '';
                         }
                       }}
-                      className="w-full px-3 py-2 border border-white/[0.10] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet text-warm-gray bg-glass"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-violet text-warm-gray bg-glass"
                     >
                       <option value="">Or select subcontractor...</option>
                       {subcontractors.map((sub) => (

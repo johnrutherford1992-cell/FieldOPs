@@ -113,7 +113,7 @@ export default function BidFeedbackPage() {
       />
 
       {/* Tab Navigation */}
-      <div className="sticky top-[56px] z-30 bg-obsidian/90 border-b border-white/[0.06] px-4 pt-3 pb-0 overflow-x-auto">
+      <div className="sticky top-[56px] z-30 bg-obsidian/90 border-b border-gray-100 px-4 pt-3 pb-0 overflow-x-auto">
         <div className="flex gap-2 min-w-min pb-3">
           <TabButton
             label="Bid Feedback"
@@ -320,7 +320,7 @@ function ReportSummaryCard({ report }: ReportSummaryCardProps) {
   const underBudget = report.keyFindings.filter((f) => f.variance < -5).length;
 
   return (
-    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4">
+    <div className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-4">
       <div className="space-y-4">
         <div>
           <p className="text-field-xs text-warm-gray">Generated Date</p>
@@ -417,7 +417,7 @@ function KeyFindingCard({ finding }: KeyFindingCardProps) {
   }
 
   return (
-    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4 space-y-3">
+    <div className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-4 space-y-3">
       {/* Header: Description and Badge */}
       <div className="flex items-start gap-3 justify-between">
         <div>
@@ -468,7 +468,7 @@ function AdjustmentCard({ recommendation }: AdjustmentCardProps) {
   const confidenceFilled = Math.round(recommendation.confidence * 5);
 
   return (
-    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-4 space-y-3">
+    <div className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-4 space-y-3">
       {/* Header: CSI Division + Activity */}
       <div>
         <p className="text-field-xs font-semibold text-warm-gray uppercase">
@@ -722,7 +722,7 @@ function UnitPriceCard({
 
         {/* Historical Rates List (Expanded) */}
         {expanded && priceEntry.historicalRates.length > 0 && (
-          <div className="border-t border-white/[0.06] pt-3 space-y-2">
+          <div className="border-t border-gray-100 pt-3 space-y-2">
             {priceEntry.historicalRates.map((rate, idx) => (
               <div
                 key={idx}
@@ -750,7 +750,7 @@ function UnitPriceCard({
         {/* Seasonal Adjustments (if present) */}
         {priceEntry.seasonalAdjustments &&
           priceEntry.seasonalAdjustments.length > 0 && (
-            <div className="border-t border-white/[0.06] pt-3">
+            <div className="border-t border-gray-100 pt-3">
               <p className="text-field-xs font-semibold text-onyx mb-2">
                 Seasonal Adjustments
               </p>
@@ -775,7 +775,7 @@ function UnitPriceCard({
         {/* Complexity Tiers (if present) */}
         {priceEntry.complexityTiers &&
           priceEntry.complexityTiers.length > 0 && (
-            <div className="border-t border-white/[0.06] pt-3">
+            <div className="border-t border-gray-100 pt-3">
               <p className="text-field-xs font-semibold text-onyx mb-2">
                 Complexity Tiers
               </p>
@@ -826,7 +826,7 @@ interface EmptyStateProps {
 
 function EmptyState({ title, description, icon }: EmptyStateProps) {
   return (
-    <div className="bg-glass border border-white/[0.06] rounded-xl shadow-glass-card p-8 flex flex-col items-center justify-center gap-4 text-center">
+    <div className="bg-glass border border-gray-100 rounded-xl shadow-glass-card p-8 flex flex-col items-center justify-center gap-4 text-center">
       <div className="flex-shrink-0">{icon}</div>
       <div>
         <h3 className="text-field-base font-semibold text-onyx">{title}</h3>

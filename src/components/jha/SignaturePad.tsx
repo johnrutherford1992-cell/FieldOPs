@@ -173,11 +173,11 @@ export default function SignaturePad({
             {signatures.map((sig, index) => (
               <div
                 key={index}
-                className="p-4 rounded-card bg-glass-light border border-white/[0.06]"
+                className="p-4 rounded-card bg-glass-light border border-gray-100"
               >
                 <div className="flex items-start gap-4">
                   {/* Signature Preview */}
-                  <div className="flex-shrink-0 w-20 h-10 rounded-md border border-white/[0.1] bg-white overflow-hidden">
+                  <div className="flex-shrink-0 w-20 h-10 rounded-md border border-gray-200 bg-white overflow-hidden">
                     <img
                       src={sig.signatureData}
                       alt={`Signature by ${sig.name}`}
@@ -280,7 +280,7 @@ export default function SignaturePad({
                 <label className="block text-field-base font-semibold text-onyx mb-2">
                   Signature
                 </label>
-                <div className="border-2 border-dashed border-white/[0.1] rounded-card bg-glass-light p-0 overflow-hidden">
+                <div className="border-2 border-dashed border-gray-200 rounded-card bg-glass-light p-0 overflow-hidden">
                   <canvas
                     ref={canvasRef}
                     onMouseDown={startDrawing}

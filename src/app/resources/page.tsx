@@ -182,7 +182,7 @@ export default function ResourcesPage() {
           {tab === "requests" && (
             <>
               {/* Kinetic Craft Status */}
-              <div className="bg-glass rounded-card p-3 border border-white/[0.06] flex items-center gap-2">
+              <div className="bg-glass rounded-card p-3 border border-gray-100 flex items-center gap-2">
                 <Link2 size={16} className="text-accent-violet" />
                 <span className="text-field-xs text-warm-gray">
                   Kinetic Craft — requests sync automatically
@@ -228,7 +228,7 @@ export default function ResourcesPage() {
                     <select
                       value={newTrade}
                       onChange={(e) => setNewTrade(e.target.value)}
-                      className="w-full px-3 py-3 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx"
+                      className="w-full px-3 py-3 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx"
                     >
                       <option value="">Select trade...</option>
                       {activeProject?.subcontractors.map((sub) => (
@@ -243,7 +243,7 @@ export default function ResourcesPage() {
                     value={newDesc}
                     onChange={(e) => setNewDesc(e.target.value)}
                     placeholder="Description (e.g., '4 ironworkers for steel erection')"
-                    className="w-full px-3 py-3 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx placeholder-warm-gray"
+                    className="w-full px-3 py-3 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx placeholder-warm-gray"
                   />
 
                   {/* Quantity + Priority */}
@@ -254,7 +254,7 @@ export default function ResourcesPage() {
                         type="number"
                         value={newQty}
                         onChange={(e) => setNewQty(parseInt(e.target.value) || 1)}
-                        className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-base text-center font-semibold bg-glass text-onyx"
+                        className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-base text-center font-semibold bg-glass text-onyx"
                         min="1"
                       />
                     </div>
@@ -263,7 +263,7 @@ export default function ResourcesPage() {
                       <select
                         value={newPriority}
                         onChange={(e) => setNewPriority(e.target.value as ResourcePriority)}
-                        className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx"
+                        className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx"
                       >
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
@@ -280,7 +280,7 @@ export default function ResourcesPage() {
                       type="date"
                       value={newNeededBy}
                       onChange={(e) => setNewNeededBy(e.target.value)}
-                      className="w-full px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx"
+                      className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx"
                     />
                   </div>
 
@@ -301,7 +301,7 @@ export default function ResourcesPage() {
 
               {/* Request List */}
               {requests.map((req) => (
-                <div key={req.id} className="bg-glass rounded-xl shadow-glass-card border border-white/[0.06] overflow-hidden">
+                <div key={req.id} className="bg-glass rounded-xl shadow-glass-card border border-gray-100 overflow-hidden">
                   <button
                     onClick={() => setExpandedId(expandedId === req.id ? null : req.id)}
                     className="w-full flex items-center gap-3 px-4 py-3 text-left transition-all active:scale-[0.99]"
@@ -331,7 +331,7 @@ export default function ResourcesPage() {
                   </button>
 
                   {expandedId === req.id && (
-                    <div className="px-4 pb-4 pt-2 border-t border-white/[0.06] space-y-2 animate-fade-in">
+                    <div className="px-4 pb-4 pt-2 border-t border-gray-100 space-y-2 animate-fade-in">
                       {req.trade && <p className="text-field-xs text-warm-gray">Trade: {req.trade}</p>}
                       {req.kineticResponse && <p className="text-field-xs text-accent-teal">Kinetic: {req.kineticResponse}</p>}
                       {req.notes && <p className="text-field-xs text-warm-gray italic">{req.notes}</p>}
@@ -354,14 +354,14 @@ export default function ResourcesPage() {
           {/* ── Schedule Tab ── */}
           {tab === "schedule" && (
             <>
-              <div className="bg-glass rounded-card p-3 border border-white/[0.06] flex items-center gap-2">
+              <div className="bg-glass rounded-card p-3 border border-gray-100 flex items-center gap-2">
                 <Calendar size={16} className="text-accent-violet" />
                 <span className="text-field-sm text-onyx font-semibold">{currentDate}</span>
                 <span className="text-field-xs text-warm-gray ml-auto">{schedule.length} scheduled</span>
               </div>
 
               {schedule.map((entry) => (
-                <div key={entry.id} className="bg-glass rounded-xl p-4 border border-white/[0.06]">
+                <div key={entry.id} className="bg-glass rounded-xl p-4 border border-gray-100">
                   <div className="flex items-center gap-3">
                     {TYPE_ICONS[entry.resourceType]}
                     <div className="flex-1">

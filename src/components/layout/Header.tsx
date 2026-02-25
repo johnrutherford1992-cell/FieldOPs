@@ -22,7 +22,7 @@ export default function Header({
 }: HeaderProps) {
   return (
     <header
-      className="sticky top-0 z-40 w-full bg-obsidian/90 backdrop-blur-md border-b border-white/[0.06]"
+      className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100"
       style={{ height: "56px" }}
     >
       <div className="h-full flex items-center justify-between px-4 gap-3">
@@ -31,7 +31,7 @@ export default function Header({
           {backHref && (
             <Link
               href={backHref}
-              className="inline-flex items-center justify-center w-10 h-10 text-onyx hover:bg-glass-light rounded-lg transition-colors active:scale-95"
+              className="inline-flex items-center justify-center w-10 h-10 text-black hover:bg-gray-50 rounded-lg transition-colors active:scale-95"
               aria-label="Go back"
             >
               <ArrowLeft size={24} />
@@ -50,13 +50,12 @@ export default function Header({
                 width={140}
                 priority
                 className="object-contain max-w-[140px]"
-                style={{ filter: "brightness(0) invert(1)" }}
               />
             </div>
           ) : (
             <div>
               {title && (
-                <div className="font-heading font-semibold text-field-base text-onyx truncate">
+                <div className="font-heading font-semibold text-field-base text-black truncate">
                   {title}
                 </div>
               )}

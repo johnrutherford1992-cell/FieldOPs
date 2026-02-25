@@ -164,7 +164,7 @@ export default function MaterialsScreen({
           deliveries.map((delivery) => {
             const isExpanded = expandedId === delivery.id;
             return (
-              <div key={delivery.id} className="bg-glass rounded-xl shadow-glass-card border border-white/[0.06] overflow-hidden">
+              <div key={delivery.id} className="bg-glass rounded-xl shadow-glass-card border border-gray-100 overflow-hidden">
                 <button
                   onClick={() => setExpandedId(isExpanded ? null : delivery.id)}
                   className="w-full flex items-center gap-3 px-4 py-3 text-left transition-all active:scale-[0.99]"
@@ -190,7 +190,7 @@ export default function MaterialsScreen({
                 </button>
 
                 {isExpanded && (
-                  <div className="px-4 pb-4 pt-2 border-t border-white/[0.06] space-y-3 animate-fade-in">
+                  <div className="px-4 pb-4 pt-2 border-t border-gray-100 space-y-3 animate-fade-in">
                     {/* Items */}
                     {delivery.items.map((item, idx) => (
                       <div key={idx} className="flex items-center justify-between bg-glass-medium rounded-button px-3 py-2">
@@ -244,15 +244,15 @@ export default function MaterialsScreen({
             </div>
 
             <input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)}
-              placeholder="Supplier name" className="w-full px-3 py-3 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx placeholder-warm-gray" />
+              placeholder="Supplier name" className="w-full px-3 py-3 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx placeholder-warm-gray" />
 
             <div className="grid grid-cols-2 gap-3">
               <select value={category} onChange={(e) => setCategory(e.target.value as MaterialCategory)}
-                className="px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx">
+                className="px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx">
                 {MATERIAL_CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
               <input type="text" value={ticketNumber} onChange={(e) => setTicketNumber(e.target.value)}
-                placeholder="Ticket #" className="px-3 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx placeholder-warm-gray" />
+                placeholder="Ticket #" className="px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx placeholder-warm-gray" />
             </div>
 
             {/* Add items */}
@@ -270,11 +270,11 @@ export default function MaterialsScreen({
 
               <div className="flex gap-2">
                 <input type="text" value={itemName} onChange={(e) => setItemName(e.target.value)}
-                  placeholder="Material" className="flex-1 px-2 py-2 rounded-button border border-white/[0.06] text-field-sm bg-glass text-onyx placeholder-warm-gray" />
+                  placeholder="Material" className="flex-1 px-2 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx placeholder-warm-gray" />
                 <input type="number" value={itemQty} onChange={(e) => setItemQty(e.target.value)}
-                  placeholder="Qty" className="w-20 px-2 py-2 rounded-button border border-white/[0.06] text-field-sm text-center bg-glass text-onyx" />
+                  placeholder="Qty" className="w-20 px-2 py-2 rounded-button border border-gray-100 text-field-sm text-center bg-glass text-onyx" />
                 <select value={itemUnit} onChange={(e) => setItemUnit(e.target.value)}
-                  className="w-20 px-1 py-2 rounded-button border border-white/[0.06] text-field-xs bg-glass text-onyx">
+                  className="w-20 px-1 py-2 rounded-button border border-gray-100 text-field-xs bg-glass text-onyx">
                   {["CY", "TON", "LF", "SF", "EA", "BDL", "GAL", "BAG"].map((u) => <option key={u}>{u}</option>)}
                 </select>
                 <button onClick={handleAddItem} disabled={!itemName || !itemQty}
@@ -294,7 +294,7 @@ export default function MaterialsScreen({
 
       {/* Bottom Add Button */}
       {!showAddForm && (
-        <div className="px-4 py-4 border-t border-white/[0.06] bg-alabaster">
+        <div className="px-4 py-4 border-t border-gray-100 bg-alabaster">
           <button onClick={() => setShowAddForm(true)}
             className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-button bg-accent-teal text-white text-field-base font-semibold font-body transition-all active:scale-[0.98]">
             <Truck size={24} /> <span>Log Delivery</span>
