@@ -126,7 +126,7 @@ export async function deriveProductivityEntries(
       costCodeId: costCode?.id || workItem.costCodeId || "",
       csiDivision: workItem.csiDivision,
       activity: workItem.activity,
-      taktZone: workItem.taktZone,
+      taktZone: workItem.taktZone || "",
       quantityInstalled,
       unitOfMeasure: workItem.unitOfMeasure || costCode?.unitOfMeasure || "unit",
       crewSize: crewComposition.journeymen + crewComposition.apprentices + crewComposition.foremen,

@@ -17,7 +17,6 @@ import type {
   Deficiency,
   DeficiencySeverity,
   ChecklistTemplate,
-  TaktZone,
 } from "@/lib/types";
 
 interface QualityScreenProps {
@@ -26,7 +25,6 @@ interface QualityScreenProps {
   deficiencies: Deficiency[];
   onDeficienciesChange: (deficiencies: Deficiency[]) => void;
   templates: ChecklistTemplate[];
-  taktZones: TaktZone[];
   projectId: string;
   date: string;
 }
@@ -44,7 +42,6 @@ export default function QualityScreen({
   deficiencies,
   onDeficienciesChange,
   templates,
-  taktZones,
   projectId,
   date,
 }: QualityScreenProps) {
@@ -56,7 +53,6 @@ export default function QualityScreen({
   // Deficiency form state
   const [defDesc, setDefDesc] = useState("");
   const [defSeverity, setDefSeverity] = useState<DeficiencySeverity>("minor");
-  const [defZone, setDefZone] = useState("");
   const [defParty, setDefParty] = useState("");
 
   // Summary
@@ -148,7 +144,6 @@ export default function QualityScreen({
       severity: defSeverity,
       status: "open",
       description: defDesc,
-      taktZone: defZone || undefined,
       responsibleParty: defParty || undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -157,9 +152,8 @@ export default function QualityScreen({
     setShowDeficiencyForm(false);
     setDefDesc("");
     setDefSeverity("minor");
-    setDefZone("");
     setDefParty("");
-  }, [defDesc, defSeverity, defZone, defParty, deficiencies, onDeficienciesChange, projectId, date]);
+  }, [defDesc, defSeverity, defParty, deficiencies, onDeficienciesChange, projectId, date]);
 
   // Remove deficiency
   const removeDeficiency = useCallback((id: string) => {
@@ -324,7 +318,6 @@ export default function QualityScreen({
                     </div>
                     <p className="text-field-sm text-onyx">{def.description}</p>
                     {def.responsibleParty && <p className="text-field-xs text-warm-gray mt-1">Responsible: {def.responsibleParty}</p>}
-                    {def.taktZone && <p className="text-field-xs text-warm-gray">Zone: {def.taktZone}</p>}
                   </div>
                   <button onClick={() => removeDeficiency(def.id)} className="text-warm-gray flex-shrink-0"><X size={16} /></button>
                 </div>
@@ -351,25 +344,15 @@ export default function QualityScreen({
                   placeholder="Describe the deficiency..." rows={3}
                   className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx placeholder-warm-gray resize-none" />
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-field-xs text-warm-gray mb-1">Severity</label>
-                    <select value={defSeverity} onChange={(e) => setDefSeverity(e.target.value as DeficiencySeverity)}
-                      className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx">
-                      <option value="minor">Minor</option>
-                      <option value="major">Major</option>
-                      <option value="critical">Critical</option>
-                      <option value="life_safety">Life Safety</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-field-xs text-warm-gray mb-1">Zone</label>
-                    <select value={defZone} onChange={(e) => setDefZone(e.target.value)}
-                      className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx">
-                      <option value="">No zone</option>
-                      {taktZones.map((tz) => <option key={tz.id} value={tz.zoneCode}>{tz.zoneCode}</option>)}
-                    </select>
-                  </div>
+                <div>
+                  <label className="block text-field-xs text-warm-gray mb-1">Severity</label>
+                  <select value={defSeverity} onChange={(e) => setDefSeverity(e.target.value as DeficiencySeverity)}
+                    className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx">
+                    <option value="minor">Minor</option>
+                    <option value="major">Major</option>
+                    <option value="critical">Critical</option>
+                    <option value="life_safety">Life Safety</option>
+                  </select>
                 </div>
 
                 <input type="text" value={defParty} onChange={(e) => setDefParty(e.target.value)}

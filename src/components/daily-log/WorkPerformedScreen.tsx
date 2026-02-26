@@ -6,12 +6,10 @@ import {
   X,
   ChevronRight,
   Hammer,
-  MapPin,
   Check,
 } from "lucide-react";
 import {
   WorkPerformedEntry,
-  TaktZone,
   WorkStatus,
   CSIDivision,
   CSIActivity,
@@ -21,17 +19,15 @@ import { CSI_DIVISIONS } from "@/data/csi-divisions";
 interface WorkPerformedScreenProps {
   entries: WorkPerformedEntry[];
   onEntriesChange: (entries: WorkPerformedEntry[]) => void;
-  taktZones: TaktZone[];
 }
 
-type ModalStep = "division" | "activity" | "zone" | "status" | "productivity" | "notes";
+type ModalStep = "division" | "activity" | "status" | "productivity" | "notes";
 
 interface ModalState {
   isOpen: boolean;
   step: ModalStep;
   selectedDivision: CSIDivision | null;
   selectedActivity: CSIActivity | null;
-  selectedZone: TaktZone | null;
   selectedStatus: WorkStatus | null;
   quantity?: number;
   unitOfMeasure?: string;
@@ -65,29 +61,15 @@ const statusConfig: Record<
 export default function WorkPerformedScreen({
   entries,
   onEntriesChange,
-  taktZones,
 }: WorkPerformedScreenProps) {
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     step: "division",
     selectedDivision: null,
     selectedActivity: null,
-    selectedZone: null,
     selectedStatus: null,
     notes: "",
   });
-
-  // Group takt zones by floor for display
-  const zonesByFloor = taktZones.reduce(
-    (acc, zone) => {
-      if (!acc[zone.floor]) {
-        acc[zone.floor] = [];
-      }
-      acc[zone.floor].push(zone);
-      return acc;
-    },
-    {} as Record<string, TaktZone[]>
-  );
 
   const openModal = () => {
     setModal({
@@ -95,7 +77,6 @@ export default function WorkPerformedScreen({
       step: "division",
       selectedDivision: null,
       selectedActivity: null,
-      selectedZone: null,
       selectedStatus: null,
       quantity: undefined,
       unitOfMeasure: undefined,
@@ -112,7 +93,6 @@ export default function WorkPerformedScreen({
       step: "division",
       selectedDivision: null,
       selectedActivity: null,
-      selectedZone: null,
       selectedStatus: null,
       quantity: undefined,
       unitOfMeasure: undefined,
@@ -134,16 +114,8 @@ export default function WorkPerformedScreen({
   const handleActivitySelect = (activity: CSIActivity) => {
     setModal({
       ...modal,
-      step: "zone",
-      selectedActivity: activity,
-    });
-  };
-
-  const handleZoneSelect = (zone: TaktZone) => {
-    setModal({
-      ...modal,
       step: "status",
-      selectedZone: zone,
+      selectedActivity: activity,
     });
   };
 
@@ -159,7 +131,6 @@ export default function WorkPerformedScreen({
     if (
       !modal.selectedDivision ||
       !modal.selectedActivity ||
-      !modal.selectedZone ||
       !modal.selectedStatus
     ) {
       return;
@@ -168,7 +139,6 @@ export default function WorkPerformedScreen({
     const newEntry: WorkPerformedEntry = {
       csiDivision: modal.selectedDivision.code,
       activity: modal.selectedActivity.name,
-      taktZone: modal.selectedZone.zoneCode,
       status: modal.selectedStatus,
       ...(modal.notes && { notes: modal.notes }),
     };
@@ -241,15 +211,11 @@ export default function WorkPerformedScreen({
                     </span>
                   </div>
 
-                  {/* Activity and Zone info */}
+                  {/* Activity info */}
                   <div className="flex-1 min-w-0">
                     <p className="font-heading font-semibold text-field-base text-onyx truncate">
                       {entry.activity}
                     </p>
-                    <div className="flex items-center gap-1 mt-1 text-field-sm text-warm-gray">
-                      <MapPin size={14} className="flex-shrink-0" />
-                      <span className="truncate">{entry.taktZone}</span>
-                    </div>
                   </div>
 
                   {/* Remove button */}
@@ -382,67 +348,11 @@ export default function WorkPerformedScreen({
               </>
             )}
 
-            {/* Step 3: Select Takt Zone */}
-            {modal.step === "zone" && modal.selectedActivity && (
+            {/* Step 3: Select Status */}
+            {modal.step === "status" && modal.selectedActivity && (
               <>
                 <button
                   onClick={() => setModal({ ...modal, step: "activity" })}
-                  className="flex items-center gap-2 text-onyx font-body font-semibold text-field-sm mb-4 p-2 -mx-2 hover:bg-gray-100 rounded"
-                >
-                  <ChevronRight size={18} className="rotate-180" />
-                  Back
-                </button>
-                <h3 className="font-heading font-semibold text-field-xl text-onyx mb-1">
-                  Select Takt Zone
-                </h3>
-                <p className="text-field-sm text-warm-gray mb-6 font-body">
-                  Where is this work being performed?
-                </p>
-                <div className="space-y-4 mb-6">
-                  {Object.entries(zonesByFloor).map(([floor, zones]) => (
-                    <div key={floor}>
-                      <h4 className="font-heading font-semibold text-field-sm text-onyx px-2 mb-2">
-                        {floor}
-                      </h4>
-                      <div className="space-y-2">
-                        {zones.map((zone) => (
-                          <button
-                            key={zone.id}
-                            onClick={() => handleZoneSelect(zone)}
-                            className="w-full flex items-center gap-4 px-4 py-3 rounded-card bg-alabaster hover:bg-gray-200 transition-colors text-left ml-2"
-                          >
-                            <div className="flex-1 min-w-0">
-                              <p className="font-heading font-semibold text-field-base text-onyx">
-                                {zone.zoneName}
-                              </p>
-                              <p className="text-field-sm text-warm-gray mt-0.5">
-                                {zone.zoneCode}
-                              </p>
-                            </div>
-                            <ChevronRight
-                              size={20}
-                              className="flex-shrink-0 text-warm-gray"
-                            />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={closeModal}
-                  className="w-full min-h-touch-target rounded-card bg-glass-medium text-onyx transition-all duration-200 px-4 py-3 hover:bg-glass-heavy active:scale-[0.98] font-body font-semibold text-field-base"
-                >
-                  Cancel
-                </button>
-              </>
-            )}
-
-            {/* Step 4: Select Status */}
-            {modal.step === "status" && modal.selectedZone && (
-              <>
-                <button
-                  onClick={() => setModal({ ...modal, step: "zone" })}
                   className="flex items-center gap-2 text-onyx font-body font-semibold text-field-sm mb-4 p-2 -mx-2 hover:bg-gray-100 rounded"
                 >
                   <ChevronRight size={18} className="rotate-180" />
@@ -664,15 +574,6 @@ export default function WorkPerformedScreen({
                     </span>
                     <span className="text-field-sm text-onyx font-body">
                       {modal.selectedActivity?.name}
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-field-sm font-semibold text-onyx flex-shrink-0 w-16">
-                      Zone:
-                    </span>
-                    <span className="text-field-sm text-onyx font-body">
-                      {modal.selectedZone?.zoneCode} &ndash;{" "}
-                      {modal.selectedZone?.zoneName}
                     </span>
                   </div>
                   <div className="flex items-start gap-2">

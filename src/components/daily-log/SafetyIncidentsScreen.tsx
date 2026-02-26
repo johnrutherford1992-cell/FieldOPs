@@ -12,14 +12,12 @@ import {
 import {
   SafetyIncident,
   SafetyIncidentType,
-  TaktZone,
   Subcontractor,
 } from "@/lib/types";
 
 interface SafetyIncidentsScreenProps {
   entries: SafetyIncident[];
   onEntriesChange: (entries: SafetyIncident[]) => void;
-  taktZones: TaktZone[];
   subcontractors: Subcontractor[];
 }
 
@@ -44,7 +42,6 @@ function generateUniqueId(): string {
 export default function SafetyIncidentsScreen({
   entries,
   onEntriesChange,
-  taktZones,
   subcontractors,
 }: SafetyIncidentsScreenProps) {
   const [showModal, setShowModal] = useState(false);
@@ -481,32 +478,6 @@ export default function SafetyIncidentsScreen({
               {/* Location Section */}
               <div className="space-y-3">
                 <h4 className="text-sm font-semibold text-black">Location</h4>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-2">
-                    Takt Zone
-                  </label>
-                  <select
-                    value={formData.location?.taktZone || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        location: {
-                          ...formData.location,
-                          taktZone: e.target.value,
-                        },
-                      })
-                    }
-                    className="w-full border border-gray-300 rounded px-3 py-2 text-black text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                  >
-                    <option value="">Select zone...</option>
-                    {taktZones.map((z) => (
-                      <option key={z.id} value={z.id}>
-                        {z.zoneName} ({z.zoneCode})
-                      </option>
-                    ))}
-                  </select>
-                </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 mb-2">

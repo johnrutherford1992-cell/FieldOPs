@@ -9,13 +9,12 @@ import {
   ChevronUp,
   Trash2,
 } from 'lucide-react';
-import { DelayEvent, DelayType, DelayCause, Subcontractor, TaktZone } from '@/lib/types';
+import { DelayEvent, DelayType, DelayCause, Subcontractor } from '@/lib/types';
 
 interface DelayEventsScreenProps {
   entries: DelayEvent[];
   onEntriesChange: (entries: DelayEvent[]) => void;
   subcontractors: Subcontractor[];
-  taktZones: TaktZone[];
 }
 
 interface FormData {
@@ -26,7 +25,6 @@ interface FormData {
   calendarDaysImpacted: number;
   workingDaysImpacted: number;
   criticalPathImpacted: boolean;
-  affectedTaktZones: string[];
   contractNoticeRequired: boolean;
   noticeSentDate: string;
   mitigationActions: string[];
@@ -77,7 +75,6 @@ const initialFormData: FormData = {
   calendarDaysImpacted: 1,
   workingDaysImpacted: 1,
   criticalPathImpacted: false,
-  affectedTaktZones: [],
   contractNoticeRequired: false,
   noticeSentDate: '',
   mitigationActions: [],
@@ -88,7 +85,6 @@ export default function DelayEventsScreen({
   entries,
   onEntriesChange,
   subcontractors,
-  taktZones,
 }: DelayEventsScreenProps) {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -108,7 +104,6 @@ export default function DelayEventsScreen({
       calendarDaysImpacted: formData.calendarDaysImpacted,
       workingDaysImpacted: formData.workingDaysImpacted,
       criticalPathImpacted: formData.criticalPathImpacted,
-      affectedTaktZones: formData.affectedTaktZones,
       contractNoticeRequired: formData.contractNoticeRequired,
       noticeSentDate: formData.noticeSentDate || undefined,
       mitigationActions: formData.mitigationActions,
@@ -141,15 +136,6 @@ export default function DelayEventsScreen({
     setFormData({
       ...formData,
       mitigationActions: formData.mitigationActions.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleTaktZoneToggle = (zoneId: string) => {
-    setFormData({
-      ...formData,
-      affectedTaktZones: formData.affectedTaktZones.includes(zoneId)
-        ? formData.affectedTaktZones.filter((id) => id !== zoneId)
-        : [...formData.affectedTaktZones, zoneId],
     });
   };
 
@@ -234,27 +220,6 @@ export default function DelayEventsScreen({
                     </h4>
                     <p className="text-slate">{entry.responsibleParty}</p>
                   </div>
-
-                  {(entry.affectedTaktZones?.length ?? 0) > 0 && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-onyx mb-2">
-                        Affected Takt Zones
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {entry.affectedTaktZones?.map((zoneId) => {
-                          const zone = taktZones.find((z) => z.id === zoneId);
-                          return zone ? (
-                            <span
-                              key={zoneId}
-                              className="px-2 py-1 bg-glass text-onyx rounded text-xs"
-                            >
-                              {zone.zoneName}
-                            </span>
-                          ) : null;
-                        })}
-                      </div>
-                    </div>
-                  )}
 
                   {entry.criticalPathImpacted && (
                     <div className="px-3 py-2 bg-accent-red/10 border border-accent-red/30 rounded text-sm text-accent-red">
@@ -484,31 +449,6 @@ export default function DelayEventsScreen({
                   Critical Path Impacted
                 </label>
               </div>
-
-              {/* Affected Takt Zones */}
-              {taktZones.length > 0 && (
-                <div>
-                  <label className="block text-sm font-semibold text-black mb-2">
-                    Affected Takt Zones
-                  </label>
-                  <div className="space-y-2">
-                    {taktZones.map((zone) => (
-                      <div key={zone.id} className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          id={`zone-${zone.id}`}
-                          checked={formData.affectedTaktZones.includes(zone.id)}
-                          onChange={() => handleTaktZoneToggle(zone.id)}
-                          className="w-4 h-4 rounded border-gray-300 text-black focus:ring-2 focus:ring-black"
-                        />
-                        <label htmlFor={`zone-${zone.id}`} className="text-sm text-gray-700">
-                          {zone.zoneName}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
 
               {/* Contract Notice Required */}
               <div className="flex items-center gap-3">

@@ -1,30 +1,27 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Plus, X, Check, MapPin } from "lucide-react";
+import { Plus, X, Check } from "lucide-react";
 import BigButton from "@/components/ui/BigButton";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import { CSI_DIVISIONS } from "@/data/csi-divisions";
-import { SelectedTask, TaktZone } from "@/lib/types";
+import { SelectedTask } from "@/lib/types";
 import * as LucideIcons from "lucide-react";
 
 interface TaskSelectorProps {
-  taktZones: TaktZone[];
   selectedTasks: SelectedTask[];
   onTasksChange: (tasks: SelectedTask[]) => void;
 }
 
-type NavigationLevel = 1 | 2 | 3 | 4;
+type NavigationLevel = 1 | 2 | 3;
 
 export default function TaskSelector({
-  taktZones,
   selectedTasks,
   onTasksChange,
 }: TaskSelectorProps) {
   const [currentLevel, setCurrentLevel] = useState<NavigationLevel>(1);
   const [selectedDivision, setSelectedDivision] = useState<string | null>(null);
   const [selectedActivity, setSelectedActivity] = useState<string | null>(null);
-  const [selectedTaskName, setSelectedTaskName] = useState<string | null>(null);
   const [showSelectedModal, setShowSelectedModal] = useState(false);
 
   const currentDivision = useMemo(
@@ -37,24 +34,12 @@ export default function TaskSelector({
     [currentDivision, selectedActivity]
   );
 
-  const groupedZones = useMemo(() => {
-    const groups: { [key: string]: TaktZone[] } = {};
-    taktZones.forEach((zone) => {
-      if (!groups[zone.floor]) {
-        groups[zone.floor] = [];
-      }
-      groups[zone.floor].push(zone);
-    });
-    return groups;
-  }, [taktZones]);
-
   const isTaskSelected = (task: SelectedTask): boolean => {
     return selectedTasks.some(
       (t) =>
         t.csiDivision === task.csiDivision &&
         t.activity === task.activity &&
-        t.task === task.task &&
-        t.taktZone === task.taktZone
+        t.task === task.task
     );
   };
 
@@ -71,37 +56,28 @@ export default function TaskSelector({
   const handleDivisionSelect = (divisionCode: string) => {
     setSelectedDivision(divisionCode);
     setSelectedActivity(null);
-    setSelectedTaskName(null);
     setCurrentLevel(2);
   };
 
   const handleActivitySelect = (activityId: string) => {
     setSelectedActivity(activityId);
-    setSelectedTaskName(null);
     setCurrentLevel(3);
   };
 
   const handleTaskSelect = (taskName: string) => {
-    setSelectedTaskName(taskName);
-    setCurrentLevel(4);
-  };
-
-  const handleZoneSelect = (zoneId: string) => {
-    if (!selectedDivision || !selectedActivity || !selectedTaskName) return;
+    if (!selectedDivision || !selectedActivity) return;
 
     const newTask: SelectedTask = {
       csiDivision: selectedDivision,
       activity: selectedActivity,
-      task: selectedTaskName,
-      taktZone: zoneId,
+      task: taskName,
     };
 
     const isDuplicate = selectedTasks.some(
       (t) =>
         t.csiDivision === newTask.csiDivision &&
         t.activity === newTask.activity &&
-        t.task === newTask.task &&
-        t.taktZone === newTask.taktZone
+        t.task === newTask.task
     );
 
     if (!isDuplicate) {
@@ -110,7 +86,6 @@ export default function TaskSelector({
 
     setCurrentLevel(2);
     setSelectedActivity(null);
-    setSelectedTaskName(null);
   };
 
   const handleRemoveTask = (task: SelectedTask) => {
@@ -120,8 +95,7 @@ export default function TaskSelector({
           !(
             t.csiDivision === task.csiDivision &&
             t.activity === task.activity &&
-            t.task === task.task &&
-            t.taktZone === task.taktZone
+            t.task === task.task
           )
       )
     );
@@ -132,12 +106,8 @@ export default function TaskSelector({
     if (level === 1) {
       setSelectedDivision(null);
       setSelectedActivity(null);
-      setSelectedTaskName(null);
     } else if (level === 2) {
       setSelectedActivity(null);
-      setSelectedTaskName(null);
-    } else if (level === 3) {
-      setSelectedTaskName(null);
     }
   };
 
@@ -159,13 +129,6 @@ export default function TaskSelector({
     if (currentActivity && currentLevel >= 3) {
       items.push({
         label: currentActivity.name,
-        onClick: () => handleBreadcrumbClick(3),
-      });
-    }
-
-    if (selectedTaskName && currentLevel === 4) {
-      items.push({
-        label: selectedTaskName,
       });
     }
 
@@ -222,12 +185,12 @@ export default function TaskSelector({
               {currentActivity.name} — Tasks
             </h2>
             {currentActivity.tasks.map((task) => {
-              const taskSelected = selectedTasks.some(
-                (t) =>
-                  t.csiDivision === selectedDivision &&
-                  t.activity === selectedActivity &&
-                  t.task === task
-              );
+              const taskObj: SelectedTask = {
+                csiDivision: selectedDivision!,
+                activity: selectedActivity!,
+                task,
+              };
+              const taskSelected = isTaskSelected(taskObj);
               return (
                 <BigButton
                   key={task}
@@ -239,57 +202,13 @@ export default function TaskSelector({
                       <Plus size={20} className="text-onyx" />
                     )
                   }
-                  badge={taskSelected ? "Selected" : undefined}
+                  badge={taskSelected ? "Added" : undefined}
                   badgeColor="green"
                   onClick={() => handleTaskSelect(task)}
-                  chevron
+                  chevron={false}
                 />
               );
             })}
-          </div>
-        )}
-
-        {currentLevel === 4 && currentActivity && selectedTaskName && (
-          <div className="space-y-2 pb-24">
-            <h2 className="text-heading font-bold text-onyx mb-4">
-              Select Takt Zone
-            </h2>
-            {Object.entries(groupedZones).map(([floor, zones]) => (
-              <div key={floor}>
-                <div className="text-sm font-semibold text-warm-gray px-1 py-2 sticky top-0 bg-surface-base">
-                  {floor}
-                </div>
-                <div className="space-y-2">
-                  {zones.map((zone) => {
-                    const zoneTask: SelectedTask = {
-                      csiDivision: selectedDivision!,
-                      activity: selectedActivity!,
-                      task: selectedTaskName,
-                      taktZone: zone.id,
-                    };
-                    const isSelected = isTaskSelected(zoneTask);
-                    return (
-                      <BigButton
-                        key={zone.id}
-                        label={zone.zoneName}
-                        sublabel={zone.zoneCode}
-                        icon={
-                          isSelected ? (
-                            <Check size={20} className="text-accent-green" />
-                          ) : (
-                            <MapPin size={20} className="text-onyx" />
-                          )
-                        }
-                        badge={isSelected ? "Added" : undefined}
-                        badgeColor="green"
-                        onClick={() => handleZoneSelect(zone.id)}
-                        chevron={false}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
           </div>
         )}
       </div>
@@ -333,7 +252,6 @@ export default function TaskSelector({
                   const activity = division?.activities.find(
                     (a) => a.id === task.activity
                   );
-                  const zone = taktZones.find((z) => z.id === task.taktZone);
 
                   return (
                     <div
@@ -347,11 +265,6 @@ export default function TaskSelector({
                         <div className="text-xs text-warm-gray mt-1">
                           {division?.name} • {activity?.name}
                         </div>
-                        {zone && (
-                          <div className="text-xs text-warm-gray">
-                            {zone.zoneName} ({zone.zoneCode})
-                          </div>
-                        )}
                       </div>
                       <button
                         onClick={() => handleRemoveTask(task)}

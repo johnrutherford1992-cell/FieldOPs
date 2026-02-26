@@ -129,7 +129,7 @@ export interface SelectedTask {
   csiDivision: string;
   activity: string;
   task: string;
-  taktZone: string;
+  taktZone?: string;
 }
 
 export interface Signature {
@@ -277,7 +277,7 @@ export interface EquipmentEntry {
 export interface WorkPerformedEntry {
   csiDivision: string;
   activity: string;
-  taktZone: string;
+  taktZone?: string;
   status: WorkStatus;
   notes?: string;
   // Phase 6: Quantity & productivity fields
@@ -518,7 +518,7 @@ export interface ProductivityEntry {
   costCodeId: string;
   csiDivision: string;
   activity: string;
-  taktZone: string;
+  taktZone?: string;
   quantityInstalled: number;
   unitOfMeasure: string;
   crewSize: number;

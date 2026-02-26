@@ -2,13 +2,12 @@
 
 import React, { useState, useRef } from "react";
 import { Camera, X, Image as ImageIcon } from "lucide-react";
-import type { PhotoEntry, PhotoCategory, TaktZone } from "@/lib/types";
+import type { PhotoEntry, PhotoCategory } from "@/lib/types";
 import { CSI_DIVISIONS } from "@/data/csi-divisions";
 
 interface PhotosScreenProps {
   photos: PhotoEntry[];
   onPhotosChange: (photos: PhotoEntry[]) => void;
-  taktZones: TaktZone[];
 }
 
 interface CategoryInfo {
@@ -29,7 +28,6 @@ const photoCategories: CategoryInfo[] = [
 export default function PhotosScreen({
   photos,
   onPhotosChange,
-  taktZones,
 }: PhotosScreenProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showTaggingModal, setShowTaggingModal] = useState(false);
@@ -40,7 +38,6 @@ export default function PhotosScreen({
 
   // Form state for tagging modal
   const [selectedCategory, setSelectedCategory] = useState<PhotoCategory>("progress");
-  const [selectedTaktZone, setSelectedTaktZone] = useState<string>("");
   const [selectedCSIDivision, setSelectedCSIDivision] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
   const [gpsLatitude, setGpsLatitude] = useState<number | null>(null);
@@ -79,7 +76,6 @@ export default function PhotosScreen({
 
       // Reset form state
       setSelectedCategory("progress");
-      setSelectedTaktZone("");
       setSelectedCSIDivision("");
       setCaption("");
       setWitnessPresent(false);
@@ -115,7 +111,6 @@ export default function PhotosScreen({
       file: pendingPhoto.file,
       category: selectedCategory,
       timestamp: pendingPhoto.timestamp,
-      ...(selectedTaktZone && { taktZone: selectedTaktZone }),
       ...(selectedCSIDivision && { csiDivision: selectedCSIDivision }),
       ...(caption && { caption }),
       ...(gpsLatitude !== null && { gpsLatitude }),
@@ -145,24 +140,6 @@ export default function PhotosScreen({
     const division = CSI_DIVISIONS.find((d) => d.code === code);
     return division ? `${division.code} - ${division.name}` : code;
   };
-
-  // Get TaktZone label
-  const getTaktZoneLabel = (zoneId: string): string => {
-    const zone = taktZones.find((z) => z.id === zoneId);
-    return zone ? `${zone.zoneCode} - ${zone.zoneName}` : zoneId;
-  };
-
-  // Group takt zones by floor
-  const taktZonesByFloor = taktZones.reduce(
-    (acc, zone) => {
-      if (!acc[zone.floor]) {
-        acc[zone.floor] = [];
-      }
-      acc[zone.floor].push(zone);
-      return acc;
-    },
-    {} as Record<string, TaktZone[]>
-  );
 
   const hasPhotos = photos.length > 0;
 
@@ -269,11 +246,6 @@ export default function PhotosScreen({
 
                   {/* Inline tags */}
                   <div className="flex flex-wrap gap-1">
-                    {photo.taktZone && (
-                      <span className="text-xs bg-accent-violet/15 text-accent-violet px-2 py-0.5 rounded-full">
-                        {getTaktZoneLabel(photo.taktZone)}
-                      </span>
-                    )}
                     {photo.csiDivision && (
                       <span className="text-xs bg-accent-violet/10 text-accent-violet px-2 py-0.5 rounded-full">
                         {getCSIDivisionName(photo.csiDivision)}
@@ -349,36 +321,6 @@ export default function PhotosScreen({
                   ))}
                 </div>
               </div>
-
-              {/* Takt Zone Selection */}
-              {taktZones.length > 0 && (
-                <div className="mb-6">
-                  <label className="block text-field-base font-heading font-medium text-onyx mb-3">
-                    Takt Zone (Optional)
-                  </label>
-                  <select
-                    value={selectedTaktZone}
-                    onChange={(e) => setSelectedTaktZone(e.target.value)}
-                    className="
-                      w-full min-h-[56px] px-4 rounded-lg border border-gray-200
-                      font-body text-field-base text-onyx
-                      focus:outline-none focus:ring-2 focus:ring-onyx
-                      bg-white
-                    "
-                  >
-                    <option value="">Select a zone&hellip;</option>
-                    {Object.entries(taktZonesByFloor).map(([floor, zones]) => (
-                      <optgroup key={floor} label={floor}>
-                        {zones.map((zone) => (
-                          <option key={zone.id} value={zone.id}>
-                            {zone.zoneCode} - {zone.zoneName}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
-                </div>
-              )}
 
               {/* CSI Division Selection */}
               <div className="mb-6">
