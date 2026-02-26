@@ -44,10 +44,13 @@ async function callClaude(apiKey: string, prompt: string): Promise<string> {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { action, apiKey } = body;
+    const { action, apiKey: clientApiKey } = body;
+
+    // Prefer server-side env var; fall back to client-provided key
+    const apiKey = process.env.ANTHROPIC_API_KEY || clientApiKey;
 
     if (!apiKey) {
-      return NextResponse.json({ error: "API key required" }, { status: 400 });
+      return NextResponse.json({ error: "API key required. Set ANTHROPIC_API_KEY on the server or provide a key in Settings." }, { status: 400 });
     }
 
     switch (action) {

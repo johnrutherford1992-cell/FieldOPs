@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const {
-      apiKey,
+      apiKey: clientApiKey,
       projectName,
       date,
       tasks,
@@ -15,9 +15,12 @@ export async function POST(request: NextRequest) {
       siteNotes,
     } = body;
 
+    // Prefer server-side env var; fall back to client-provided key
+    const apiKey = process.env.ANTHROPIC_API_KEY || clientApiKey;
+
     if (!apiKey) {
       return NextResponse.json(
-        { error: "API key required" },
+        { error: "API key required. Set ANTHROPIC_API_KEY on the server or provide a key in Settings." },
         { status: 400 }
       );
     }

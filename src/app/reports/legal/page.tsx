@@ -153,28 +153,27 @@ export default function LegalPage() {
     try {
       let letterHtml: string;
 
-      if (claudeApiKey) {
-        // Call API with Claude key
-        const response = await fetch("/api/reports", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "legal-letter",
-            apiKey: claudeApiKey,
-            project: activeProject,
-            letterType: selectedType,
-            recipientName,
-            recipientCompany,
-            description,
-            contractReferences,
-          }),
-        });
+      // Always attempt the API — server may have a company-wide key configured
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "legal-letter",
+          apiKey: claudeApiKey || undefined,
+          project: activeProject,
+          letterType: selectedType,
+          recipientName,
+          recipientCompany,
+          description,
+          contractReferences,
+        }),
+      });
 
-        if (!response.ok) throw new Error("Failed to generate letter");
+      if (response.ok) {
         const data = await response.json();
         letterHtml = data.letter;
       } else {
-        // Use mock generation
+        // Fall back to mock if API fails (no key configured anywhere)
         letterHtml = generateMockLegalLetter(
           activeProject,
           selectedType,

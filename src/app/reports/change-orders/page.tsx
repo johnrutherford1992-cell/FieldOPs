@@ -103,26 +103,25 @@ export default function ChangeOrdersPage() {
 
       let generatedDraft: string;
 
-      if (claudeApiKey) {
-        // Call Claude API via backend
-        const response = await fetch("/api/reports", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "change-order",
-            apiKey: claudeApiKey,
-            project: activeProject,
-            changeEntry: change.change,
-            dailyLogDate: change.logDate,
-            affectedSubNames,
-          }),
-        });
+      // Always attempt the API — server may have a company-wide key configured
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "change-order",
+          apiKey: claudeApiKey || undefined,
+          project: activeProject,
+          changeEntry: change.change,
+          dailyLogDate: change.logDate,
+          affectedSubNames,
+        }),
+      });
 
-        if (!response.ok) throw new Error("Failed to generate change order");
+      if (response.ok) {
         const data = await response.json();
         generatedDraft = data.html || data;
       } else {
-        // Use mock generator
+        // Fall back to mock if API fails (no key configured anywhere)
         generatedDraft = generateMockChangeOrder(
           activeProject,
           change.change,

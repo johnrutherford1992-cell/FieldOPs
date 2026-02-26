@@ -112,37 +112,32 @@ export default function JHAPage() {
       selectedEquipmentIds.includes(eq.id)
     );
 
-    if (claudeApiKey) {
-      // Real Claude API call
-      try {
-        const response = await fetch("/api/jha/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            apiKey: claudeApiKey,
-            projectName: activeProject.name,
-            date: currentDate,
-            tasks: selectedTasks,
-            weather,
-            equipment: selectedEquipment,
-            crewSize,
-            siteNotes,
-          }),
-        });
+    // Always attempt the API — server may have a company-wide key configured
+    try {
+      const response = await fetch("/api/jha/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: claudeApiKey || undefined,
+          projectName: activeProject.name,
+          date: currentDate,
+          tasks: selectedTasks,
+          weather,
+          equipment: selectedEquipment,
+          crewSize,
+          siteNotes,
+        }),
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          setGeneratedJHA(data.jha);
-          setGeneratedToolbox(data.toolboxTalk);
-        } else {
-          // Fallback to mock on API error
-          generateMockOutput();
-        }
-      } catch {
+      if (response.ok) {
+        const data = await response.json();
+        setGeneratedJHA(data.jha);
+        setGeneratedToolbox(data.toolboxTalk);
+      } else {
+        // Fallback to mock on API error
         generateMockOutput();
       }
-    } else {
-      // No API key — use mock
+    } catch {
       generateMockOutput();
     }
 
@@ -395,9 +390,9 @@ export default function JHAPage() {
 
                   {!claudeApiKey && (
                     <p className="text-center text-warm-gray text-sm">
-                      No API key configured — using demonstration output.
+                      Using AI if a company key is configured on the server.
                       <br />
-                      Add your key in Settings for AI-powered analysis.
+                      You can also add a personal key in Settings.
                     </p>
                   )}
                 </div>

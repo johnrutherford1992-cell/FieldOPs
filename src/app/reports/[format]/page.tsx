@@ -108,14 +108,14 @@ export default function ReportPage() {
       const now = new Date();
       const { weekStart, weekEnd } = getWeekDates(now);
 
-      if (claudeApiKey) {
-        // Call API with Claude API key
+      // Always attempt the API — server may have a company-wide key configured
+      try {
         const response = await fetch("/api/reports", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             action: "weekly-report",
-            apiKey: claudeApiKey,
+            apiKey: claudeApiKey || undefined,
             project: activeProject,
             logs,
             formatType,
@@ -138,8 +138,8 @@ export default function ReportPage() {
           );
           setReportHtml(mockHtml);
         }
-      } else {
-        // Generate mock report
+      } catch {
+        // Fall back to mock on network error
         const mockHtml = generateMockWeeklyReport(
           activeProject,
           formatType,
@@ -249,8 +249,8 @@ export default function ReportPage() {
           {!claudeApiKey && (
             <div className="bg-accent-amber/10 border border-gray-100 rounded-lg p-4 mb-6">
               <p className="text-sm text-warm-gray">
-                <strong>Demo Mode:</strong> No Claude API key configured. Reports will be
-                generated using mock data. Add your API key in Settings for AI-generated reports.
+                AI reports are enabled if a company key is configured on the server.
+                You can also add a personal key in Settings.
               </p>
             </div>
           )}

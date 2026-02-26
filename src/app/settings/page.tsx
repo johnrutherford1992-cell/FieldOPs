@@ -80,15 +80,8 @@ export default function SettingsPage() {
           />
 
           <p className="text-warm-gray text-field-sm font-body mt-2">
-            Enter your Anthropic API key to enable AI features. Get one at{" "}
-            <a
-              href="https://console.anthropic.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-onyx underline hover:text-slate"
-            >
-              console.anthropic.com
-            </a>
+            A company-wide API key may already be configured by your admin.
+            Only enter a personal key here if you need to override it.
           </p>
         </div>
 
