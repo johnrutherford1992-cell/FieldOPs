@@ -15,7 +15,6 @@ import {
   MapPin,
   CheckCircle2,
   Clock,
-  Timer,
   BarChart3,
   TrendingUp,
   BookOpen,
@@ -256,14 +255,6 @@ export default function HomePage() {
               label="Daily Log"
               sublabel="Record manpower, work, equipment & more"
               icon={<ClipboardList className="w-6 h-6" />}
-            />
-          </Link>
-
-          <Link href="/time-tracking" className="block no-underline">
-            <BigButton
-              label="Time Tracking"
-              sublabel="Approve hours & export to ADP"
-              icon={<Timer className="w-6 h-6" />}
             />
           </Link>
 

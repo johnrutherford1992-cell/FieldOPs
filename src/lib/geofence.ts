@@ -1,5 +1,5 @@
 // ============================================================
-// Geofence Utilities — Time Tracking GPS Validation
+// Geofence Utilities — GPS Validation
 // ============================================================
 
 /**

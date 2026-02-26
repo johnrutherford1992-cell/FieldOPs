@@ -190,13 +190,6 @@ export type ConflictCategory =
 export type ConflictSeverity = "low" | "medium" | "high" | "critical";
 export type ConflictResolution = "open" | "escalated" | "resolved" | "litigated";
 export type PhotoCategory = "progress" | "safety" | "quality" | "issue" | "damage";
-export type RFIStatus = "open" | "answered" | "overdue";
-export type SubmittalStatus =
-  | "pending"
-  | "approved"
-  | "approved_as_noted"
-  | "revise_resubmit"
-  | "rejected";
 
 // ── Phase 6: Delay & Safety Types ──
 export type DelayType =
@@ -290,25 +283,6 @@ export interface WorkPerformedEntry {
   costCodeId?: string;            // link to CostCode for analytics pipeline
 }
 
-export interface RFIEntry {
-  rfiNumber: string;
-  subject: string;
-  responsibleParty: string;
-  dateSubmitted: string;
-  daysOpen: number;
-  status: RFIStatus;
-  fieldImpact: boolean;
-  notes?: string;
-}
-
-export interface SubmittalEntry {
-  submittalNumber: string;
-  description: string;
-  specSection: string;
-  status: SubmittalStatus;
-  scheduleImpact: boolean;
-  notes?: string;
-}
 
 export interface InspectionEntry {
   type: InspectionType;
@@ -708,8 +682,6 @@ export interface DailyLog {
   manpower: ManpowerEntry[];
   equipment: EquipmentEntry[];
   workPerformed: WorkPerformedEntry[];
-  rfis: RFIEntry[];
-  submittals: SubmittalEntry[];
   inspections: InspectionEntry[];
   changes: ChangeEntry[];
   conflicts: ConflictEntry[];
@@ -766,7 +738,6 @@ export type LegalLetterType =
   | "delay_notice"
   | "cure_notice"
   | "change_directive"
-  | "rfi_followup"
   | "general";
 
 export type LegalLetterStatus = "draft" | "reviewed" | "sent";
@@ -788,102 +759,6 @@ export interface LegalCorrespondence {
   attachments: string[];
   status: LegalLetterStatus;
   createdAt: string;
-}
-
-// ════════════════════════════════════════════════════════════
-// TIME TRACKING MODULE — Phase 7: Field Time + ADP Integration
-// ════════════════════════════════════════════════════════════
-
-export type TimeEntryMethod = "manual" | "clock_in_out" | "bulk_import";
-export type TimeEntryApprovalStatus = "pending" | "approved" | "rejected" | "exported";
-
-export interface TimeEntry {
-  id: string;
-  projectId: string;
-  dailyLogId?: string;
-  date: string;
-  workerId: string;              // TeamMember id or subcontractor worker id
-  workerName: string;
-  trade: string;
-  csiDivision?: string;
-  costCodeId?: string;
-  taktZone?: string;
-  entryMethod: TimeEntryMethod;
-  clockIn?: string;              // ISO timestamp
-  clockOut?: string;             // ISO timestamp
-  regularHours: number;
-  overtimeHours: number;
-  doubleTimeHours: number;
-  breakMinutes: number;
-  totalHours: number;            // computed: regular + OT + DT
-  payRate?: number;              // $/hr for cost tracking
-  overtimeRate?: number;
-  notes?: string;
-  // Geofencing
-  gpsClockIn?: { lat: number; lng: number };
-  gpsClockOut?: { lat: number; lng: number };
-  withinGeofence?: boolean;
-  // Approval workflow
-  approvalStatus: TimeEntryApprovalStatus;
-  approvedBy?: string;
-  approvedAt?: string;
-  rejectionReason?: string;
-  // ADP Export tracking
-  adpExported?: boolean;
-  adpExportedAt?: string;
-  adpBatchId?: string;
-  adpPayrollCode?: string;
-  // Metadata
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface TimePolicy {
-  id: string;
-  projectId: string;
-  regularHoursPerDay: number;     // typically 8
-  overtimeThresholdDaily: number;  // hours before OT kicks in
-  overtimeThresholdWeekly: number; // 40 typically
-  doubleTimeThreshold?: number;    // hours before DT (e.g., 12)
-  breakDurationMinutes: number;    // default lunch break
-  roundingIncrement: number;       // 15 = round to nearest 15 min
-  geofenceRadiusMeters: number;    // e.g., 100m
-  geofenceLatitude?: number;       // project site center
-  geofenceLongitude?: number;
-  requirePhotoClockIn?: boolean;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ADPSyncConfig {
-  id: string;
-  projectId: string;
-  companyCode: string;           // ADP company code
-  payGroupCode: string;          // ADP pay group
-  earningsCode: string;          // regular time earnings code
-  overtimeEarningsCode: string;  // OT earnings code
-  doubleTimeEarningsCode?: string;
-  lastSyncAt?: string;
-  lastSyncStatus?: "success" | "partial" | "failed";
-  lastSyncRecordCount?: number;
-  syncErrorLog?: string;
-  // OAuth managed server-side
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface TimeSummary {
-  date: string;
-  totalWorkers: number;
-  totalRegularHours: number;
-  totalOvertimeHours: number;
-  totalDoubleTimeHours: number;
-  totalHours: number;
-  pendingApproval: number;
-  approved: number;
-  exported: number;
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1008,99 +883,6 @@ export interface KineticWebhookPayload {
   kineticRequestId: string;
   data: Record<string, unknown>;
   signature: string;              // HMAC-SHA256
-}
-
-// ════════════════════════════════════════════════════════════
-// MATERIAL TRACKING MODULE — Phase 9: Delivery, Inventory, AI
-// ════════════════════════════════════════════════════════════
-
-export type DeliveryStatus = "scheduled" | "in_transit" | "delivered" | "partial" | "rejected" | "returned";
-export type MaterialCategory = "concrete" | "steel" | "lumber" | "masonry" | "electrical" | "plumbing" | "hvac" | "finishes" | "other";
-export type ConsumptionFlag = "normal" | "high" | "low" | "anomaly";
-
-export interface MaterialDelivery {
-  id: string;
-  projectId: string;
-  dailyLogId?: string;
-  date: string;
-  supplier: string;
-  poNumber?: string;
-  csiDivision?: string;
-  category: MaterialCategory;
-  items: MaterialDeliveryItem[];
-  deliveryTicketNumber?: string;
-  driver?: string;
-  receivedBy: string;
-  status: DeliveryStatus;
-  taktZone?: string;
-  photos?: string[];
-  notes?: string;
-  // Quality checks
-  conditionOnArrival?: "good" | "damaged" | "partial_damage";
-  temperatureCompliant?: boolean;   // for concrete, coatings
-  certificationProvided?: boolean;  // mill certs, test reports
-  // AI fields
-  aiVarianceFlag?: boolean;
-  aiVarianceDescription?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MaterialDeliveryItem {
-  materialName: string;
-  description?: string;
-  quantity: number;
-  unitOfMeasure: string;           // CY, TON, LF, EA, BDL, etc.
-  costCodeId?: string;
-  unitCost?: number;
-  totalCost?: number;
-  acceptedQuantity?: number;       // may differ from delivered
-  rejectedQuantity?: number;
-  rejectionReason?: string;
-}
-
-export interface MaterialInventory {
-  id: string;
-  projectId: string;
-  materialName: string;
-  category: MaterialCategory;
-  csiDivision?: string;
-  costCodeId?: string;
-  unitOfMeasure: string;
-  quantityOnHand: number;
-  quantityReserved: number;        // allocated but not consumed
-  quantityAvailable: number;       // onHand - reserved
-  reorderPoint?: number;           // trigger for AI alert
-  reorderQuantity?: number;
-  leadTimeDays?: number;
-  storageLocation?: string;        // takt zone or staging area
-  lastReceivedDate?: string;
-  lastConsumedDate?: string;
-  averageDailyConsumption?: number; // computed
-  daysOfSupplyRemaining?: number;   // computed
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MaterialConsumption {
-  id: string;
-  projectId: string;
-  dailyLogId?: string;
-  date: string;
-  materialInventoryId: string;
-  materialName: string;
-  quantityConsumed: number;
-  unitOfMeasure: string;
-  costCodeId?: string;
-  taktZone?: string;
-  installedBy?: string;            // sub or crew
-  wasteQuantity?: number;
-  wasteReason?: string;
-  consumptionFlag: ConsumptionFlag;
-  flagDescription?: string;
-  notes?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1231,16 +1013,13 @@ export interface Deficiency {
 export const DAILY_LOG_SCREENS = [
   { id: "weather", label: "Weather", icon: "Cloud" },
   { id: "manpower", label: "Manpower", icon: "Users" },
-  { id: "time", label: "Time Tracking", icon: "Timer" },
   { id: "equipment", label: "Equipment", icon: "Truck" },
   { id: "work", label: "Work Performed", icon: "Hammer" },
-  { id: "rfis", label: "RFIs & Submittals", icon: "FileText" },
   { id: "inspections", label: "Inspections", icon: "ClipboardCheck" },
   { id: "changes", label: "Changes", icon: "AlertTriangle" },
   { id: "conflicts", label: "Conflicts", icon: "ShieldAlert" },
   { id: "delays", label: "Delays", icon: "Clock" },
   { id: "safety", label: "Safety", icon: "HeartPulse" },
-  { id: "materials", label: "Materials", icon: "Package" },
   { id: "quality", label: "Quality", icon: "ClipboardCheck" },
   { id: "photos", label: "Photos", icon: "Camera" },
   { id: "notes", label: "Notes & Tomorrow", icon: "Pencil" },

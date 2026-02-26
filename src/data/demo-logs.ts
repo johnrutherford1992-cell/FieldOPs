@@ -141,19 +141,6 @@ export const DEMO_DAILY_LOGS: DailyLog[] = [
         notes: "Electrical rough-in in retail corridor. Device boxes set. Riser work progressing on schedule.",
       },
     ],
-    rfis: [
-      {
-        rfiNumber: "007",
-        subject: "Mechanical Penetration Coordination - Core Restrooms",
-        responsibleParty: "Mechanical Engineer",
-        dateSubmitted: "2026-01-26",
-        daysOpen: 7,
-        status: "open",
-        fieldImpact: true,
-        notes: "Conflict between HVAC ductwork and plumbing rough-in locations in L2-E core. Needs immediate coordination to avoid re-work.",
-      },
-    ],
-    submittals: [],
     inspections: [
       {
         type: "building_inspector",
@@ -315,19 +302,6 @@ export const DEMO_DAILY_LOGS: DailyLog[] = [
         notes: "Electrical panel locations marked. Structural coordination confirmed. Installation scheduled for Thursday.",
       },
     ],
-    rfis: [
-      {
-        rfiNumber: "007",
-        subject: "Mechanical Penetration Coordination - Core Restrooms",
-        responsibleParty: "Mechanical Engineer",
-        dateSubmitted: "2026-01-26",
-        daysOpen: 8,
-        status: "open",
-        fieldImpact: true,
-        notes: "Still awaiting final approval on routed ductwork solution. Plumbing and electrical can proceed with temporary layouts.",
-      },
-    ],
-    submittals: [],
     inspections: [],
     changes: [
       {
@@ -479,19 +453,6 @@ export const DEMO_DAILY_LOGS: DailyLog[] = [
         notes: "Site utilities trenching paused during rain. 80% of utility trench completed. Resumed late afternoon.",
       },
     ],
-    rfis: [
-      {
-        rfiNumber: "007",
-        subject: "Mechanical Penetration Coordination - Core Restrooms",
-        responsibleParty: "Mechanical Engineer",
-        dateSubmitted: "2026-01-26",
-        daysOpen: 9,
-        status: "open",
-        fieldImpact: true,
-        notes: "Answer still pending. Received verbal approval from MEP engineer on revised routing. Written confirmation expected tomorrow.",
-      },
-    ],
-    submittals: [],
     inspections: [],
     changes: [],
     conflicts: [
@@ -659,28 +620,6 @@ export const DEMO_DAILY_LOGS: DailyLog[] = [
         taktZone: "L2-A",
         status: "in_progress",
         notes: "Drywall hanging commenced in L2-A. 3,000 SF of 5/8 FR hung. Tapers ready to begin joint work.",
-      },
-    ],
-    rfis: [
-      {
-        rfiNumber: "007",
-        subject: "Mechanical Penetration Coordination - Core Restrooms",
-        responsibleParty: "Mechanical Engineer",
-        dateSubmitted: "2026-01-26",
-        daysOpen: 10,
-        status: "answered",
-        fieldImpact: true,
-        notes: "Mechanical engineer approved revised routing. Documentation received. Plumbing and electrical can proceed with finalized layouts.",
-      },
-    ],
-    submittals: [
-      {
-        submittalNumber: "S-042",
-        description: "Armstrong Fissured ACT Ceiling Grid and Tile",
-        specSection: "09-3100",
-        status: "pending",
-        scheduleImpact: true,
-        notes: "Submitted for L1 and L2 ceiling scope. Awaiting architect approval. Critical path item - needed for ceiling installation sequence.",
       },
     ],
     inspections: [],
@@ -864,17 +803,6 @@ export const DEMO_DAILY_LOGS: DailyLog[] = [
         taktZone: "L2-B",
         status: "in_progress",
         notes: "Drywall taping progressing in L2-B. First coat joints completed 1,500 SF. Quality control inspection passed.",
-      },
-    ],
-    rfis: [],
-    submittals: [
-      {
-        submittalNumber: "S-042",
-        description: "Armstrong Fissured ACT Ceiling Grid and Tile",
-        specSection: "09-3100",
-        status: "pending",
-        scheduleImpact: true,
-        notes: "Still pending architect approval. Received one comment requesting flame spread rating verification. Response submitted.",
       },
     ],
     inspections: [],

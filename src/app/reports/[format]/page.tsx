@@ -47,7 +47,7 @@ export default function ReportPage() {
     client:
       "Professional progress summary for property owners and investors. Includes milestones, schedule status, and items requiring approval.",
     design_team:
-      "Technical report for architects, engineers, and consultants. Focuses on RFIs, submittals, and design coordination.",
+      "Technical report for architects, engineers, and consultants. Focuses on field conditions and design coordination.",
     subcontractor:
       "Coordination report for all subcontractors. Covers completed work, scheduling, and safety reminders.",
     internal:

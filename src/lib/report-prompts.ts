@@ -81,28 +81,6 @@ function summarizeDailyLogs(logs: DailyLog[], project: Project): string {
       }
     }
 
-    // RFIs & Submittals
-    if (log.rfis.length > 0) {
-      lines.push(`RFIs:`);
-      for (const r of log.rfis) {
-        lines.push(
-          `  - #${r.rfiNumber}: ${r.subject} [${r.status}] ${r.daysOpen}d open${
-            r.fieldImpact ? " ⚠ FIELD IMPACT" : ""
-          }`
-        );
-      }
-    }
-    if (log.submittals.length > 0) {
-      lines.push(`Submittals:`);
-      for (const s of log.submittals) {
-        lines.push(
-          `  - #${s.submittalNumber}: ${s.description} [${s.status}]${
-            s.scheduleImpact ? " ⚠ SCHEDULE IMPACT" : ""
-          }`
-        );
-      }
-    }
-
     // Inspections
     if (log.inspections.length > 0) {
       lines.push(`Inspections:`);
@@ -205,8 +183,6 @@ Do NOT include internal risk details or sub-specific labor issues.`,
 Audience: Architect, structural engineer, MEP engineers, and design consultants.
 Tone: Technical and detail-oriented. Focus on design coordination issues.
 Emphasize:
-- RFIs submitted, answered, and outstanding (with days open)
-- Submittals pending review or requiring resubmission
 - Field conditions that differ from drawings
 - Coordination issues between trades
 - Inspection results and code compliance items
@@ -223,7 +199,6 @@ Emphasize:
 - Manpower expectations and requirements
 - Equipment scheduling and access coordination
 - Safety reminders and any incidents/near-misses
-- Required pre-work and material deliveries
 - Crew productivity rates by trade where available
 - Upcoming quantity targets based on current production rates
 Keep it practical and focused on what subs need to know.`,
@@ -273,7 +248,7 @@ Use professional formatting with:
 - Report header with project name, report period, and report type
 - Executive summary (2-3 sentences)
 - Sections with clear headers
-- Tables where appropriate (manpower, schedule items, RFI tracking)
+- Tables where appropriate (manpower, schedule items)
 - Action items with owners and due dates
 - Professional language suitable for the target audience
 
@@ -337,10 +312,6 @@ Include: specific breach description, contract provisions violated, required cor
   change_directive: `Draft a CONSTRUCTION CHANGE DIRECTIVE (CCD) to a subcontractor.
 This directive requires the subcontractor to proceed with changed work before a formal change order is executed.
 Include: description of changed work, reason for change, directive to proceed, cost tracking requirements, time impact assessment, contract clause authorizing CCDs.`,
-
-  rfi_followup: `Draft an RFI FOLLOW-UP LETTER to the design team.
-This letter formally escalates overdue RFIs that are impacting field operations.
-Include: list of overdue RFIs with submission dates and days outstanding, specific field impacts, affected trades, schedule impacts, request for expedited response, contract clause references for response time requirements.`,
 
   general: `Draft a GENERAL CORRESPONDENCE letter for the construction project.
 This is a formal letter to document a project matter.
@@ -500,8 +471,6 @@ export function generateMockWeeklyReport(
   );
   const avgWorkers = logs.length > 0 ? Math.round(totalWorkers / logs.length) : 0;
   const totalWorkItems = logs.reduce((s, l) => s + l.workPerformed.length, 0);
-  const totalRFIs = logs.reduce((s, l) => s + l.rfis.length, 0);
-  const totalSubmittals = logs.reduce((s, l) => s + l.submittals.length, 0);
   const totalConflicts = logs.reduce((s, l) => s + l.conflicts.length, 0);
   const totalChanges = logs.reduce((s, l) => s + l.changes.length, 0);
   const weatherDays = logs.filter((l) => l.weather.impact === "weather_day").length;
@@ -529,8 +498,6 @@ export function generateMockWeeklyReport(
         <tbody>
           <tr style="background:#f2f0e6;"><td style="padding:8px;">Average Daily Manpower</td><td style="padding:8px;text-align:right;">${avgWorkers}</td></tr>
           <tr><td style="padding:8px;">Work Activities Logged</td><td style="padding:8px;text-align:right;">${totalWorkItems}</td></tr>
-          <tr style="background:#f2f0e6;"><td style="padding:8px;">Active RFIs</td><td style="padding:8px;text-align:right;">${totalRFIs}</td></tr>
-          <tr><td style="padding:8px;">Submittals Tracked</td><td style="padding:8px;text-align:right;">${totalSubmittals}</td></tr>
           <tr style="background:#f2f0e6;"><td style="padding:8px;">Weather Days</td><td style="padding:8px;text-align:right;">${weatherDays}</td></tr>
         </tbody>
       </table>
@@ -538,23 +505,9 @@ export function generateMockWeeklyReport(
       <h2 style="color:#000;border-bottom:2px solid #000;padding-bottom:4px;">Items Requiring Owner Attention</h2>
       <ul style="margin:8px 0;padding-left:20px;">
         ${totalChanges > 0 ? `<li>${totalChanges} change directive${totalChanges !== 1 ? "s" : ""} identified — pending cost impact assessment</li>` : "<li>No pending items at this time</li>"}
-        ${totalRFIs > 0 ? `<li>${totalRFIs} RFI${totalRFIs !== 1 ? "s" : ""} in process</li>` : ""}
       </ul>`;
   } else if (formatType === "design_team") {
     sections = `
-      <h2 style="color:#000;border-bottom:2px solid #000;padding-bottom:4px;">RFI Status</h2>
-      <table style="width:100%;border-collapse:collapse;margin:12px 0;">
-        <thead><tr style="background:#000;color:#fff;">
-          <th style="padding:8px;text-align:left;">Status</th>
-          <th style="padding:8px;text-align:right;">Count</th>
-        </tr></thead>
-        <tbody>
-          <tr style="background:#f2f0e6;"><td style="padding:8px;">Open</td><td style="padding:8px;text-align:right;">${totalRFIs}</td></tr>
-          <tr><td style="padding:8px;">Submittals Pending</td><td style="padding:8px;text-align:right;">${totalSubmittals}</td></tr>
-        </tbody>
-      </table>
-      <p>All RFIs and submittals are tracked in the field log. Procore integration is pending — entries are currently manual.</p>
-
       <h2 style="color:#000;border-bottom:2px solid #000;padding-bottom:4px;">Field Conditions & Coordination</h2>
       <p>${totalWorkItems} work activities logged across multiple CSI divisions. ${totalConflicts > 0 ? `${totalConflicts} field coordination issue${totalConflicts !== 1 ? "s" : ""} documented — see details below.` : "No significant coordination issues this period."}</p>
 
@@ -589,7 +542,6 @@ export function generateMockWeeklyReport(
           <tr style="background:#f2f0e6;"><td style="padding:8px;">Conflicts / Issues</td><td style="padding:8px;text-align:center;">${totalConflicts}</td><td style="padding:8px;">${totalConflicts > 0 ? "⚠ Requires attention" : "✓ Clear"}</td></tr>
           <tr><td style="padding:8px;">Changes / Directives</td><td style="padding:8px;text-align:center;">${totalChanges}</td><td style="padding:8px;">${totalChanges > 0 ? "⚠ Cost exposure" : "✓ None"}</td></tr>
           <tr style="background:#f2f0e6;"><td style="padding:8px;">Weather Days</td><td style="padding:8px;text-align:center;">${weatherDays}</td><td style="padding:8px;">${weatherDays > 0 ? "⚠ Schedule impact" : "✓ No impact"}</td></tr>
-          <tr><td style="padding:8px;">Open RFIs</td><td style="padding:8px;text-align:center;">${totalRFIs}</td><td style="padding:8px;">${totalRFIs > 0 ? "Tracking" : "✓ None"}</td></tr>
         </tbody>
       </table>
 
@@ -600,7 +552,6 @@ export function generateMockWeeklyReport(
       <ul style="margin:8px 0;padding-left:20px;">
         ${totalConflicts > 0 ? `<li><strong>PRIORITY:</strong> Resolve ${totalConflicts} outstanding conflict${totalConflicts !== 1 ? "s" : ""}</li>` : ""}
         ${totalChanges > 0 ? `<li>Process ${totalChanges} change directive${totalChanges !== 1 ? "s" : ""} — obtain sub quotes</li>` : ""}
-        ${totalRFIs > 0 ? `<li>Follow up on ${totalRFIs} open RFI${totalRFIs !== 1 ? "s" : ""}</li>` : ""}
         <li>Continue daily log compliance</li>
       </ul>`;
   }
@@ -709,7 +660,6 @@ export function generateMockLegalLetter(
     delay_notice: "Notice of Delay",
     cure_notice: "Notice to Cure",
     change_directive: "Construction Change Directive",
-    rfi_followup: "RFI Follow-Up Notice",
     general: "General Correspondence",
   };
 

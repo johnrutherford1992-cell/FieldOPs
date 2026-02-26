@@ -16,15 +16,9 @@ import type {
   UnitPriceLibrary,
   BidFeedbackReport,
   ScheduleBaseline,
-  TimeEntry,
-  TimePolicy,
-  ADPSyncConfig,
   ResourceRequest,
   ScheduleEntry,
   ResourceConflict,
-  MaterialDelivery,
-  MaterialInventory,
-  MaterialConsumption,
   ChecklistTemplate,
   CompletedChecklist,
   Deficiency,
@@ -53,15 +47,9 @@ const TABLE_MAP: Record<string, string> = {
   unitPriceLibrary: "unit_price_library",
   bidFeedbackReports: "bid_feedback_reports",
   scheduleBaselines: "schedule_baselines",
-  timeEntries: "time_entries",
-  timePolicies: "time_policies",
-  adpSyncConfigs: "adp_sync_configs",
   resourceRequests: "resource_requests",
   scheduleEntries: "schedule_entries",
   resourceConflicts: "resource_conflicts",
-  materialDeliveries: "material_deliveries",
-  materialInventory: "material_inventory",
-  materialConsumption: "material_consumption",
   checklistTemplates: "checklist_templates",
   completedChecklists: "completed_checklists",
   deficiencies: "deficiencies",
@@ -342,15 +330,9 @@ export const db = {
   unitPriceLibrary: createTableProxy<UnitPriceLibrary>("unitPriceLibrary"),
   bidFeedbackReports: createTableProxy<BidFeedbackReport>("bidFeedbackReports"),
   scheduleBaselines: createTableProxy<ScheduleBaseline>("scheduleBaselines"),
-  timeEntries: createTableProxy<TimeEntry>("timeEntries"),
-  timePolicies: createTableProxy<TimePolicy>("timePolicies"),
-  adpSyncConfigs: createTableProxy<ADPSyncConfig>("adpSyncConfigs"),
   resourceRequests: createTableProxy<ResourceRequest>("resourceRequests"),
   scheduleEntries: createTableProxy<ScheduleEntry>("scheduleEntries"),
   resourceConflicts: createTableProxy<ResourceConflict>("resourceConflicts"),
-  materialDeliveries: createTableProxy<MaterialDelivery>("materialDeliveries"),
-  materialInventory: createTableProxy<MaterialInventory>("materialInventory"),
-  materialConsumption: createTableProxy<MaterialConsumption>("materialConsumption"),
   checklistTemplates: createTableProxy<ChecklistTemplate>("checklistTemplates"),
   completedChecklists: createTableProxy<CompletedChecklist>("completedChecklists"),
   deficiencies: createTableProxy<Deficiency>("deficiencies"),
@@ -473,103 +455,6 @@ export async function getActiveBaseline(
     .maybeSingle();
   if (error) { console.error("getActiveBaseline:", error); return undefined; }
   return data ? (toCamelCase(data as Record<string, unknown>) as unknown as ProductivityBaseline) : undefined;
-}
-
-// ── Phase 7: Time Tracking helpers ──
-
-export async function getTimeEntriesForDate(
-  projectId: string,
-  date: string
-): Promise<TimeEntry[]> {
-  return db.timeEntries.where({ projectId, date }).toArray();
-}
-
-export async function getTimeEntriesForRange(
-  projectId: string,
-  startDate: string,
-  endDate: string
-): Promise<TimeEntry[]> {
-  const { data, error } = await getSupabase()
-    .from("time_entries")
-    .select("*")
-    .eq("project_id", projectId)
-    .gte("date", startDate)
-    .lte("date", endDate);
-  if (error) { console.error("getTimeEntriesForRange:", error); return []; }
-  return rowsToCamel<TimeEntry>(data || []);
-}
-
-export async function getPendingTimeEntries(
-  projectId: string
-): Promise<TimeEntry[]> {
-  return db.timeEntries.where({ projectId, approvalStatus: "pending" }).toArray();
-}
-
-export async function getApprovedUnexportedEntries(
-  projectId: string
-): Promise<TimeEntry[]> {
-  const { data, error } = await getSupabase()
-    .from("time_entries")
-    .select("*")
-    .eq("project_id", projectId)
-    .eq("approval_status", "approved")
-    .eq("adp_exported", false);
-  if (error) { console.error("getApprovedUnexportedEntries:", error); return []; }
-  return rowsToCamel<TimeEntry>(data || []);
-}
-
-export async function getActiveTimePolicy(
-  projectId: string
-): Promise<TimePolicy | undefined> {
-  const { data, error } = await getSupabase()
-    .from("time_policies")
-    .select("*")
-    .eq("project_id", projectId)
-    .eq("is_active", true)
-    .limit(1)
-    .maybeSingle();
-  if (error) { console.error("getActiveTimePolicy:", error); return undefined; }
-  return data ? (toCamelCase(data as Record<string, unknown>) as unknown as TimePolicy) : undefined;
-}
-
-export async function getActiveADPConfig(
-  projectId: string
-): Promise<ADPSyncConfig | undefined> {
-  const { data, error } = await getSupabase()
-    .from("adp_sync_configs")
-    .select("*")
-    .eq("project_id", projectId)
-    .eq("is_active", true)
-    .limit(1)
-    .maybeSingle();
-  if (error) { console.error("getActiveADPConfig:", error); return undefined; }
-  return data ? (toCamelCase(data as Record<string, unknown>) as unknown as ADPSyncConfig) : undefined;
-}
-
-export async function computeTimeSummary(
-  projectId: string,
-  date: string
-): Promise<{
-  totalWorkers: number;
-  totalRegularHours: number;
-  totalOvertimeHours: number;
-  totalDoubleTimeHours: number;
-  totalHours: number;
-  pendingApproval: number;
-  approved: number;
-  exported: number;
-}> {
-  const entries = await getTimeEntriesForDate(projectId, date);
-  return {
-    totalWorkers: entries.length,
-    totalRegularHours: entries.reduce((s, e) => s + e.regularHours, 0),
-    totalOvertimeHours: entries.reduce((s, e) => s + e.overtimeHours, 0),
-    totalDoubleTimeHours: entries.reduce((s, e) => s + e.doubleTimeHours, 0),
-    totalHours: entries.reduce((s, e) => s + e.totalHours, 0),
-    pendingApproval: entries.filter((e) => e.approvalStatus === "pending").length,
-    approved: entries.filter((e) => e.approvalStatus === "approved").length,
-    exported: entries.filter((e) => e.adpExported).length,
-  };
 }
 
 export async function getLatestAnalytics(

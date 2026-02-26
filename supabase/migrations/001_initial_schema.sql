@@ -1,8 +1,8 @@
 -- ============================================================
 -- FieldOps — Initial PostgreSQL Schema (Supabase)
 -- Migrated from Dexie.js IndexedDB
--- 27 tables covering: Projects, JHA, Daily Logs, Time Tracking,
--- Productivity, Legal, Resources, Materials, Quality
+-- Tables covering: Projects, JHA, Daily Logs,
+-- Productivity, Legal, Resources, Quality
 -- ============================================================
 
 -- ============================================================
@@ -12,15 +12,9 @@
 DROP TABLE IF EXISTS deficiencies CASCADE;
 DROP TABLE IF EXISTS completed_checklists CASCADE;
 DROP TABLE IF EXISTS checklist_templates CASCADE;
-DROP TABLE IF EXISTS material_consumption CASCADE;
-DROP TABLE IF EXISTS material_inventory CASCADE;
-DROP TABLE IF EXISTS material_deliveries CASCADE;
 DROP TABLE IF EXISTS resource_conflicts CASCADE;
 DROP TABLE IF EXISTS schedule_entries CASCADE;
 DROP TABLE IF EXISTS resource_requests CASCADE;
-DROP TABLE IF EXISTS adp_sync_configs CASCADE;
-DROP TABLE IF EXISTS time_policies CASCADE;
-DROP TABLE IF EXISTS time_entries CASCADE;
 DROP TABLE IF EXISTS schedule_baselines CASCADE;
 DROP TABLE IF EXISTS bid_feedback_reports CASCADE;
 DROP TABLE IF EXISTS unit_price_library CASCADE;
@@ -114,8 +108,6 @@ CREATE TABLE daily_logs (
   manpower JSONB DEFAULT '[]',
   equipment JSONB DEFAULT '[]',
   work_performed JSONB DEFAULT '[]',
-  rfis JSONB DEFAULT '[]',
-  submittals JSONB DEFAULT '[]',
   inspections JSONB DEFAULT '[]',
   changes JSONB DEFAULT '[]',
   conflicts JSONB DEFAULT '[]',
@@ -470,101 +462,6 @@ CREATE INDEX idx_schedule_baselines_project ON schedule_baselines(project_id);
 CREATE INDEX idx_schedule_baselines_active ON schedule_baselines(project_id, is_active);
 
 -- ============================================================
--- TIME ENTRIES (Phase 7)
--- ============================================================
-
-CREATE TABLE time_entries (
-  id TEXT PRIMARY KEY,
-  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-  daily_log_id TEXT,
-  date TEXT NOT NULL,
-  worker_id TEXT NOT NULL,
-  worker_name TEXT,
-  trade TEXT,
-  csi_division TEXT,
-  cost_code_id TEXT,
-  takt_zone TEXT,
-  entry_method TEXT DEFAULT 'manual',
-  clock_in TEXT,
-  clock_out TEXT,
-  regular_hours NUMERIC(5,2) DEFAULT 0,
-  overtime_hours NUMERIC(5,2) DEFAULT 0,
-  double_time_hours NUMERIC(5,2) DEFAULT 0,
-  break_minutes INTEGER DEFAULT 0,
-  total_hours NUMERIC(5,2) DEFAULT 0,
-  pay_rate NUMERIC(10,2),
-  overtime_rate NUMERIC(10,2),
-  notes TEXT,
-  gps_clock_in JSONB,
-  gps_clock_out JSONB,
-  within_geofence BOOLEAN,
-  approval_status TEXT DEFAULT 'pending',
-  approved_by TEXT,
-  approved_at TEXT,
-  rejection_reason TEXT,
-  adp_exported BOOLEAN DEFAULT FALSE,
-  adp_exported_at TEXT,
-  adp_batch_id TEXT,
-  adp_payroll_code TEXT,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_time_entries_project_date ON time_entries(project_id, date);
-CREATE INDEX idx_time_entries_project_worker_date ON time_entries(project_id, worker_id, date);
-CREATE INDEX idx_time_entries_approval ON time_entries(project_id, approval_status);
-CREATE INDEX idx_time_entries_adp ON time_entries(adp_exported);
-
--- ============================================================
--- TIME POLICIES (Phase 7)
--- ============================================================
-
-CREATE TABLE time_policies (
-  id TEXT PRIMARY KEY,
-  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-  regular_hours_per_day NUMERIC(5,2) DEFAULT 8,
-  overtime_threshold_daily NUMERIC(5,2) DEFAULT 8,
-  overtime_threshold_weekly NUMERIC(5,2) DEFAULT 40,
-  double_time_threshold NUMERIC(5,2),
-  break_duration_minutes INTEGER DEFAULT 30,
-  rounding_increment INTEGER DEFAULT 15,
-  geofence_radius_meters INTEGER DEFAULT 100,
-  geofence_latitude NUMERIC(10,7),
-  geofence_longitude NUMERIC(10,7),
-  require_photo_clock_in BOOLEAN DEFAULT FALSE,
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_time_policies_project ON time_policies(project_id);
-CREATE INDEX idx_time_policies_active ON time_policies(project_id, is_active);
-
--- ============================================================
--- ADP SYNC CONFIGS (Phase 7)
--- ============================================================
-
-CREATE TABLE adp_sync_configs (
-  id TEXT PRIMARY KEY,
-  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-  company_code TEXT,
-  pay_group_code TEXT,
-  earnings_code TEXT,
-  overtime_earnings_code TEXT,
-  double_time_earnings_code TEXT,
-  last_sync_at TEXT,
-  last_sync_status TEXT,
-  last_sync_record_count INTEGER,
-  sync_error_log TEXT,
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_adp_sync_configs_project ON adp_sync_configs(project_id);
-CREATE INDEX idx_adp_sync_configs_active ON adp_sync_configs(project_id, is_active);
-
--- ============================================================
 -- RESOURCE REQUESTS (Phase 8)
 -- ============================================================
 
@@ -650,98 +547,6 @@ CREATE TABLE resource_conflicts (
 CREATE INDEX idx_resource_conflicts_project ON resource_conflicts(project_id);
 CREATE INDEX idx_resource_conflicts_resolved ON resource_conflicts(project_id, resolved);
 CREATE INDEX idx_resource_conflicts_severity ON resource_conflicts(project_id, severity);
-
--- ============================================================
--- MATERIAL DELIVERIES (Phase 9)
--- ============================================================
-
-CREATE TABLE material_deliveries (
-  id TEXT PRIMARY KEY,
-  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-  daily_log_id TEXT,
-  date TEXT,
-  supplier TEXT,
-  po_number TEXT,
-  csi_division TEXT,
-  category TEXT,
-  items JSONB DEFAULT '[]',
-  delivery_ticket_number TEXT,
-  driver TEXT,
-  received_by TEXT,
-  status TEXT DEFAULT 'delivered',
-  takt_zone TEXT,
-  photos JSONB DEFAULT '[]',
-  notes TEXT,
-  condition_on_arrival TEXT,
-  temperature_compliant BOOLEAN,
-  certification_provided BOOLEAN,
-  ai_variance_flag BOOLEAN DEFAULT FALSE,
-  ai_variance_description TEXT,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_material_deliveries_project_date ON material_deliveries(project_id, date);
-CREATE INDEX idx_material_deliveries_supplier ON material_deliveries(project_id, supplier);
-CREATE INDEX idx_material_deliveries_category ON material_deliveries(project_id, category);
-
--- ============================================================
--- MATERIAL INVENTORY (Phase 9)
--- ============================================================
-
-CREATE TABLE material_inventory (
-  id TEXT PRIMARY KEY,
-  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-  material_name TEXT NOT NULL,
-  category TEXT,
-  csi_division TEXT,
-  cost_code_id TEXT,
-  unit_of_measure TEXT,
-  quantity_on_hand NUMERIC(15,4) DEFAULT 0,
-  quantity_reserved NUMERIC(15,4) DEFAULT 0,
-  quantity_available NUMERIC(15,4) DEFAULT 0,
-  reorder_point NUMERIC(15,4),
-  reorder_quantity NUMERIC(15,4),
-  lead_time_days INTEGER,
-  storage_location TEXT,
-  last_received_date TEXT,
-  last_consumed_date TEXT,
-  average_daily_consumption NUMERIC(10,4),
-  days_of_supply_remaining NUMERIC(10,2),
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_material_inventory_project ON material_inventory(project_id);
-CREATE INDEX idx_material_inventory_category ON material_inventory(project_id, category);
-
--- ============================================================
--- MATERIAL CONSUMPTION (Phase 9)
--- ============================================================
-
-CREATE TABLE material_consumption (
-  id TEXT PRIMARY KEY,
-  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-  daily_log_id TEXT,
-  date TEXT,
-  material_inventory_id TEXT REFERENCES material_inventory(id) ON DELETE SET NULL,
-  material_name TEXT,
-  quantity_consumed NUMERIC(15,4),
-  unit_of_measure TEXT,
-  cost_code_id TEXT,
-  takt_zone TEXT,
-  installed_by TEXT,
-  waste_quantity NUMERIC(15,4),
-  waste_reason TEXT,
-  consumption_flag TEXT DEFAULT 'normal',
-  flag_description TEXT,
-  notes TEXT,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_material_consumption_project_date ON material_consumption(project_id, date);
-CREATE INDEX idx_material_consumption_inventory ON material_consumption(material_inventory_id);
 
 -- ============================================================
 -- CHECKLIST TEMPLATES (Phase 10)
@@ -867,9 +672,7 @@ BEGIN
       'safety_incidents', 'notice_logs', 'cost_codes',
       'productivity_entries', 'productivity_baselines', 'productivity_analytics',
       'unit_price_library', 'bid_feedback_reports', 'schedule_baselines',
-      'time_entries', 'time_policies', 'adp_sync_configs',
       'resource_requests', 'schedule_entries', 'resource_conflicts',
-      'material_deliveries', 'material_inventory', 'material_consumption',
       'checklist_templates', 'completed_checklists', 'deficiencies'
     ])
   LOOP

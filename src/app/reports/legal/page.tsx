@@ -57,12 +57,6 @@ const LETTER_TYPES: {
     icon: <Plus className="w-6 h-6" />,
   },
   {
-    id: "rfi_followup",
-    label: "RFI Follow-Up",
-    description: "Follow up on overdue RFI responses",
-    icon: <FileText className="w-6 h-6" />,
-  },
-  {
     id: "general",
     label: "General Correspondence",
     description: "Standard business correspondence",

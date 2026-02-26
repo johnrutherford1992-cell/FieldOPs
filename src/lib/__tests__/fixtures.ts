@@ -56,8 +56,6 @@ export function createMockDailyLog(
     manpower: [createMockManpowerEntry()],
     equipment: [],
     workPerformed: [createMockWorkPerformed()],
-    rfis: [],
-    submittals: [],
     inspections: [],
     changes: [],
     conflicts: [],

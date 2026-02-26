@@ -137,7 +137,7 @@ export default function ReportsPage() {
             <Link href="/reports/design-team" className="block no-underline">
               <BigButton
                 label="Design Team Report"
-                sublabel="RFIs, submittals & technical detail"
+                sublabel="Field conditions & technical detail"
                 icon={<FileText className="w-6 h-6" />}
                 variant="light"
               />
