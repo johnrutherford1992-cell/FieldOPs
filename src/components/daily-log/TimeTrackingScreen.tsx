@@ -21,7 +21,6 @@ import type {
   TimeEntryApprovalStatus,
   ManpowerEntry,
   Subcontractor,
-  TaktZone,
   CostCode,
 } from "@/lib/types";
 
@@ -30,7 +29,6 @@ interface TimeTrackingScreenProps {
   onEntriesChange: (entries: TimeEntry[]) => void;
   manpower: ManpowerEntry[];
   subcontractors: Subcontractor[];
-  taktZones: TaktZone[];
   costCodes: CostCode[];
   projectId: string;
   date: string;
@@ -41,7 +39,6 @@ export default function TimeTrackingScreen({
   onEntriesChange,
   manpower,
   subcontractors,
-  taktZones,
   costCodes,
   projectId,
   date,
@@ -516,27 +513,6 @@ export default function TimeTrackingScreen({
                             </select>
                           </div>
                         </div>
-
-                        {/* Zone selection */}
-                        {taktZones.length > 0 && (
-                          <div>
-                            <label className="block text-field-xs text-warm-gray mb-1">Zone</label>
-                            <select
-                              value={entry.taktZone || ""}
-                              onChange={(e) =>
-                                updateEntry(entry.id, { taktZone: e.target.value || undefined })
-                              }
-                              className="w-full px-3 py-2 rounded-button border border-gray-100 text-field-sm bg-glass text-onyx"
-                            >
-                              <option value="">No zone</option>
-                              {taktZones.map((tz) => (
-                                <option key={tz.id} value={tz.zoneCode}>
-                                  {tz.zoneCode} — {tz.zoneName}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
 
                         {/* Notes */}
                         <div>

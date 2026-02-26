@@ -610,7 +610,6 @@ export default function DailyLogPage() {
               onEntriesChange={setTimeEntries}
               manpower={manpower}
               subcontractors={activeProject.subcontractors}
-              taktZones={activeProject.taktZones}
               costCodes={costCodes}
               projectId={activeProject.id}
               date={currentDate}
@@ -631,7 +630,6 @@ export default function DailyLogPage() {
             <WorkPerformedScreen
               entries={workPerformed}
               onEntriesChange={setWorkPerformed}
-              taktZones={activeProject.taktZones}
             />
           )}
 
@@ -680,7 +678,6 @@ export default function DailyLogPage() {
               entries={delayEvents}
               onEntriesChange={setDelayEvents}
               subcontractors={activeProject.subcontractors}
-              taktZones={activeProject.taktZones}
             />
           )}
 
@@ -689,7 +686,6 @@ export default function DailyLogPage() {
             <SafetyIncidentsScreen
               entries={safetyIncidents}
               onEntriesChange={setSafetyIncidents}
-              taktZones={activeProject.taktZones}
               subcontractors={activeProject.subcontractors}
             />
           )}
@@ -712,7 +708,6 @@ export default function DailyLogPage() {
               deficiencies={qualityDeficiencies}
               onDeficienciesChange={setQualityDeficiencies}
               templates={checklistTemplates}
-              taktZones={activeProject.taktZones}
               projectId={activeProject.id}
               date={currentDate}
             />
@@ -723,7 +718,6 @@ export default function DailyLogPage() {
             <PhotosScreen
               photos={photos}
               onPhotosChange={setPhotos}
-              taktZones={activeProject.taktZones}
             />
           )}
 

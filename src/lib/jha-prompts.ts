@@ -18,7 +18,7 @@ export function buildJHAPrompt(
   const taskList = tasks
     .map(
       (t) =>
-        `- CSI ${t.csiDivision}: ${t.activity} > ${t.task} (Location: ${t.taktZone})`
+        `- CSI ${t.csiDivision}: ${t.activity} > ${t.task}`
     )
     .join("\n");
 
@@ -126,7 +126,7 @@ export function generateMockJHA(
     .map(
       (t, i) => `
     <tr>
-      <td>${i + 1}. ${t.task}<br><small>${t.taktZone}</small></td>
+      <td>${i + 1}. ${t.task}</td>
       <td>
         a) Falls from elevation<br>
         b) Struck-by falling objects<br>
@@ -145,7 +145,7 @@ export function generateMockJHA(
 <div class="jha-document">
   <div class="jha-section">
     <h2>1. Scope of Work</h2>
-    <p>Today's work at <strong>${projectName}</strong> involves ${tasks.length} task${tasks.length > 1 ? "s" : ""} across ${new Set(tasks.map(t => t.taktZone)).size} location${new Set(tasks.map(t => t.taktZone)).size > 1 ? "s" : ""}. Weather conditions: ${weather.conditions}, ${weather.temperature}°${weather.temperatureUnit}. Crew size: ${crewSize} workers.</p>
+    <p>Today's work at <strong>${projectName}</strong> involves ${tasks.length} task${tasks.length > 1 ? "s" : ""}. Weather conditions: ${weather.conditions}, ${weather.temperature}°${weather.temperatureUnit}. Crew size: ${crewSize} workers.</p>
     <p><em>Date: ${date}</em></p>
   </div>
 
@@ -154,7 +154,7 @@ export function generateMockJHA(
     <table class="jha-table">
       <thead>
         <tr>
-          <th>Task Step / Location</th>
+          <th>Task Step</th>
           <th>Hazards Identified</th>
           <th>Control Measures</th>
         </tr>
@@ -219,7 +219,7 @@ export function generateMockToolboxTalk(
 
   <div class="toolbox-section">
     <h2>Why This Matters Today</h2>
-    <p>Today we're performing ${primaryTask?.activity || "construction activities"} work${primaryTask ? ` at ${primaryTask.taktZone}` : ""}. According to OSHA, ${primaryTask?.activity?.toLowerCase().includes("concrete") ? "concrete operations account for a significant number of construction injuries each year, including crush injuries, chemical burns, and fall hazards" : primaryTask?.activity?.toLowerCase().includes("steel") ? "structural steel erection is one of the highest-risk activities in construction, with falls accounting for 69% of fatalities in this trade" : "the Focus Four hazards — falls, struck-by, caught-in/between, and electrocution — account for over 60% of construction fatalities"}. Taking 5 minutes now to discuss today's hazards can prevent a life-altering injury.</p>
+    <p>Today we're performing ${primaryTask?.activity || "construction activities"} work. According to OSHA, ${primaryTask?.activity?.toLowerCase().includes("concrete") ? "concrete operations account for a significant number of construction injuries each year, including crush injuries, chemical burns, and fall hazards" : primaryTask?.activity?.toLowerCase().includes("steel") ? "structural steel erection is one of the highest-risk activities in construction, with falls accounting for 69% of fatalities in this trade" : "the Focus Four hazards — falls, struck-by, caught-in/between, and electrocution — account for over 60% of construction fatalities"}. Taking 5 minutes now to discuss today's hazards can prevent a life-altering injury.</p>
   </div>
 
   <div class="toolbox-section">

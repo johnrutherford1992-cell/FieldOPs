@@ -313,7 +313,6 @@ export default function JHAPage() {
           {/* Step 1: Select Tasks */}
           {currentStep === "tasks" && activeProject && (
             <TaskSelector
-              taktZones={activeProject.taktZones}
               selectedTasks={selectedTasks}
               onTasksChange={setSelectedTasks}
             />
@@ -381,9 +380,6 @@ export default function JHAPage() {
                         </span>
                         <span className="flex-1 truncate">
                           {t.task}
-                        </span>
-                        <span className="text-warm-gray text-xs truncate max-w-[80px]">
-                          {t.taktZone}
                         </span>
                       </div>
                     ))}
