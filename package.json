@@ -12,6 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "npx playwright test",
+    "test:visual": "npx playwright test --project=iPhone-14 --project=Pixel-7 e2e/visual-regression/",
+    "test:visual:update": "npx playwright test --project=iPhone-14 --project=Pixel-7 e2e/visual-regression/ --update-snapshots",
     "test:all": "vitest run && npx playwright test"
   },
   "dependencies": {
