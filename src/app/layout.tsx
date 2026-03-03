@@ -40,7 +40,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-startup-image" href="/icons/icon-512.png" />
       </head>
-      <body className="font-body text-onyx bg-white antialiased">
+      <body className="font-body text-onyx bg-white antialiased scrollbar-visible">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

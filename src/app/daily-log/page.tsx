@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import AppShell from "@/components/layout/AppShell";
 import Header from "@/components/layout/Header";
 import EmptyState from "@/components/ui/EmptyState";
@@ -20,12 +20,13 @@ import TimeTrackingScreen from "@/components/daily-log/TimeTrackingScreen";
 import MaterialsScreen from "@/components/daily-log/MaterialsScreen";
 import QualityScreen from "@/components/daily-log/QualityScreen";
 import { useAppStore } from "@/lib/store";
-import { db, generateId, getCostCodesForProject } from "@/lib/db";
+import { db, generateId, getCostCodesForProject, getDailyLogForDate } from "@/lib/db";
 import { deriveProductivityEntries } from "@/lib/productivity-engine";
 import { recomputeAnalytics } from "@/lib/analytics-engine";
 import { CSI_DIVISIONS } from "@/data/csi-divisions";
 import { DAILY_LOG_SCREENS } from "@/lib/types";
 import type {
+  DailyLog,
   DailyLogWeather,
   ManpowerEntry,
   EquipmentEntry,
@@ -67,6 +68,8 @@ import {
   Package,
   Camera,
   Pencil,
+  Calendar,
+  Edit3,
 } from "lucide-react";
 
 // Map screen IDs to their icons
@@ -88,69 +91,108 @@ const SCREEN_ICONS: Record<DailyLogScreenId, React.ReactNode> = {
   notes: <Pencil size={18} />,
 };
 
+// Short labels for tab strip (to fit more on screen)
+const SCREEN_SHORT_LABELS: Record<DailyLogScreenId, string> = {
+  weather: "Weather",
+  manpower: "Crew",
+  time: "Time",
+  equipment: "Equip",
+  work: "Work",
+  rfis: "RFIs",
+  inspections: "Inspect",
+  changes: "Changes",
+  conflicts: "Conflicts",
+  delays: "Delays",
+  safety: "Safety",
+  materials: "Materials",
+  quality: "Quality",
+  photos: "Photos",
+  notes: "Notes",
+};
+
+function formatDateDisplay(dateStr: string): string {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const d = new Date(year, month - 1, day);
+  return d.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function getTodayISO(): string {
+  return new Date().toISOString().split("T")[0];
+}
+
+function shiftDate(dateStr: string, days: number): string {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const d = new Date(year, month - 1, day);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split("T")[0];
+}
+
 export default function DailyLogPage() {
-  const { activeProject, currentDate } = useAppStore();
+  const { activeProject, currentDate, setCurrentDate } = useAppStore();
+
+  // Date navigation
+  const [selectedDate, setSelectedDate] = useState(currentDate);
+  const [existingLog, setExistingLog] = useState<DailyLog | null>(null);
+  const [isLoadingLog, setIsLoadingLog] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const calendarRef = useRef<HTMLInputElement>(null);
+  const today = getTodayISO();
+  const isToday = selectedDate === today;
 
   // Flow state
   const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // editing an existing log
   const [isSaving, setIsSaving] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [currentScreen, setCurrentScreen] = useState<DailyLogScreenId>("weather");
 
-  // ---- All 10 screen data states ----
-  // Screen 1: Weather
+  // Scroll progress
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Tab strip ref for auto-scrolling
+  const tabStripRef = useRef<HTMLDivElement>(null);
+
+  // ---- All screen data states ----
   const [weather, setWeather] = useState<DailyLogWeather>({
     conditions: "Clear",
     temperature: 72,
     impact: "full_day",
   });
-
-  // Screen 2: Manpower
   const [manpower, setManpower] = useState<ManpowerEntry[]>([]);
-
-  // Screen 2.5: Time Tracking (follows manpower)
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
   const [costCodes, setCostCodes] = useState<CostCode[]>([]);
-
-  // Screen 3: Equipment
   const [equipment, setEquipment] = useState<EquipmentEntry[]>([]);
-
-  // Screen 4: Work Performed
   const [workPerformed, setWorkPerformed] = useState<WorkPerformedEntry[]>([]);
-
-  // Screen 5: RFIs & Submittals
   const [rfis, setRFIs] = useState<RFIEntry[]>([]);
   const [submittals, setSubmittals] = useState<SubmittalEntry[]>([]);
-
-  // Screen 6: Inspections
   const [inspections, setInspections] = useState<InspectionEntry[]>([]);
-
-  // Screen 7: Changes
   const [changes, setChanges] = useState<ChangeEntry[]>([]);
-
-  // Screen 8: Conflicts
   const [conflicts, setConflicts] = useState<ConflictEntry[]>([]);
-
-  // Screen 9: Delay Events (Phase 6)
   const [delayEvents, setDelayEvents] = useState<DelayEvent[]>([]);
-
-  // Screen 10: Safety Incidents (Phase 6)
   const [safetyIncidents, setSafetyIncidents] = useState<SafetyIncident[]>([]);
-
-  // Screen 12: Materials (Phase 9)
   const [materialDeliveries, setMaterialDeliveries] = useState<MaterialDelivery[]>([]);
-
-  // Screen 13: Quality (Phase 10)
   const [completedChecklists, setCompletedChecklists] = useState<CompletedChecklist[]>([]);
   const [qualityDeficiencies, setQualityDeficiencies] = useState<Deficiency[]>([]);
   const [checklistTemplates, setChecklistTemplates] = useState<ChecklistTemplate[]>([]);
-
-  // Screen 14: Photos
   const [photos, setPhotos] = useState<PhotoEntry[]>([]);
-
-  // Screen 10: Notes
   const [notes, setNotes] = useState("");
   const [tomorrowPlan, setTomorrowPlan] = useState<string[]>([]);
+
+  // ---- Load existing log when date changes ----
+  useEffect(() => {
+    if (!activeProject) return;
+    setIsLoadingLog(true);
+    getDailyLogForDate(activeProject.id, selectedDate)
+      .then((log) => {
+        setExistingLog(log || null);
+      })
+      .catch(() => setExistingLog(null))
+      .finally(() => setIsLoadingLog(false));
+  }, [activeProject, selectedDate]);
 
   // ---- Load cost codes for time tracking ----
   useEffect(() => {
@@ -171,6 +213,30 @@ export default function DailyLogPage() {
     }
   }, [activeProject]);
 
+  // ---- Scroll progress tracking ----
+  useEffect(() => {
+    if (!isCreating && !isEditing) return;
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isCreating, isEditing]);
+
+  // ---- Auto-scroll tab strip to active tab ----
+  useEffect(() => {
+    if (!tabStripRef.current) return;
+    const activeTab = tabStripRef.current.querySelector("[data-active=\"true\"]");
+    if (activeTab) {
+      activeTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }, [currentScreen]);
+
   // ---- Navigation helpers ----
   const screenIndex = DAILY_LOG_SCREENS.findIndex((s) => s.id === currentScreen);
 
@@ -178,22 +244,67 @@ export default function DailyLogPage() {
     const nextIndex = screenIndex + 1;
     if (nextIndex < DAILY_LOG_SCREENS.length) {
       setCurrentScreen(DAILY_LOG_SCREENS[nextIndex].id);
+      window.scrollTo({ top: 0 });
     }
   }, [screenIndex]);
 
   const goBack = useCallback(() => {
     if (screenIndex > 0) {
       setCurrentScreen(DAILY_LOG_SCREENS[screenIndex - 1].id);
+      window.scrollTo({ top: 0 });
     }
   }, [screenIndex]);
 
   const isLastScreen = screenIndex === DAILY_LOG_SCREENS.length - 1;
 
-  // ---- Screen jump (from progress bar) ----
   const handleScreenJump = (index: number) => {
     if (index >= 0 && index < DAILY_LOG_SCREENS.length) {
       setCurrentScreen(DAILY_LOG_SCREENS[index].id);
+      window.scrollTo({ top: 0 });
     }
+  };
+
+  // ---- Date navigation ----
+  const handleDateChange = (newDate: string) => {
+    if (newDate > today) return; // Can't navigate to future
+    setSelectedDate(newDate);
+    setCurrentDate(newDate);
+    // Reset flow state when changing dates
+    setIsCreating(false);
+    setIsEditing(false);
+    setIsComplete(false);
+    setCurrentScreen("weather");
+  };
+
+  const goToPreviousDay = () => handleDateChange(shiftDate(selectedDate, -1));
+  const goToNextDay = () => {
+    const next = shiftDate(selectedDate, 1);
+    if (next <= today) handleDateChange(next);
+  };
+
+  // ---- Populate form from existing log ----
+  const populateFromLog = useCallback((log: DailyLog) => {
+    setWeather(log.weather);
+    setManpower(log.manpower || []);
+    setEquipment(log.equipment || []);
+    setWorkPerformed(log.workPerformed || []);
+    setRFIs(log.rfis || []);
+    setSubmittals(log.submittals || []);
+    setInspections(log.inspections || []);
+    setChanges(log.changes || []);
+    setConflicts(log.conflicts || []);
+    setDelayEvents(log.delayEvents || []);
+    setSafetyIncidents(log.safetyIncidents || []);
+    setPhotos(log.photos || []);
+    setNotes(log.notes || "");
+    setTomorrowPlan(log.tomorrowPlan || []);
+  }, []);
+
+  const handleEditExisting = () => {
+    if (!existingLog) return;
+    populateFromLog(existingLog);
+    setIsEditing(true);
+    setIsCreating(true);
   };
 
   // ---- Data summary for each screen (badge counts) ----
@@ -250,6 +361,101 @@ export default function DailyLogPage() {
     [weather, manpower, timeEntries, equipment, workPerformed, rfis, submittals, inspections, changes, conflicts, delayEvents, safetyIncidents, materialDeliveries, completedChecklists, qualityDeficiencies, photos, notes, tomorrowPlan]
   );
 
+  // ---- Get summary for read-only view of an existing log ----
+  const getLogSummary = (log: DailyLog) => {
+    const totalWorkers = (log.manpower || []).reduce(
+      (sum, m) => sum + m.journeymanCount + m.apprenticeCount + m.foremanCount,
+      0
+    );
+    const sections: { label: string; value: string; icon: React.ReactNode }[] = [];
+
+    sections.push({
+      label: "Weather",
+      value: `${log.weather.conditions}, ${log.weather.temperature}°F`,
+      icon: <Cloud size={16} className="text-warm-gray" />,
+    });
+
+    if (totalWorkers > 0) {
+      sections.push({
+        label: "Manpower",
+        value: `${totalWorkers} workers`,
+        icon: <Users size={16} className="text-warm-gray" />,
+      });
+    }
+    if ((log.equipment || []).length > 0) {
+      sections.push({
+        label: "Equipment",
+        value: `${log.equipment.length} pieces`,
+        icon: <Truck size={16} className="text-warm-gray" />,
+      });
+    }
+    if ((log.workPerformed || []).length > 0) {
+      sections.push({
+        label: "Work Performed",
+        value: `${log.workPerformed.length} items`,
+        icon: <Hammer size={16} className="text-warm-gray" />,
+      });
+    }
+    if ((log.rfis || []).length + (log.submittals || []).length > 0) {
+      sections.push({
+        label: "RFIs / Submittals",
+        value: `${log.rfis.length} / ${log.submittals.length}`,
+        icon: <FileText size={16} className="text-warm-gray" />,
+      });
+    }
+    if ((log.inspections || []).length > 0) {
+      sections.push({
+        label: "Inspections",
+        value: `${log.inspections.length}`,
+        icon: <ClipboardCheck size={16} className="text-warm-gray" />,
+      });
+    }
+    if ((log.changes || []).length > 0) {
+      sections.push({
+        label: "Changes",
+        value: `${log.changes.length}`,
+        icon: <AlertTriangle size={16} className="text-warm-gray" />,
+      });
+    }
+    if ((log.conflicts || []).length > 0) {
+      sections.push({
+        label: "Conflicts",
+        value: `${log.conflicts.length}`,
+        icon: <ShieldAlert size={16} className="text-warm-gray" />,
+      });
+    }
+    if ((log.delayEvents || []).length > 0) {
+      sections.push({
+        label: "Delays",
+        value: `${log.delayEvents!.length}`,
+        icon: <Clock size={16} className="text-warm-gray" />,
+      });
+    }
+    if ((log.safetyIncidents || []).length > 0) {
+      sections.push({
+        label: "Safety",
+        value: `${log.safetyIncidents!.length}`,
+        icon: <HeartPulse size={16} className="text-warm-gray" />,
+      });
+    }
+    if ((log.photos || []).length > 0) {
+      sections.push({
+        label: "Photos",
+        value: `${log.photos.length}`,
+        icon: <Camera size={16} className="text-warm-gray" />,
+      });
+    }
+    if (log.notes) {
+      sections.push({
+        label: "Notes",
+        value: log.notes.length > 50 ? log.notes.slice(0, 50) + "..." : log.notes,
+        icon: <Pencil size={16} className="text-warm-gray" />,
+      });
+    }
+
+    return sections;
+  };
+
   // ---- Save daily log ----
   const handleSave = async () => {
     if (!activeProject) return;
@@ -257,9 +463,9 @@ export default function DailyLogPage() {
 
     try {
       const dailyLog = {
-        id: generateId("log"),
+        id: isEditing && existingLog ? existingLog.id : generateId("log"),
         projectId: activeProject.id,
-        date: currentDate,
+        date: selectedDate,
         superintendentId: "tm-super",
         weather,
         manpower,
@@ -275,13 +481,12 @@ export default function DailyLogPage() {
         tomorrowPlan,
         delayEvents: delayEvents.length > 0 ? delayEvents : undefined,
         safetyIncidents: safetyIncidents.length > 0 ? safetyIncidents : undefined,
-        createdAt: new Date().toISOString(),
+        createdAt: isEditing && existingLog ? existingLog.createdAt : new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
 
       await db.dailyLogs.put(dailyLog);
 
-      // Save time entries to their own table (linked via dailyLogId)
       if (timeEntries.length > 0) {
         const linkedTimeEntries = timeEntries.map((te) => ({
           ...te,
@@ -290,7 +495,6 @@ export default function DailyLogPage() {
         await db.timeEntries.bulkPut(linkedTimeEntries);
       }
 
-      // Save material deliveries (linked via dailyLogId)
       if (materialDeliveries.length > 0) {
         const linkedDeliveries = materialDeliveries.map((d) => ({
           ...d,
@@ -299,7 +503,6 @@ export default function DailyLogPage() {
         await db.materialDeliveries.bulkPut(linkedDeliveries);
       }
 
-      // Save completed checklists and deficiencies
       if (completedChecklists.length > 0) {
         const linkedChecklists = completedChecklists.map((c) => ({
           ...c,
@@ -311,14 +514,11 @@ export default function DailyLogPage() {
         await db.deficiencies.bulkPut(qualityDeficiencies);
       }
 
-      // Auto-derive productivity entries and recompute analytics
       try {
         await deriveProductivityEntries(dailyLog, activeProject.id);
-        // Recompute project-to-date analytics after new entries
         await recomputeAnalytics(activeProject.id);
       } catch (productivityErr) {
         console.error("Failed to derive productivity entries:", productivityErr);
-        // Non-blocking — daily log still saved successfully
       }
 
       setIsComplete(true);
@@ -332,6 +532,7 @@ export default function DailyLogPage() {
   // ---- Reset all state ----
   const handleReset = () => {
     setIsCreating(false);
+    setIsEditing(false);
     setIsComplete(false);
     setCurrentScreen("weather");
     setWeather({ conditions: "Clear", temperature: 72, impact: "full_day" });
@@ -352,7 +553,69 @@ export default function DailyLogPage() {
     setPhotos([]);
     setNotes("");
     setTomorrowPlan([]);
+    // Reload existing log for current date
+    if (activeProject) {
+      getDailyLogForDate(activeProject.id, selectedDate)
+        .then((log) => setExistingLog(log || null))
+        .catch(() => setExistingLog(null));
+    }
   };
+
+  // ============================================================
+  // RENDER: Date navigation bar (shared between landing states)
+  // ============================================================
+  const DateNavBar = () => (
+    <div className="flex items-center justify-center gap-3 py-3 px-5">
+      <button
+        onClick={goToPreviousDay}
+        className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 active:bg-gray-100 transition-colors"
+        aria-label="Previous day"
+      >
+        <ChevronLeft size={20} className="text-onyx" />
+      </button>
+
+      <button
+        onClick={() => {
+          setShowCalendar(true);
+          setTimeout(() => calendarRef.current?.showPicker?.(), 50);
+        }}
+        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-50 active:bg-gray-100 transition-colors min-w-[160px] justify-center"
+      >
+        <Calendar size={16} className="text-warm-gray" />
+        <span className="font-heading font-medium text-base">
+          {formatDateDisplay(selectedDate)}
+        </span>
+        {isToday && (
+          <span className="text-xs bg-accent-green/10 text-accent-green px-2 py-0.5 rounded-full font-medium">
+            Today
+          </span>
+        )}
+      </button>
+
+      <input
+        ref={calendarRef}
+        type="date"
+        value={selectedDate}
+        max={today}
+        onChange={(e) => {
+          if (e.target.value) handleDateChange(e.target.value);
+          setShowCalendar(false);
+        }}
+        onBlur={() => setShowCalendar(false)}
+        className={`absolute opacity-0 pointer-events-none w-0 h-0 ${showCalendar ? "" : "hidden"}`}
+        tabIndex={-1}
+      />
+
+      <button
+        onClick={goToNextDay}
+        disabled={selectedDate >= today}
+        className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 active:bg-gray-100 transition-colors disabled:opacity-30 disabled:active:bg-gray-50"
+        aria-label="Next day"
+      >
+        <ChevronRight size={20} className="text-onyx" />
+      </button>
+    </div>
+  );
 
   // ============================================================
   // RENDER: Landing state (no log started)
@@ -367,43 +630,102 @@ export default function DailyLogPage() {
             backHref="/"
           />
 
-          <div className="px-5 pt-6">
-            <button
-              onClick={() => setIsCreating(true)}
-              className="btn-primary"
-            >
-              <ClipboardList className="w-5 h-5" />
-              Start Today&apos;s Log
-            </button>
-          </div>
+          {/* Date navigation */}
+          <DateNavBar />
 
-          {/* Quick screen jump grid */}
-          <div className="px-5 pt-6">
-            <p className="text-warm-gray text-sm mb-3">or jump to a section:</p>
-            <div className="grid grid-cols-2 gap-2">
-              {DAILY_LOG_SCREENS.map((screen) => (
+          {isLoadingLog ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-6 h-6 animate-spin text-warm-gray" />
+            </div>
+          ) : existingLog ? (
+            /* ---- Read-only view of existing log ---- */
+            <div className="px-5 animate-fade-in">
+              <div className="flex items-center gap-2 mb-4">
+                <CheckCircle2 size={18} className="text-accent-green" />
+                <span className="font-heading font-medium text-base">
+                  Log Recorded
+                </span>
+                <span className="text-warm-gray text-sm ml-auto">
+                  {new Date(existingLog.updatedAt).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+
+              {/* Summary cards */}
+              <div className="space-y-2 mb-6">
+                {getLogSummary(existingLog).map((section) => (
+                  <div
+                    key={section.label}
+                    className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg"
+                  >
+                    {section.icon}
+                    <span className="text-sm font-medium text-slate flex-1">
+                      {section.label}
+                    </span>
+                    <span className="text-sm text-warm-gray">
+                      {section.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Edit button */}
+              <button
+                onClick={handleEditExisting}
+                className="btn-secondary"
+              >
+                <Edit3 className="w-5 h-5" />
+                Edit This Log
+              </button>
+            </div>
+          ) : (
+            /* ---- No log for this date ---- */
+            <>
+              <div className="px-5 pt-2">
                 <button
-                  key={screen.id}
                   onClick={() => {
                     setIsCreating(true);
-                    setCurrentScreen(screen.id);
+                    setIsEditing(false);
                   }}
-                  className="flex items-center gap-2 px-4 py-3 bg-glass rounded-lg text-left text-sm font-medium text-onyx active:scale-[0.98] transition-transform"
+                  className="btn-primary"
                 >
-                  {SCREEN_ICONS[screen.id]}
-                  {screen.label}
+                  <ClipboardList className="w-5 h-5" />
+                  {isToday ? "Start Today's Log" : `Start Log for ${formatDateDisplay(selectedDate)}`}
                 </button>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          <div className="mt-6">
-            <EmptyState
-              icon={<ClipboardList size={48} />}
-              title="No Log for Today"
-              description="Record weather, manpower, equipment, work performed, and more."
-            />
-          </div>
+              {/* Quick screen jump grid */}
+              <div className="px-5 pt-6">
+                <p className="text-warm-gray text-sm mb-3">or jump to a section:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {DAILY_LOG_SCREENS.map((screen) => (
+                    <button
+                      key={screen.id}
+                      onClick={() => {
+                        setIsCreating(true);
+                        setIsEditing(false);
+                        setCurrentScreen(screen.id);
+                      }}
+                      className="flex items-center gap-2 px-4 py-3 bg-glass rounded-lg text-left text-sm font-medium text-onyx active:scale-[0.98] transition-transform"
+                    >
+                      {SCREEN_ICONS[screen.id]}
+                      {screen.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <EmptyState
+                  icon={<ClipboardList size={48} />}
+                  title={isToday ? "No Log for Today" : `No Log for ${formatDateDisplay(selectedDate)}`}
+                  description="Record weather, manpower, equipment, work performed, and more."
+                />
+              </div>
+            </>
+          )}
         </div>
       </AppShell>
     );
@@ -428,10 +750,10 @@ export default function DailyLogPage() {
               <CheckCircle2 className="w-10 h-10 text-accent-green" />
             </div>
             <h2 className="font-heading text-2xl font-medium text-center mb-2">
-              Daily Log Saved
+              Daily Log {isEditing ? "Updated" : "Saved"}
             </h2>
             <p className="text-warm-gray text-center text-base mb-6">
-              {currentDate}
+              {formatDateDisplay(selectedDate)}
             </p>
 
             {/* Summary stats */}
@@ -516,7 +838,7 @@ export default function DailyLogPage() {
 
             <div className="w-full space-y-3">
               <button onClick={handleReset} className="btn-secondary">
-                Back to Home
+                Back to Daily Log
               </button>
             </div>
           </div>
@@ -531,11 +853,20 @@ export default function DailyLogPage() {
   return (
     <AppShell>
       <div className="screen">
-        {/* Header with progress */}
-        <div className="screen-header">
-          <div className="flex items-center justify-between mb-2">
+        {/* Fixed header with progress */}
+        <div className="screen-header-fixed">
+          {/* Scroll progress bar */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gray-100">
+            <div
+              className="h-full bg-accent-green transition-all duration-150 ease-out"
+              style={{ width: `${scrollProgress}%` }}
+            />
+          </div>
+
+          {/* Top row: back, date, counter */}
+          <div className="flex items-center justify-between mb-2 pt-1">
             <button
-              onClick={screenIndex === 0 ? () => setIsCreating(false) : goBack}
+              onClick={screenIndex === 0 ? () => { setIsCreating(false); setIsEditing(false); } : goBack}
               className="flex items-center gap-1 text-warm-gray text-sm active:text-onyx transition-colors"
             >
               {screenIndex === 0 ? (
@@ -550,42 +881,56 @@ export default function DailyLogPage() {
                 </>
               )}
             </button>
-            <h1 className="font-heading text-base font-medium flex items-center gap-2">
-              {SCREEN_ICONS[currentScreen]}
-              {DAILY_LOG_SCREENS[screenIndex].label}
-            </h1>
+            <span className="font-heading text-xs text-warm-gray">
+              {formatDateDisplay(selectedDate)}
+              {isEditing && " (editing)"}
+            </span>
             <span className="text-warm-gray text-sm">
               {screenIndex + 1}/{DAILY_LOG_SCREENS.length}
             </span>
           </div>
 
-          {/* Tappable progress dots */}
-          <div className="flex gap-1 mb-1">
+          {/* Tab strip — horizontally scrollable with icons + labels */}
+          <div
+            ref={tabStripRef}
+            className="flex gap-1 overflow-x-auto scrollbar-hide -mx-5 px-5 pb-1"
+          >
             {DAILY_LOG_SCREENS.map((screen, i) => {
+              const isActive = i === screenIndex;
               const badge = getScreenBadge(screen.id);
+              const hasData = i < screenIndex && !!badge;
+
               return (
                 <button
                   key={screen.id}
+                  data-active={isActive}
                   onClick={() => handleScreenJump(i)}
-                  className={`flex-1 h-2 rounded-full transition-all duration-300 ${
-                    i === screenIndex
-                      ? "bg-onyx"
-                      : i < screenIndex
-                      ? badge
-                        ? "bg-accent-green"
-                        : "bg-warm-gray/40"
-                      : "bg-white/[0.08]"
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
+                    isActive
+                      ? "bg-onyx text-white"
+                      : hasData
+                      ? "bg-accent-green/10 text-accent-green"
+                      : "bg-gray-100 text-warm-gray"
                   }`}
-                  title={screen.label}
-                />
+                >
+                  <span className="w-4 h-4 flex items-center justify-center [&>svg]:w-3.5 [&>svg]:h-3.5">
+                    {SCREEN_ICONS[screen.id]}
+                  </span>
+                  {SCREEN_SHORT_LABELS[screen.id]}
+                  {badge && !isActive && (
+                    <span className="ml-0.5 text-[10px] opacity-75">({badge})</span>
+                  )}
+                </button>
               );
             })}
           </div>
         </div>
 
+        {/* Spacer for fixed header */}
+        <div style={{ height: "110px" }} />
+
         {/* Screen content */}
         <div className="px-5 pt-4 pb-32 animate-fade-in">
-          {/* Screen 1: Weather */}
           {currentScreen === "weather" && activeProject && (
             <WeatherScreen
               weather={weather}
@@ -594,7 +939,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 2: Manpower */}
           {currentScreen === "manpower" && activeProject && (
             <ManpowerScreen
               entries={manpower}
@@ -603,7 +947,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 2.5: Time Tracking */}
           {currentScreen === "time" && activeProject && (
             <TimeTrackingScreen
               entries={timeEntries}
@@ -612,11 +955,10 @@ export default function DailyLogPage() {
               subcontractors={activeProject.subcontractors}
               costCodes={costCodes}
               projectId={activeProject.id}
-              date={currentDate}
+              date={selectedDate}
             />
           )}
 
-          {/* Screen 3: Equipment */}
           {currentScreen === "equipment" && activeProject && (
             <EquipmentScreen
               entries={equipment}
@@ -625,7 +967,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 4: Work Performed */}
           {currentScreen === "work" && activeProject && (
             <WorkPerformedScreen
               entries={workPerformed}
@@ -633,7 +974,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 5: RFIs & Submittals */}
           {currentScreen === "rfis" && (
             <RFISubmittalScreen
               rfis={rfis}
@@ -643,7 +983,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 6: Inspections */}
           {currentScreen === "inspections" && (
             <InspectionsScreen
               entries={inspections}
@@ -651,7 +990,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 7: Changes */}
           {currentScreen === "changes" && (
             <ChangesScreen
               entries={changes}
@@ -663,7 +1001,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 8: Conflicts */}
           {currentScreen === "conflicts" && activeProject && (
             <ConflictsScreen
               entries={conflicts}
@@ -672,7 +1009,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 9: Delay Events */}
           {currentScreen === "delays" && activeProject && (
             <DelayEventsScreen
               entries={delayEvents}
@@ -681,7 +1017,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 10: Safety Incidents */}
           {currentScreen === "safety" && activeProject && (
             <SafetyIncidentsScreen
               entries={safetyIncidents}
@@ -690,17 +1025,15 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 12: Materials */}
           {currentScreen === "materials" && activeProject && (
             <MaterialsScreen
               deliveries={materialDeliveries}
               onDeliveriesChange={setMaterialDeliveries}
               projectId={activeProject.id}
-              date={currentDate}
+              date={selectedDate}
             />
           )}
 
-          {/* Screen 13: Quality */}
           {currentScreen === "quality" && activeProject && (
             <QualityScreen
               checklists={completedChecklists}
@@ -709,11 +1042,10 @@ export default function DailyLogPage() {
               onDeficienciesChange={setQualityDeficiencies}
               templates={checklistTemplates}
               projectId={activeProject.id}
-              date={currentDate}
+              date={selectedDate}
             />
           )}
 
-          {/* Screen 14: Photos */}
           {currentScreen === "photos" && activeProject && (
             <PhotosScreen
               photos={photos}
@@ -721,7 +1053,6 @@ export default function DailyLogPage() {
             />
           )}
 
-          {/* Screen 10: Notes */}
           {currentScreen === "notes" && (
             <NotesScreen
               notes={notes}
@@ -748,13 +1079,12 @@ export default function DailyLogPage() {
               ) : (
                 <>
                   <CheckCircle2 className="w-5 h-5" />
-                  Save Daily Log
+                  {isEditing ? "Update Daily Log" : "Save Daily Log"}
                 </>
               )}
             </button>
           ) : (
             <div className="flex gap-3">
-              {/* Skip button for optional screens */}
               <button
                 onClick={goNext}
                 className="flex-1 py-3 rounded-button text-warm-gray font-medium text-base bg-glass active:scale-[0.98] transition-transform"
