@@ -216,6 +216,11 @@
            border-b border-gray-100 px-5 py-3;
   }
 
+  .screen-header-fixed {
+    @apply fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm
+           border-b border-gray-100 px-5 py-3;
+  }
+
   /* ---- Gradient dividers ---- */
   .divider-gradient {
     @apply h-px bg-gradient-divider;
@@ -510,6 +515,25 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Always-visible thin scrollbar for mobile */
+  .scrollbar-visible {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(140, 140, 140, 0.4) transparent;
+  }
+  .scrollbar-visible::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-visible::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-visible::-webkit-scrollbar-thumb {
+    background-color: rgba(140, 140, 140, 0.4);
+    border-radius: 4px;
+  }
+  .scrollbar-visible::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(140, 140, 140, 0.6);
   }
 
   .animate-fade-in {
