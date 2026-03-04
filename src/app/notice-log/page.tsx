@@ -20,6 +20,7 @@ import {
   X,
   Loader2,
 } from "lucide-react";
+import ExportActionBar from "@/components/ui/ExportActionBar";
 
 type FilterType = NoticeType | "All" | "Response Due";
 
@@ -329,6 +330,28 @@ export default function NoticeLogPage() {
             {notices.length} total · {pendingResponse.length} pending response ·{" "}
             {overdue.length} overdue
           </div>
+
+          {/* Export & Email */}
+          {notices.length > 0 && activeProject && (
+            <ExportActionBar
+              onExportPdf={async () => {
+                if (!activeProject) return;
+                const { exportPdf } = await import("@/lib/pdf/generate-pdf");
+                const today = new Date().toISOString().split("T")[0];
+                await exportPdf("notice-log", {
+                  notices: filteredList,
+                  project: activeProject,
+                }, `notice-log-${today}.pdf`);
+              }}
+              onEmailSelf={() => {
+                if (!activeProject) return;
+                import("@/lib/email/mailto").then(({ openMailto, getNoticeLogEmailContent }) => {
+                  const { subject, body } = getNoticeLogEmailContent(activeProject, filteredList);
+                  openMailto({ subject, body });
+                });
+              }}
+            />
+          )}
         </div>
 
         {/* Notice List */}

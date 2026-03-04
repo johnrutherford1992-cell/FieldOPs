@@ -411,6 +411,7 @@ export default function JHAPage() {
               {/* Tab toggle: JHA / Toolbox Talk */}
               <ReviewTabs
                 projectName={activeProject.name}
+                projectAddress={activeProject.address}
                 date={currentDate}
                 jhaContent={generatedJHA}
                 toolboxContent={generatedToolbox}
@@ -461,15 +462,27 @@ export default function JHAPage() {
 
 function ReviewTabs({
   projectName,
+  projectAddress,
   date,
   jhaContent,
   toolboxContent,
 }: {
   projectName: string;
+  projectAddress: string;
   date: string;
   jhaContent: string;
   toolboxContent: string;
 }) {
+  const handleExportPDF = async () => {
+    const { exportPdf, formatDate } = await import("@/lib/pdf/generate-pdf");
+    await exportPdf("jha", {
+      htmlContent: jhaContent,
+      projectName,
+      projectAddress,
+      documentTitle: "Job Hazard Analysis",
+      documentDate: formatDate(date),
+    }, `jha-${date}.pdf`);
+  };
   const [activeTab, setActiveTab] = useState<"jha" | "toolbox">("jha");
 
   return (
@@ -505,6 +518,7 @@ function ReviewTabs({
             projectName={projectName}
             date={date}
             htmlContent={jhaContent}
+            onExportPDF={handleExportPDF}
           />
         ) : (
           <ToolboxTalkDisplay

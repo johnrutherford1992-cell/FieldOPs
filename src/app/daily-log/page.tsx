@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import AppShell from "@/components/layout/AppShell";
 import Header from "@/components/layout/Header";
 import EmptyState from "@/components/ui/EmptyState";
+import ExportActionBar from "@/components/ui/ExportActionBar";
 import WeatherScreen from "@/components/daily-log/WeatherScreen";
 import ManpowerScreen from "@/components/daily-log/ManpowerScreen";
 import EquipmentScreen from "@/components/daily-log/EquipmentScreen";
@@ -679,6 +680,27 @@ export default function DailyLogPage() {
                 <Edit3 className="w-5 h-5" />
                 Edit This Log
               </button>
+
+              {/* Export & Email */}
+              {activeProject && (
+                <ExportActionBar
+                  onExportPdf={async () => {
+                    if (!existingLog || !activeProject) return;
+                    const { exportPdf } = await import("@/lib/pdf/generate-pdf");
+                    await exportPdf("daily-log", {
+                      log: existingLog,
+                      project: activeProject,
+                    }, `daily-log-${existingLog.date}.pdf`);
+                  }}
+                  onEmailSelf={() => {
+                    if (!existingLog || !activeProject) return;
+                    import("@/lib/email/mailto").then(({ openMailto, getDailyLogEmailContent }) => {
+                      const { subject, body } = getDailyLogEmailContent(activeProject, existingLog);
+                      openMailto({ subject, body });
+                    });
+                  }}
+                />
+              )}
             </div>
           ) : (
             /* ---- No log for this date ---- */
@@ -836,7 +858,45 @@ export default function DailyLogPage() {
               )}
             </div>
 
-            <div className="w-full space-y-3">
+            {/* Export & Email */}
+            {activeProject && (
+              <div className="w-full">
+                <ExportActionBar
+                  onExportPdf={async () => {
+                    if (!activeProject) return;
+                    const { exportPdf } = await import("@/lib/pdf/generate-pdf");
+                    const log = {
+                      id: "", projectId: activeProject.id, date: selectedDate,
+                      superintendentId: "", weather, manpower, equipment,
+                      workPerformed, rfis, submittals, inspections, changes,
+                      conflicts, photos, notes, tomorrowPlan,
+                      createdAt: new Date().toISOString(),
+                      updatedAt: new Date().toISOString(),
+                      delayEvents, safetyIncidents,
+                    };
+                    await exportPdf("daily-log", { log, project: activeProject }, `daily-log-${selectedDate}.pdf`);
+                  }}
+                  onEmailSelf={() => {
+                    if (!activeProject) return;
+                    import("@/lib/email/mailto").then(({ openMailto, getDailyLogEmailContent }) => {
+                      const log = {
+                        id: "", projectId: activeProject.id, date: selectedDate,
+                        superintendentId: "", weather, manpower, equipment,
+                        workPerformed, rfis, submittals, inspections, changes,
+                        conflicts, photos, notes, tomorrowPlan,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        delayEvents, safetyIncidents,
+                      };
+                      const { subject, body } = getDailyLogEmailContent(activeProject, log);
+                      openMailto({ subject, body });
+                    });
+                  }}
+                />
+              </div>
+            )}
+
+            <div className="w-full space-y-3 mt-4">
               <button onClick={handleReset} className="btn-secondary">
                 Back to Daily Log
               </button>

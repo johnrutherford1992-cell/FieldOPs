@@ -14,6 +14,7 @@ import {
   Printer,
   Download,
   RefreshCw,
+  Mail,
 } from "lucide-react";
 
 export default function ReportPage() {
@@ -161,32 +162,31 @@ export default function ReportPage() {
 
   // Handle export PDF
   async function handleExportPDF() {
-    if (!reportHtml) return;
+    if (!reportHtml || !activeProject) return;
 
     try {
-      const response = await fetch("/api/reports", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "export-pdf",
-          html: reportHtml,
-        }),
-      });
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `report-${formatSlug}-${new Date().toISOString().split("T")[0]}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      }
+      const { exportPdf, formatDate } = await import("@/lib/pdf/generate-pdf");
+      const today = new Date().toISOString().split("T")[0];
+      await exportPdf("weekly-report", {
+        htmlContent: reportHtml,
+        projectName: activeProject.name,
+        projectAddress: activeProject.address,
+        documentTitle: formatLabels[formatType!] || "Weekly Report",
+        documentDate: formatDate(today),
+      }, `report-${formatSlug}-${today}.pdf`);
     } catch (error) {
       console.error("Error exporting PDF:", error);
     }
+  }
+
+  // Handle email to self
+  function handleEmailSelf() {
+    if (!activeProject || !formatType) return;
+    import("@/lib/email/mailto").then(({ openMailto, getReportEmailContent }) => {
+      const today = new Date().toISOString().split("T")[0];
+      const { subject, body } = getReportEmailContent(activeProject, formatType, today);
+      openMailto({ subject, body });
+    });
   }
 
   // Loading state
@@ -310,6 +310,18 @@ export default function ReportPage() {
           >
             <Printer className="w-5 h-5" />
             <span className="hidden sm:inline">Print</span>
+          </button>
+
+          <button
+            onClick={handleEmailSelf}
+            style={{
+              minHeight: "56px",
+            }}
+            className="flex-1 bg-glass text-onyx border border-gray-100 font-semibold rounded-lg px-3 py-3 flex items-center justify-center gap-2 hover:bg-glass-light active:scale-95 transition-transform"
+            title="Email to self"
+          >
+            <Mail className="w-5 h-5" />
+            <span className="hidden sm:inline">Email</span>
           </button>
 
           <button
