@@ -27,6 +27,7 @@ import {
   ChevronUp,
   AlertCircle,
 } from "lucide-react";
+import ExportActionBar from "@/components/ui/ExportActionBar";
 
 // ════════════════════════════════════════════════════════════════════════════════════
 // TYPES
@@ -348,6 +349,33 @@ export default function CausationPage(): JSX.Element {
             </div>
           </div>
         </div>
+
+        {/* Export & Email */}
+        {activeProject && (
+          <ExportActionBar
+            onExportPdf={async () => {
+              if (!activeProject) return;
+              const { exportPdf } = await import("@/lib/pdf/generate-pdf");
+              // Collect all delay events from chains
+              const delayEvents = state.chains
+                .filter((c) => c.type === "delay_event")
+                .map((c) => c.triggerEvent as DelayEvent);
+              const today = new Date().toISOString().split("T")[0];
+              await exportPdf("causation", {
+                delayEvents,
+                project: activeProject,
+              }, `causation-${today}.pdf`);
+            }}
+            onEmailSelf={() => {
+              if (!activeProject) return;
+              import("@/lib/email/mailto").then(({ openMailto, getCausationEmailContent }) => {
+                const totalCost = state.chains.reduce((sum, c) => sum + c.estimatedCostImpact, 0);
+                const { subject, body } = getCausationEmailContent(activeProject, state.chains.length, totalCost);
+                openMailto({ subject, body });
+              });
+            }}
+          />
+        )}
 
         {/* ════════════════════════════════════════════════════════════ */}
         {/* 2. FILTER BUTTONS */}

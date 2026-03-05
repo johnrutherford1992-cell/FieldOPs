@@ -20,6 +20,7 @@ import {
   Clock,
   AlertTriangle,
 } from "lucide-react";
+import ExportActionBar from "@/components/ui/ExportActionBar";
 
 interface ContractReference {
   clauseNumber: string;
@@ -274,10 +275,39 @@ export default function LegalPage() {
                 />
 
                 {/* Action buttons */}
-                <div className="grid grid-cols-2 gap-3">
+                <ExportActionBar
+                  onExportPdf={async () => {
+                    if (!activeProject) return;
+                    const { exportPdf, formatDate } = await import("@/lib/pdf/generate-pdf");
+                    const today = new Date().toISOString().split("T")[0];
+                    await exportPdf("legal-letter", {
+                      htmlContent: generatedLetter,
+                      projectName: activeProject.name,
+                      projectAddress: activeProject.address,
+                      documentTitle: LETTER_TYPES.find(lt => lt.id === selectedType)?.label || "Legal Correspondence",
+                      documentDate: formatDate(today),
+                    }, `legal-${selectedType}-${today}.pdf`);
+                  }}
+                  onForwardEmail={() => {
+                    if (!activeProject || !selectedType) return;
+                    import("@/lib/email/mailto").then(({ openMailto, getLegalLetterEmailContent }) => {
+                      const letter = {
+                        id: "", projectId: activeProject.id, type: selectedType,
+                        triggeredBy: { dailyLogId: "", entryRef: "" },
+                        recipient: recipientCompany, contractReferences,
+                        generatedLetter, attachments: [], status: "draft" as const,
+                        createdAt: new Date().toISOString(),
+                      };
+                      const { params } = getLegalLetterEmailContent(activeProject, letter);
+                      openMailto(params);
+                    });
+                  }}
+                />
+
+                <div className="grid grid-cols-2 gap-3 mt-3">
                   <button
                     onClick={handlePrint}
-                    className="flex items-center justify-center gap-2 h-14 bg-accent-violet text-white rounded-lg font-heading font-semibold transition-all active:scale-95"
+                    className="flex items-center justify-center gap-2 h-14 bg-glass text-onyx border border-gray-200 rounded-lg font-heading font-semibold transition-all active:scale-95"
                   >
                     <Printer className="w-5 h-5" />
                     Print
@@ -607,7 +637,28 @@ export default function LegalPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <ExportActionBar
+                  onExportPdf={async () => {
+                    if (!activeProject || !selectedLetter) return;
+                    const { exportPdf, formatDate } = await import("@/lib/pdf/generate-pdf");
+                    await exportPdf("legal-letter", {
+                      htmlContent: selectedLetter.generatedLetter || "",
+                      projectName: activeProject.name,
+                      projectAddress: activeProject.address,
+                      documentTitle: LETTER_TYPES.find(lt => lt.id === selectedLetter.type)?.label || "Legal Correspondence",
+                      documentDate: formatDate(selectedLetter.createdAt.split("T")[0]),
+                    }, `legal-${selectedLetter.type}-${selectedLetter.createdAt.split("T")[0]}.pdf`);
+                  }}
+                  onForwardEmail={() => {
+                    if (!activeProject || !selectedLetter) return;
+                    import("@/lib/email/mailto").then(({ openMailto, getLegalLetterEmailContent }) => {
+                      const { params } = getLegalLetterEmailContent(activeProject, selectedLetter);
+                      openMailto(params);
+                    });
+                  }}
+                />
+
+                <div className="grid grid-cols-2 gap-3 mt-3">
                   <button
                     onClick={() => {
                       const printWindow = window.open(
@@ -623,7 +674,7 @@ export default function LegalPage() {
                         printWindow.print();
                       }
                     }}
-                    className="flex items-center justify-center gap-2 h-14 bg-accent-violet text-white rounded-lg font-heading font-semibold transition-all active:scale-95"
+                    className="flex items-center justify-center gap-2 h-14 bg-glass text-onyx border border-gray-200 rounded-lg font-heading font-semibold transition-all active:scale-95"
                   >
                     <Printer className="w-5 h-5" />
                     Print

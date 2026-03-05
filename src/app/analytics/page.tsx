@@ -20,6 +20,7 @@ import {
   ChevronDown,
   ChevronUp,
   AlertTriangle,
+  Download,
 } from "lucide-react";
 
 interface AnalyticsState {
@@ -441,15 +442,34 @@ export default function AnalyticsPage(): JSX.Element {
         subtitle={activeProject.name}
         backHref="/"
         rightAction={
-          <button
-            onClick={handleRefreshAnalytics}
-            disabled={state.isRefreshing}
-            className="flex items-center justify-center w-10 h-10 text-onyx hover:bg-gray-50 rounded-lg transition-colors active:scale-95 disabled:opacity-50"
-            aria-label="Refresh analytics"
-            title="Refresh analytics"
-          >
-            <RefreshCw size={20} className={state.isRefreshing ? "animate-spin" : ""} />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={async () => {
+                const allAnalytics = Array.from(state.analytics.values()).flat();
+                if (allAnalytics.length === 0 || !activeProject) return;
+                const { exportPdf } = await import("@/lib/pdf/generate-pdf");
+                const today = new Date().toISOString().split("T")[0];
+                await exportPdf("analytics", {
+                  analytics: allAnalytics,
+                  project: activeProject,
+                }, `analytics-${today}.pdf`);
+              }}
+              className="flex items-center justify-center w-10 h-10 text-onyx hover:bg-gray-50 rounded-lg transition-colors active:scale-95"
+              aria-label="Export PDF"
+              title="Export PDF"
+            >
+              <Download size={20} />
+            </button>
+            <button
+              onClick={handleRefreshAnalytics}
+              disabled={state.isRefreshing}
+              className="flex items-center justify-center w-10 h-10 text-onyx hover:bg-gray-50 rounded-lg transition-colors active:scale-95 disabled:opacity-50"
+              aria-label="Refresh analytics"
+              title="Refresh analytics"
+            >
+              <RefreshCw size={20} className={state.isRefreshing ? "animate-spin" : ""} />
+            </button>
+          </div>
         }
       />
 
